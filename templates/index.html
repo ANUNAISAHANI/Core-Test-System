@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreTest System - Secure Online Examination Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="landing-container">
+        <nav class="navbar">
+            <div class="logo">
+                <h2>📚 CoreTest System</h2>
+            </div>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary">Register</a>
+            </div>
+        </nav>
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1>Secure Online Examination <span>Platform</span></h1>
+                <p>Take exams securely with advanced anti-cheating protection. Tab switching auto-submits your exam.</p>
+                <div class="hero-buttons">
+                    <a href="register.html" class="btn btn-large btn-primary">Get Started →</a>
+                    <a href="login.html" class="btn btn-large btn-outline">Login</a>
+                </div>
+            </div>
+
+      <div class="features" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+    <div class="feature-card" onclick="window.location.href='/login.html?next=secure-exams';" style="cursor: pointer;">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure Exams</h3>
+        <p>Tab switch detection</p>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='/login.html?next=timed-tests';" style="cursor: pointer;">
+        <div class="feature-icon">⏱️</div>
+        <h3>Timed Tests</h3>
+        <p>Dynamic test sheets</p>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='/login.html?next=otp-login';" style="cursor: pointer;">
+        <div class="feature-icon">📱</div>
+        <h3>OTP Login</h3>
+        <p>Simulation active</p>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='/login.html?next=admin';" style="cursor: pointer;">
+        <div class="feature-icon">👑</div>
+        <h3>Admin Panel</h3>
+        <p>Manage everything</p>
+    </div>
+</div>
+            
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CoreTest System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-styles.css') }}">
+    <style>
+        /* Directory segmentation layout helper buttons */
+        .directory-toggle-bar { display: flex; gap: 10px; margin-bottom: 1.5rem; background: #f1f3f9; padding: 6px; border-radius: 8px; max-width: fit-content; }
+        .dir-btn { border: none; padding: 8px 16px; font-weight: 500; font-size: 0.9rem; border-radius: 6px; cursor: pointer; transition: 0.2s; background: transparent; color: #555; }
+        .dir-btn.active { background: white; color: #667eea; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .sub-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="admin-nav">
+            <div class="logo"><h2>👑 CoreTest System Admin</h2></div>
+            <div class="admin-user-info">
+                <span id="adminName" style="font-weight: 600;">👑 Admin</span>
+                <a href="dashboard.html" class="btn btn-outline btn-small">Student View</a>
+                <button id="adminLogoutBtn" class="btn btn-danger btn-small">Logout</button>
+            </div>
+        </nav>
+
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="questions">📝 Manage Questions</button>
+            <button class="tab-btn" data-tab="results">📊 Track Results</button>
+            <button class="tab-btn" data-tab="users">👥 Total Users / Directory</button>
+            <button class="tab-btn" data-tab="exams">📚 Manage Exams</button>
+            <button class="tab-btn" data-tab="student-search">🔍 Student History</button>
+        </div>
+
+        <div id="questionsTab" class="tab-content active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px;">
+                <h2>Question Database Bank</h2>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="filterSubjectSelector" onchange="filterQuestionsBySubject()" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9rem;">
+                        <option value="ALL">Show All Subjects</option>
+                    </select>
+                    <button id="addQuestionBtn" class="btn btn-primary">+ Add New Question</button>
+                </div>
+            </div>
+
+            <div id="bulkDeleteBar" style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
+                <label style="font-weight: 600; font-size: 0.9rem; cursor: pointer; color: #334155;">
+                    <input type="checkbox" id="selectAllQuestionsCheckbox" onchange="toggleSelectAllQuestions(this)" style="margin-right: 8px; transform: scale(1.1);"> Select All Displayed Questions
+                </label>
+                <button type="button" onclick="executeBulkDeleteQuestions()" class="btn" style="background: #dc2626; color: white; padding: 6px 15px; font-weight: bold; border-radius: 6px; font-size: 0.85rem; border: none; cursor: pointer; box-shadow: 0 2px 4px rgba(220,38,38,0.2);">
+                    🗑️ Delete Selected
+                </button>
+            </div>
+
+            <div id="questionsList" class="questions-list"></div>
+        </div>
+
+        <div id="resultsTab" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Global Examination Logs</h2>
+                <button id="exportResultsBtn" class="btn btn-primary">📥 Export Report (CSV)</button>
+            </div>
+
+   <!-- 🎯 FIXED: Track Results Filter Grid with 8 Semesters & Section E -->
+        <div id="resultsFilterRow" style="display: flex; gap: 10px; margin: 15px 0; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <select id="resFilterBranch" onchange="applyResultFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                <option value="ALL">All Branches</option>
+                <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                <option value="BCA">BCA (Comp. Applications)</option>
+                <option value="MCA">MCA (Master of Comp. Applications)</option>
+                <option value="BBA">BBA (Business Administration)</option>
+                <option value="B.COM">B.Com (Commerce)</option>
+                <option value="MBA">MBA (Master of Business Admin.)</option>
+                <option value="BSC.AG">B.Sc (Agriculture)</option>
+                <option value="M.SC AG">M.Sc (Agriculture)</option>
+                <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                <option value="M.TECH">M.Tech (Master of Technology)</option>
+                <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+            </select>
+
+            <select id="resFilterSemester" onchange="applyResultFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                <option value="ALL">All Semesters</option>
+                <option value="Semester-1">Semester-1</option>
+                <option value="Semester-2">Semester-2</option>
+                <option value="Semester-3">Semester-3</option>
+                <option value="Semester-4">Semester-4</option>
+                <option value="Semester-5">Semester-5</option>
+                <option value="Semester-6">Semester-6</option>
+                <option value="Semester-7">Semester-7</option>
+                <option value="Semester-8">Semester-8</option>
+            </select>
+
+            <select id="resFilterSection" onchange="applyResultFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                <option value="ALL">All Sections</option>
+                <option value="NO_SECTION">No Section</option>
+                <option value="Section-A">Section-A</option>
+                <option value="Section-B">Section-B</option>
+                <option value="Section-C">Section-C</option>
+                <option value="Section-D">Section-D</option>
+                <option value="Section-E">Section-E</option>
+            </select>
+        </div>
+
+
+
+            <div id="allResultsList" class="results-list-admin"></div>
+        </div>
+
+        <div id="usersTab" class="tab-content">
+            <div class="sub-section-header">
+                <h2>Registered Users Master Directory</h2>
+                <button id="addTeacherBtn" class="btn btn-primary" style="background:#2e7d32;">➕ Add New Faculty</button>
+            </div>
+            
+            <div class="directory-toggle-bar">
+                <button class="dir-btn active" id="showStudentsBtn">🎓 Students List (A-Z)</button>
+                <button class="dir-btn" id="showTeachersBtn">👩‍🏫 Faculty Members (A-Z)</button>
+            </div>
+        
+    <!-- 🎯 FIXED: Correct 8 Semesters, Section E, and Full Branches Format -->
+            <div id="directoryFilterRow" style="display: flex; gap: 10px; margin-bottom: 1rem; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Full Branches List -->
+                <select id="dirFilterBranch" onchange="applyDirectoryFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <option value="ALL">All Branches</option>
+                    <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                    <option value="BCA">BCA (Comp. Applications)</option>
+                    <option value="MCA">MCA (Master of Comp. Applications)</option>
+                    <option value="BBA">BBA (Business Administration)</option>
+                    <option value="B.COM">B.Com (Commerce)</option>
+                    <option value="MBA">MBA (Master of Business Admin.)</option>
+                    <option value="BSC.AG">B.Sc (Agriculture)</option>
+                    <option value="M.SC AG">M.Sc (Agriculture)</option>
+                    <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                    <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                    <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                    <option value="M.TECH">M.Tech (Master of Technology)</option>
+                    <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                    <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+                </select>
+
+                <!-- 8 Full Semesters -->
+                <select id="dirFilterSemester" onchange="applyDirectoryFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <option value="ALL">All Semesters</option>
+                    <option value="Semester-1">Semester-1</option>
+                    <option value="Semester-2">Semester-2</option>
+                    <option value="Semester-3">Semester-3</option>
+                    <option value="Semester-4">Semester-4</option>
+                    <option value="Semester-5">Semester-5</option>
+                    <option value="Semester-6">Semester-6</option>
+                    <option value="Semester-7">Semester-7</option>
+                    <option value="Semester-8">Semester-8</option>
+                </select>
+
+                <!-- Sections up to E with No Section on Top -->
+                <select id="dirFilterSection" onchange="applyDirectoryFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                    <option value="ALL">All Sections</option>
+                    <option value="NO_SECTION">No Section</option> <!-- 🎯 Up on Top -->
+                    <option value="Section-A">Section-A</option>
+                    <option value="Section-B">Section-B</option>
+                    <option value="Section-C">Section-C</option>
+                    <option value="Section-D">Section-D</option> <!-- 🎯 Section D added -->
+                    <option value="Section-E">Section-E</option> <!-- 🎯 Section E added -->
+                </select>
+            </div> 
+
+
+            <div id="directoryContentArea">
+                <div id="usersList" class="users-list"></div>
+            </div>
+        </div>
+
+        <div id="examsTab" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Course Papers Configurations</h2>
+                <button id="addExamBtn" class="btn btn-primary">+ Create Exam Card</button>
+            </div>
+            <div id="examsList" class="exams-list-admin"></div>
+        </div>
+
+        <div id="student-searchTab" class="tab-content">
+            <div style="background: white; border-radius: 1rem; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <h3 style="color: #667eea; margin-bottom: 1rem;">🔍 Advanced Student File Lookup</h3>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                    <input type="text" id="studentSearchInput" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Search by name, email, or unique roll number...">
+                    <button id="searchStudentBtn" class="btn btn-primary">🔍 Search Account</button>
+                    <button id="clearSearchBtn" class="btn btn-outline">Clear</button>
+                </div>
+                <div id="studentSearchResult">
+                    <p style="text-align: center; color: #999;">Enter database credentials to execute query search...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="questionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeQuestionModal">&times;</span>
+            <h3 id="modalTitle">Add New Question</h3><br>
+            <div class="bulk-upload-box" style="border: 2px dashed #6c5ce7; background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <h5 style="color: #6c5ce7; margin-bottom: 5px; font-weight: bold;"><i class="fas fa-file-csv"></i> Bulk Question Upload (Excel/CSV)</h5>
+                <p class="text-muted" style="font-size: 12px; margin-bottom: 10px; line-height: 1.4;">Admin saheb, yahan se aap ek jhatke mein 50 ya 100 questions upload kar sakte hain (.csv format).</p>
+                
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="file" id="csvFile" accept=".csv" style="padding: 6px; border: 1px solid #ccc; border-radius: 5px; flex-grow: 1; font-size: 13px; background: white;">
+                    <button type="button" onclick="uploadBulkQuestions()" style="background: #6c5ce7; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px;">
+                        🚀 Upload Sheet
+                    </button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 15px 0; color: #aaa; font-weight: bold; font-size: 12px; position: relative;">
+                <span style="background: #fff; padding: 0 10px; position: relative; z-index: 1;">OR (Manually Add Below)</span>
+                <hr style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #eee; margin: 0; z-index: 0;">
+            </div>
+            <form id="questionForm">
+                <div class="form-group">
+                    <label>Target Subject Paper</label>
+                    <select id="questionSubject"></select>
+                </div>
+                <div class="form-group"><label>Question Text Context</label><textarea id="questionText" rows="3" required></textarea></div>
+                <div class="form-group"><label>Option A</label><input type="text" id="optionA" required></div>
+                <div class="form-group"><label>Option B</label><input type="text" id="optionB" required></div>
+                <div class="form-group"><label>Option C</label><input type="text" id="optionC" required></div>
+                <div class="form-group"><label>Option D</label><input type="text" id="optionD" required></div>
+                <div class="form-group">
+                    <label>Mark Correct Identifier</label>
+                    <select id="correctAnswer">
+                        <option value="0">Option A</option>
+                        <option value="1">Option B</option>
+                        <option value="2">Option C</option>
+                        <option value="3">Option D</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Commit to Database</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="examModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeExamModal">&times;</span>
+            <h3>➕ Create New Subject Exam Card</h3><br>
+            <form id="examForm">
+                <div class="form-group"><label>Subject Title</label><input type="text" id="examSubject" required placeholder="e.g. Mathematics"></div>
+                <div class="form-group"><label>Topics Covered</label><input type="text" id="examTopic" required placeholder="e.g. Algebra & Calculus"></div>
+                <div class="form-group"><label>Icon Glyph (Emoji)</label><input type="text" id="examIcon" value="📐"></div>
+                <div class="form-group"><label>Duration Allotted (Minutes)</label><input type="number" id="examDuration" value="60" required></div>
+                <div class="form-group"><label>Total Viewable Questions</label><input type="number" id="examTotalQ" value="20" required></div>
+                <div class="form-group" style="margin-top: 15px;">
+                <label>Target Course & Branch (Exam Visibility)</label>
+                <select id="examCourseBranch" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 5px; background: white;">
+                <option value="ALL" selected>ALL (Visible to Everyone)</option>
+                <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                <option value="BCA">BCA (Comp. Applications)</option>
+                <option value="MCA">MCA (Master of Comp. Applications)</option>
+                <option value="BBA">BBA (Business Administration)</option>
+                <option value="B.COM">B.Com (Commerce)</option>
+                <option value="MBA">MBA (Master of Business Admin.)</option>
+                <option value="BSC.AG">B.Sc (Agriculture)</option>
+                <option value="M.SC AG">M.Sc (Agriculture)</option>
+                <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                <option value="M.TECH">M.Tech (Master of Technology)</option>
+                <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+                </select>
+                </div>
+     <!------------------- SEMESTER KO SELECT KARNE KA OPTION...........................!!!!!!!!!!!!! -->
+             
+             <div class="form-group" style="margin-bottom: 15px;">
+             <label style="font-weight: 500; display: block; margin-bottom: 5px; color: #334155;">Target Academic Semester</label>
+             <select id="examSemester" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: white;">
+             <option value="">-- Choose Target Semester --</option>
+             <option value="Semester-1">Semester-1</option>
+             <option value="Semester-2">Semester-2</option>
+             <option value="Semester-3">Semester-3</option>
+             <option value="Semester-4">Semester-4</option>
+             <option value="Semester-5">Semester-5</option>
+             <option value="Semester-6">Semester-6</option>
+             <option value="Semester-7">Semester-7</option>
+             <option value="Semester-8">Semester-8</option>
+             </select>
+             </div>
+             <button type="submit" class="btn btn-primary btn-block">Deploy Exam Sheet</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="teacherModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTeacherModal">&times;</span>
+            <h3>👩‍🏫 Create Official Faculty Account</h3><br>
+            <form id="teacherForm">
+                <div class="form-group">
+                    <label>Faculty Unique ID (Card Number)</label>
+                    <input type="text" id="teacherId" placeholder="e.g. TCH-2026-91" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="teacherName" placeholder="Enter faculty name" required>
+                </div>
+                <div class="form-group">
+                    <label>Official Email Address</label>
+                    <input type="email" id="teacherEmail" placeholder="faculty@university.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="tel" id="teacherPhone" placeholder="10-digit primary phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Department Course</label>
+                    <select id="teacherCourse" required>
+                    <option value="" disabled selected>-- Select Course & Branch --</option>
+                    <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                    <option value="BCA">BCA (Comp. Applications)</option>
+                    <option value="MCA">MCA (Master of Comp. Applications)</option>
+                    <option value="BBA">BBA (Business Administration)</option>
+                    <option value="B.COM">B.Com (Commerce)</option>
+                    <option value="MBA">MBA (Master of Business Admin.)</option>
+                    <option value="BSC.AG">B.Sc (Agriculture)</option>
+                    <option value="M.SC AG">M.Sc (Agriculture)</option>
+                    <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                    <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                    <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                    <option value="M.TECH">M.Tech (Master of Technology)</option>
+                    <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                    <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assigned Class Section</label>
+                    <select id="teacherSection" required>
+                        <option value="Section-A">Section-A</option>
+                        <option value="Section-B">Section-B</option>
+                        <option value="Section-C">Section-C</option>
+                        <option value="None" selected>None (No Section /Only Subject Teacher)</option>
+                    </select>
+                </div>        
+
+                <div class="form-group">
+                    <label>Security Access Password</label>
+                    <input type="password" id="teacherPassword" placeholder="Minimum 6 characters" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" style="background:#2e7d32;">Lock Account & Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editTeacherModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeEditTeacherModal">&times;</span>
+            <h3>✏️ Modify Faculty Settings</h3><br>
+            <form id="editTeacherForm">
+                <input type="hidden" id="editTeacherDbId">
+                <div class="form-group">
+                    <label>Faculty ID Number</label>
+                    <input type="text" id="editTeacherId" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="editTeacherName" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="tel" id="editTeacherPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Department Course Branch</label>
+                    <select id="editTeacherCourse" required>
+                    <option value="" disabled selected>-- Select Course & Branch --</option>
+                    <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                    <option value="BCA">BCA (Comp. Applications)</option>
+                    <option value="MCA">MCA (Master of Comp. Applications)</option>
+                    <option value="BBA">BBA (Business Administration)</option>
+                    <option value="B.COM">B.Com (Commerce)</option>
+                    <option value="MBA">MBA (Master of Business Admin.)</option>
+                    <option value="BSC.AG">B.Sc (Agriculture)</option>
+                    <option value="M.SC AG">M.Sc (Agriculture)</option>
+                    <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                    <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                    <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                    <option value="M.TECH">M.Tech (Master of Technology)</option>
+                    <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                    <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Class Section</label>
+                    <select id="editTeacherSection" required>
+                        <option value="Section-A">Section-A</option>
+                        <option value="Section-B">Section-B</option>
+                        <option value="Section-C">Section-C</option>
+                        <option value="None" selected>None (No Section)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Commit Modifications</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="cleanup-card" style="background: #fff5f5; border: 2px dashed #f5c6cb; padding: 2rem; border-radius: 12px; margin-top: 2rem;">
+        <h3 style="color: #721c24; margin-top: 0;">🛑 University Semester Nuclear Cleanup Desk</h3>
+        <p style="font-size: 0.9rem; color: #721c24; line-height: 1.5;">
+            <b>WARNING:</b> Yeh action poori tarah irreversible hai. Aap jo bhi Semester select karke button dabayenge, us semester ke <b>Saare Generated Exams</b> aur <b>Bacchon ke Results Ledger</b> database se permanently delete ho jayenge. Students ke accounts safe rahenge.
+        </p>
+        
+        <div style="display: flex; gap: 15px; align-items: center; margin-top: 1.5rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+                <label style="font-size: 0.8rem; font-weight: 700; color: #555; display: block; margin-bottom: 5px;">Select Semester to Wipe Out:</label>
+                <select id="cleanupSemesterSelector" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ced4da;">
+                    <option value="">-- Choose Target Semester --</option>
+                    <option value="Semester-1">Semester-1</option>
+                    <option value="Semester-2">Semester-2</option>
+                    <option value="Semester-3">Semester-3</option>
+                    <option value="Semester-4">Semester-4</option>
+                    <option value="Semester-5">Semester-5</option>
+                    <option value="Semester-6">Semester-6</option>
+                    <option value="Semester-7">Semester-7</option>
+                    <option value="Semester-8">Semester-8</option>
+                </select>
+            </div>
+            
+            <button id="executeNuclearWipeBtn" class="btn" style="background: #dc3545; color: white; padding: 12px 25px; font-weight: 700; margin-top: 20px; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 4px 6px rgba(220,53,69,0.2);">
+                💥 Erase Semester Data
+            </button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>

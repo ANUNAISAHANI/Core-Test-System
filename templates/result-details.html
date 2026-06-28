@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Sheet Evaluation Report - CoreTest System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background: #f0f2f5;">
+    <div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; background:white; padding:1.5rem; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:2rem;">
+            <div>
+                <h2 id="reportTitle" style="color:#667eea; margin:0;">Detailed Sheet Evaluation Report</h2>
+                <p style="color:gray; font-size:0.85rem; margin-top:4px;">Relational tables logs analytics index analyzer system</p>
+            </div>
+            <button id="returnBtn" class="btn btn-outline">← Back to Dashboard</button>
+        </div>
+
+        <div style="background:white; border-radius:12px; padding:2rem; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:grid; grid-template-columns:1fr 2fr; gap:2rem; margin-bottom:2rem; border-top:6px solid #667eea;">
+            <div style="border-right: 2px dashed #eee; padding-right:1.5rem; text-align:center; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <div style="font-size:0.85rem; text-transform:uppercase; font-weight:600; color:gray;">Final Percentage Score</div>
+                <div id="scorePercentage" style="font-size:3rem; font-weight:bold; color:#667eea; margin:10px 0;">0.00%</div>
+                <div style="font-size:0.8rem; background:#edf2f7; padding:4px 12px; border-radius:20px; color:#4a5568; font-weight:500;" id="attemptTracker">Attempt: #1</div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; align-content:center;">
+                <div><span style="color:gray; font-size:0.85rem;">Candidate Student:</span><h4 id="candidateName" style="color:#333; margin-top:2px;">Student Name</h4></div>
+                <div><span style="color:gray; font-size:0.85rem;">Subject Module Sheet:</span><h4 id="subjectTag" style="color:#333; margin-top:2px;">Subject Name</h4></div>
+                <div><span style="color:gray; font-size:0.85rem;">Total Correct Answers:</span><h4 id="totalCorrect" style="color:#333; margin-top:2px;">0 / 0</h4></div>
+                <div><span style="color:gray; font-size:0.85rem;">System Log Timestamp:</span><h4 id="submissionTimestamp" style="color:#333; font-size:0.9rem; margin-top:2px;">Date/Time</h4></div>
+                <div style="grid-column: 1/-1; border-top:1px solid #eee; padding-top:8px;">
+                    <span style="color:gray; font-size:0.8rem;" id="completionReason">Status: System Normal Termination</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="color:#333; margin-bottom:1rem; display:flex; align-items:center; gap:8px;">📝 Comprehensive Answer-Key Evaluation Sheet Review</h3>
+        <div id="questionsReviewSection"></div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='result-details.js') }}"></script>
+</body>
+</html>

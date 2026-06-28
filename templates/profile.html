@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - CoreTest System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-container" style="max-width: 600px; margin: 0 auto;">
+        <div class="auth-card" style="max-width: 100%;">
+            <div class="auth-header">
+                <h2>👤 Manage Profile Settings</h2>
+                <p>Configure account and live performance matrix</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <img id="profileAvatar" src="https://via.placeholder.com/100" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;" alt="Profile Picture">
+                <br><button id="changeAvatarBtn" class="btn btn-outline btn-small" style="margin-top: 10px;">📷 Change Avatar</button>
+                <input type="file" id="avatarUpload" style="display: none;" accept="image/*">
+            </div>
+
+            <div id="profileStats"></div>
+
+            <form id="profileForm">
+                <div class="form-group"><label>Full Legal Name</label><input type="text" id="profileName" required></div>
+                <div class="form-group"><label>Email Address Parameter (Locked)</label><input type="email" id="profileEmail" disabled style="background:#f0f0f0;"></div>
+                <div class="form-group"><label>Phone Configuration</label><input type="text" id="profilePhone"></div>
+                <div class="form-group"><label>Assigned System Role</label><input type="text" id="profileRole" disabled style="background:#f0f0f0;"></div>
+                <div class="form-group"><label>Enrolled Course & Branch</label><input type="text" id="profileBranch" disabled style="background: #f0f0f0;"></div>
+                <div class="form-group"><label>Account Registration Timestamp</label><input type="text" id="profileJoined" disabled style="background:#f0f0f0;"></div>
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px dashed #ccc;">
+                <!-- 🎯 NEW: Semester Selector Dropdown Pane -->
+               <div class="form-group" style="margin-top: 15px;">
+               <label style="font-weight: 500; color: #333;">Current Academic Semester</label>
+               <select id="profileSemester" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 5px; font-size: 0.95rem; background: white;">
+               <option value="Semester-1">Semester-1</option>
+               <option value="Semester-2">Semester-2</option>
+               <option value="Semester-3">Semester-3</option>
+               <option value="Semester-4">Semester-4</option>
+               <option value="Semester-5">Semester-5</option>
+               <option value="Semester-6">Semester-6</option>
+               <option value="Semester-7">Semester-7</option>
+               <option value="Semester-8">Semester-8</option>
+               </select>
+               </div>
+                <div class="form-group"><label>New Secure Password (Leave blank to keep current)</label><input type="password" id="profileNewPassword"></div>
+                <div class="form-group"><label>Confirm New Password Selection</label><input type="password" id="profileConfirmPassword"></div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
+                    <button type="button" id="backToDashboardBtn" class="btn btn-outline" style="flex: 1;">← Return Back</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1.5;">Save Profile Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='profile.js') }}"></script>
+</body>
+</html>

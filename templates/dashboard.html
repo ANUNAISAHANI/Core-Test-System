@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreTest System - Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Thoda extra style taki button aapke theme se match kare */
+        .btn-admin {
+            border: 2px solid #667eea !important;
+            color: #667eea !important;
+            font-weight: bold !important;
+            margin-right: 10px;
+        }
+        .btn-admin:hover {
+            background: #667eea !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="logo"><h2>📚 CoreTest System</h2></div>
+            <div class="user-info">
+                <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com/api/?background=667eea&color=fff&bold=true" alt="Avatar">
+                <span id="userNameDisplay"></span>
+                <span id="adminBtnContainer"></span> <a href="profile.html" class="btn btn-small btn-outline">👤 Profile</a>
+                <button id="logoutBtn" class="btn btn-small btn-outline">Logout</button>
+            </div>
+        </nav>
+        <div class="dashboard-content">
+            <h1>Available Exams</h1>
+            <div class="exams-grid" id="examsGrid"></div>
+            <div id="resultsSection" class="results-section">
+                <h2>📊 Your Results</h2>
+                <div id="userResults" class="results-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        
+        // Agar user admin hai, toh button dikhao
+        if (user && user.role === 'admin') {
+            const container = document.getElementById('adminBtnContainer');
+            
+            if (container) {
+                const adminBtn = document.createElement('a');
+                adminBtn.href = 'admin.html'; 
+                adminBtn.className = 'btn btn-small btn-admin'; // Humne upar wali style use ki
+                adminBtn.innerHTML = '👑 Admin Panel';
+                
+                container.appendChild(adminBtn);
+            }
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreTest System - Sign In</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header"><h2>🔒 Login</h2><p>Access your exams</p></div>
+            
+            <div id="passwordLogin" style="display: block !important;">
+                <form id="loginForm">
+                    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+                <div class="divider"><span>OR</span></div>
+                <button id="showOtpLogin" class="btn btn-outline btn-block">Login with OTP</button>
+                <p class="forgot-link"><a href="{{ url_for('forgot_password_action') }}" id="forgotPasswordLink">Forgot Password?</a></p>
+            </div>
+
+            <div id="otpLogin" style="display: none !important;">
+                <form id="otpRequestForm">
+                    <div class="form-group"><label>Email</label><input type="email" id="otpEmail" required></div>
+                    <button type="submit" class="btn btn-primary btn-block">Send OTP</button>
+                </form>
+
+                <div id="otpVerification" style="display: none !important; margin-top: 15px;">
+                    <div class="form-group"><label>Enter OTP</label><input type="text" id="otpCode" maxlength="6"></div>
+                    <button id="verifyOtpBtn" class="btn btn-primary btn-block">Verify</button>
+                    <p class="timer-text" id="otpTimer"></p>
+                </div>
+
+                <div class="divider"><span>OR</span></div>
+                <button id="backToPassword" class="btn btn-outline btn-block">Back to Password</button>
+            </div>
+
+            <div class="auth-footer"><p>New user? <a href="register.html">Create account</a></p></div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='login.js') }}"></script>
+</body>
+</html>

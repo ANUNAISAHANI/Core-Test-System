@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreTest System - Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>📝 Create Account</h2>
+                <p>Register to start your exam journey</p>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Roll Number</label>
+                    <input type="text" id="rollNumber" placeholder="Enter University Roll Number" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="Enter 10-digit number" required>
+                </div>
+
+                <div class="form-group">
+                 <label>Course & Branch</label>
+                 <select id="courseBranch" required>
+                 <option value="" disabled selected>-- Select Course & Branch --</option>
+                 <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                 <option value="BCA">BCA (Comp. Applications)</option>
+                 <option value="MCA">MCA (Master of Comp. Applications)</option>
+                 <option value="BBA">BBA (Business Administration)</option>
+                 <option value="B.COM">B.Com (Commerce)</option>
+                 <option value="MBA">MBA (Master of Business Admin.)</option>
+                 <option value="BSC.AG">B.Sc (Agriculture)</option>
+                 <option value="M.SC AG">M.Sc (Agriculture)</option>
+                 <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                 <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                 <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                 <option value="M.TECH">M.Tech (Master of Technology)</option>
+                 <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                 <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+                 </select>
+                 </div>
+
+                <div class="form-group">
+                <label>Section</label>
+                <select id="section" required>
+                     <option value="" disabled selected>-- Select Section --</option> 
+                     <option value="Section-A">Section-A</option>
+                     <option value="Section-B">Section-B</option>
+                     <option value="Section-C">Section-C</option>
+                     <option value="None">None (No Section)</option>
+                </select>
+                </div>
+             
+            <div class="form-group" style="margin-bottom: 15px;">
+                   <label style="font-weight: 500; color: #334155; display: block; margin-bottom: 5px;">Current Academic Semester</label>
+                   <select id="regSemester" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;">
+                   <option value="">-- Select Your Semester --</option>
+                   <option value="Semester-1">Semester-1</option>
+                   <option value="Semester-2">Semester-2</option>
+                   <option value="Semester-3">Semester-3</option>
+                   <option value="Semester-4">Semester-4</option>
+                   <option value="Semester-5">Semester-5</option>
+                   <option value="Semester-6">Semester-6</option>
+                   <option value="Semester-7">Semester-7</option>
+                   <option value="Semester-8">Semester-8</option>
+              </select>
+            </div>    
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Create password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+                
+                <input type="hidden" id="role" value="student">
+
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

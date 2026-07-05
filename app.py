@@ -55,7 +55,8 @@ def init_db():
             section VARCHAR(100),            
             semester VARCHAR(50), # 🎯 NEW: Bacha kis semester me hai tracking ke liye           
             avatar LONGTEXT,
-            registeredAt VARCHAR(100)
+            registeredAt VARCHAR(100),
+            teacher_id VARCHAR(100)
         )
     ''')
     
@@ -206,21 +207,40 @@ def api_register():
     finally:
         conn.close()
 
+# 🎯 FIXED LOGIN LOGIC: Cleaned admin bypass and dynamic field selection stream
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.json
+    email_input = data.get('email', '').strip()
+    password_input = data.get('password', '').strip()
+    
+    admin_gmail_env = os.getenv("ADMIN_GMAIL")
+    admin_password_env = os.getenv("ADMIN_PASSWORD")
+    
+    # 1. Check if it matches Env Admin details first
+    if admin_gmail_env and email_input == admin_gmail_env and password_input == admin_password_env:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = %s', (admin_gmail_env,))
+        admin_user = cursor.fetchone()
+        conn.close()
+        if admin_user:
+            session['user_id'] = admin_user['id']
+            session['role'] = 'admin'
+            return jsonify({"success": True, "user": dict(admin_user)})
+
+    # 2. Traditional Dynamic Query mapping fallback for Students and Teachers
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('''
-        SELECT id, fullName, email, phone, role, roll_number, course_branch, section, semester, teacher_id, registeredAt, avatar 
-        FROM users WHERE email = %s AND password = %s
-    ''', (data['email'], data['password']))
+    cursor.execute('SELECT * FROM users WHERE email = %s AND password = %s', (email_input, password_input))
     user = cursor.fetchone()
     conn.close()
+    
     if user:
         session['user_id'] = user['id']
         session['role'] = user['role']
         return jsonify({"success": True, "user": dict(user)})
+        
     return jsonify({"success": False, "message": "Invalid credentials!"}), 401
 
 @app.route('/api/auth/forgot-password-action', methods=['POST'])
@@ -579,7 +599,6 @@ def get_all_users():
         if 'conn' in locals(): conn.close()
         return jsonify({"success": False, "message": str(e)}), 500    
 
-# 🎯 FIXED: Includes 'teacher_id' column inside selection context
 @app.route('/api/users/update', methods=['POST'])
 def update_profile():
     try:
@@ -587,7 +606,6 @@ def update_profile():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Safe mapping taaki admin ya student ka data crash na kare
         t_id = data.get('teacherId') or data.get('teacher_id')
         sem = data.get('semester') or 'Semester-1'
         avatar_data = data.get('avatar')
@@ -607,7 +625,6 @@ def update_profile():
             
         conn.commit()
         
-        # Fresh updated row fetch karenge response ke liye
         cursor.execute('''
             SELECT id, fullName, email, phone, role, roll_number, course_branch, section, semester, teacher_id, registeredAt, avatar 
             FROM users WHERE id = %s

@@ -7,38 +7,77 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header"><h2>🔒 Login</h2><p>Access your exams</p></div>
+    <div class="lamp-login-wrapper">
+        <div class="lamp-scene-container">
+            <div class="lamp-beam-projection"></div>
             
-            <div id="passwordLogin" style="display: block !important;">
-                <form id="loginForm">
-                    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
-                    <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
-                    <button type="submit" class="btn btn-primary btn-block">Login</button>
-                </form>
-                <div class="divider"><span>OR</span></div>
-                <button id="showOtpLogin" class="btn btn-outline btn-block">Login with OTP</button>
-                <p class="forgot-link"><a href="{{ url_for('forgot_password_action') }}" id="forgotPasswordLink">Forgot Password?</a></p>
-            </div>
+            <svg class="interactive-lamp-svg" viewBox="0 0 400 500">
+                <ellipse cx="200" cy="455" rx="105" ry="26" class="lamp-base-shadow" />
+                <path d="M 95,435 L 95,452 A 105,24 0 0 0 305,452 L 305,435 Z" fill="#4b5563" />
+                <ellipse cx="200" cy="452" rx="105" ry="24" fill="#6b7280" />
+                <ellipse cx="200" cy="435" rx="105" ry="24" class="lamp-base-top" />
+                
+                <line class="lamp-main-stem" x1="200" y1="220" x2="200" y2="435" />
+                
+                <g class="lamp-pull-string-group">
+                    <line class="lamp-string-wire" x1="235" y1="220" x2="235" y2="320" />
+                    <circle class="lamp-string-knob" cx="235" cy="320" r="11" />
+                </g>
+                
+                <g class="lamp-shade-group">
+                    <ellipse cx="200" cy="90" rx="55" ry="16" class="lamp-shade-top" />
+                    <path class="lamp-shade-hull" d="M 105,220 C 105,220 105,220 145,90 L 255,90 C 295,220 295,220 295,220 Z" />
+                    <ellipse cx="200" cy="220" rx="95" ry="25" class="lamp-shade-bottom" />
+                </g>
+                
+                <g class="lamp-face-matrix">
+                    <path class="expression-eye-sleep left" d="M 160,165 Q 170,153 180,165" />
+                    <path class="expression-eye-sleep right" d="M 220,165 Q 230,153 240,165" />
+                    
+                    <circle class="expression-eye-awake left" cx="170" cy="162" r="8" />
+                    <circle class="expression-eye-awake right" cx="230" cy="162" r="8" />
+                    
+                    <circle class="expression-blush left" cx="150" cy="178" r="7" />
+                    <circle class="expression-blush right" cx="250" cy="178" r="7" />
+                    <path class="expression-mouth" d="M 192,180 Q 200,190 208,180" />
+                    <path class="expression-tongue" d="M 196,184 Q 200,193 204,184 Z" />
+                </g>
+            </svg>
+        </div>
 
-            <div id="otpLogin" style="display: none !important;">
-                <form id="otpRequestForm">
-                    <div class="form-group"><label>Email</label><input type="email" id="otpEmail" required></div>
-                    <button type="submit" class="btn btn-primary btn-block">Send OTP</button>
-                </form>
-
-                <div id="otpVerification" style="display: none !important; margin-top: 15px;">
-                    <div class="form-group"><label>Enter OTP</label><input type="text" id="otpCode" maxlength="6"></div>
-                    <button id="verifyOtpBtn" class="btn btn-primary btn-block">Verify</button>
-                    <p class="timer-text" id="otpTimer"></p>
+        <div class="lamp-form-pane">
+            <div class="auth-card">
+                <div class="auth-header"><h2>🔒 Login</h2><p>Access your exams</p></div>
+                
+                <div id="passwordLogin" style="display: block !important;">
+                    <form id="loginForm">
+                        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+                    <div class="divider"><span>OR</span></div>
+                    <button id="showOtpLogin" class="btn btn-outline btn-block">Login with OTP</button>
+                    <p class="forgot-link"><a href="{{ url_for('forgot_password_action') }}" id="forgotPasswordLink">Forgot Password?</a></p>
                 </div>
 
-                <div class="divider"><span>OR</span></div>
-                <button id="backToPassword" class="btn btn-outline btn-block">Back to Password</button>
-            </div>
+                <div id="otpLogin" style="display: none !important;">
+                    <form id="otpRequestForm">
+                        <div class="form-group"><label>Email</label><input type="email" id="otpEmail" required></div>
+                        <button type="submit" class="btn btn-primary btn-block">Send OTP</button>
+                    </form>
 
-            <div class="auth-footer"><p>New user? <a href="register.html">Create account</a></p></div>
+                    <div id="otpVerification" style="display: none !important; margin-top: 15px;">
+                        <div class="form-group"><label>Enter OTP</label><input type="text" id="otpCode" maxlength="6"></div>
+                        <button id="verifyOtpBtn" class="btn btn-primary btn-block">Verify</button>
+                        <p class="timer-text" id="otpTimer"></p>
+                    </div>
+
+                    <div class="divider"><span>OR</span></div>
+                    <button id="backToPassword" class="btn btn-outline btn-block">Back to Password</button>
+                </div>
+
+                <div class="auth-footer"><p>New user? <a href="register.html">Create account</a></p></div>
+            </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='login.js') }}"></script>

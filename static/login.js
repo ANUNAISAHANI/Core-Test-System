@@ -3,6 +3,48 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🔗 Database Login Stream Active and Monitoring Inputs.");
     
+    // ==================== LAMP ANIMATION INTEGRATED LOGIC ====================
+    const rootWrapper = document.querySelector('.lamp-login-wrapper');
+    const switchKnob = document.querySelector('.lamp-string-knob');
+
+    function executeLightOn() {
+        if (rootWrapper && !rootWrapper.classList.contains('lamp-active-glow')) {
+            rootWrapper.classList.add('lamp-active-glow');
+        }
+    }
+
+    function executeLightOff() {
+        if (rootWrapper && rootWrapper.classList.contains('lamp-active-glow')) {
+            rootWrapper.classList.remove('lamp-active-glow');
+        }
+    }
+
+    if (switchKnob) {
+        switchKnob.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (rootWrapper.classList.contains('lamp-active-glow')) {
+                executeLightOff();
+            } else {
+                executeLightOn();
+            }
+            
+            // Linear chain pull bounce mechanics
+            switchKnob.style.transform = 'translateY(24px)';
+            setTimeout(() => {
+                switchKnob.style.transform = 'translateY(0px)';
+            }, 130);
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        if (rootWrapper && rootWrapper.classList.contains('lamp-active-glow') && 
+            !e.target.closest('.auth-card') && 
+            !e.target.closest('.lamp-pull-string-group')) {
+            executeLightOff();
+        }
+    });
+    // ==========================================================================
+
     // ==================== 1. PASSWORD LOGIN SUBMIT ====================
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -19,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 password: password
             };
             
-            // Dispatch request payload to real python sqlite api channel
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -35,11 +76,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(responseData => {
                 if (responseData.success) {
-                    // Synchronizing global application identity token inside runtime state
                     localStorage.setItem('currentUser', JSON.stringify(responseData.user));
                     alert(`🎉 Login Successful! Welcome back, ${responseData.user.fullName}.`);
                     
-                    // ==================== ROLE BASED SMART ROUTING HUB ====================
                     const urlParams = new URLSearchParams(window.location.search);
                     const nextRoute = urlParams.get('next');
 
@@ -48,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (responseData.user.role === 'teacher') {
                         window.location.href = 'teacher.html'; 
                     } else {
-                        // 🚀 AGAR STUDENT HAI TOH SMART REDIRECTION CHALEGA
                         if (nextRoute === 'secure-exams') {
                             window.location.href = 'dashboard.html';
                         } else if (nextRoute === 'timed-tests') {
@@ -59,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             window.location.href = 'dashboard.html'; 
                         }
                     }
-                    // ======================================================================
                 }
             })
             .catch(err => {
@@ -67,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert("❌ Login Failed: Check if your Email/Password is correct, or make sure your server is running.");
             });
         });
-    } // <-- loginForm block yahan sahi se band hua h
+    }
 
     // ==================== 2. OTP REQUEST SUBMIT (WITH UX PROTECTION) ====================
     const otpRequestForm = document.getElementById('otpRequestForm');
@@ -75,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
         otpRequestForm.addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            // 1. "Send OTP" button ko dhoondkar disable aur text change karenge
             const sendOtpBtn = otpRequestForm.querySelector('button[type="submit"]');
             const originalText = sendOtpBtn.innerText;
             
@@ -95,13 +131,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     alert("OTP Sent Successfully!");
-                    
-                    // Request form ko hide karke seedhe verification box kholenge
                     otpRequestForm.style.display = 'none';
                     document.getElementById('otpVerification').style.display = 'block';
                 } else {
                     alert("Error: " + data.message);
-                    // Agar backend se error aaya, toh button wapas pehle jaisa karo
                     sendOtpBtn.disabled = false;
                     sendOtpBtn.innerText = originalText;
                 }
@@ -109,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error:', error);
                 alert("Kuch dikkat aa gayi hai bhai!");
-                // Agar network crash hua, toh button restore karo
                 sendOtpBtn.disabled = false;
                 sendOtpBtn.innerText = originalText;
             });
@@ -137,93 +169,88 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 // ==================== 4. OTP VERIFICATION SUBMIT ====================
-    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-    if (verifyOtpBtn) {
-        verifyOtpBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // Default behavior rokega
-            
-            const email = document.getElementById('otpEmail').value.trim();
-            const otpCode = document.getElementById('otpCode').value.trim();
-            
-            if (!otpCode) {
-                alert("Bhai pehle OTP toh daalo!");
-                return;
+const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+if (verifyOtpBtn) {
+    verifyOtpBtn.addEventListener('click', function(e) {
+        e.preventDefault(); 
+        
+        const email = document.getElementById('otpEmail').value.trim();
+        const otpCode = document.getElementById('otpCode').value.trim();
+        
+        if (!otpCode) {
+            alert("Bhai pehle OTP toh daalo!");
+            return;
+        }
+        
+        console.log("🔐 Submitting OTP token validation request for:", email);
+        
+        fetch('/api/auth/verify-otp-login', { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email, otp: otpCode })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                alert(`🎉 OTP Verified! Welcome back, ${data.user.fullName}.`);
+                window.location.href = 'dashboard.html'; 
+            } else {
+                alert("❌ Invalid OTP: Sahi se check karke daalo bhai.");
             }
-            
-            console.log("🔐 Submitting OTP token validation request for:", email);
-            
-            // AAPKE PYTHON ROUTE KE MUTABIK EXACT URL ROADMAPPING
-            fetch('/api/auth/verify-otp-login', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: email, otp: otpCode })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    localStorage.setItem('currentUser', JSON.stringify(data.user));
-                    alert(`🎉 OTP Verified! Welcome back, ${data.user.fullName}.`);
-                    window.location.href = 'dashboard.html'; // Direct dashboard par entry!
-                } else {
-                    alert("❌ Invalid OTP: Sahi se check karke daalo bhai.");
-                }
-            })
-            .catch(err => {
-                console.error("🚨 OTP Verification Error:", err);
-                alert("Kuch dikkat aa gayi verification me!");
-            });
+        })
+        .catch(err => {
+            console.error("🚨 OTP Verification Error:", err);
+            alert("Kuch dikkat aa gayi verification me!");
         });
-    }
-
+    });
+}
 
 // ==================== 5. FORGOT PASSWORD ACTION (UX PROTECTED) ====================
-    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-    if (forgotPasswordForm) {
-        forgotPasswordForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Sabse pehle value ko secure variable me read karo
-            const emailInput = document.getElementById('resetEmail');
-            if (!emailInput) {
-                alert("Email input field nahi mila bhai!");
-                return;
-            }
-            const email = emailInput.value.trim();
-            
-            const resetSubmitBtn = document.getElementById('resetSubmitBtn');
-            const originalText = resetSubmitBtn.innerText;
-            
-            // UX Protection: Button block karenge taaki baar-baar click na ho
-            resetSubmitBtn.disabled = true;
-            resetSubmitBtn.innerText = "Checking Database... ⏳";
-            
-            fetch('/api/auth/forgot-password-action', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("🎉 Password Sent! Please check your registered Gmail inbox.");
-                    window.location.href = '/forgot-password';
-                } else {
-                    alert("❌ Error: " + data.message);
-                    resetSubmitBtn.disabled = false;
-                    resetSubmitBtn.innerText = originalText;
-                }
-            })
-            .catch(err => {
-                console.error("🚨 Forgot Password Error:", err);
-                alert("Kuch dikkat aa gayi bhai network me!");
+const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+if (forgotPasswordForm) {
+    forgotPasswordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('resetEmail');
+        if (!emailInput) {
+            alert("Email input field nahi mila bhai!");
+            return;
+        }
+        const email = emailInput.value.trim();
+        
+        const resetSubmitBtn = document.getElementById('resetSubmitBtn');
+        const originalText = resetSubmitBtn.innerText;
+        
+        resetSubmitBtn.disabled = true;
+        resetSubmitBtn.innerText = "Checking Database... ⏳";
+        
+        fetch('/api/auth/forgot-password-action', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("🎉 Password Sent! Please check your registered Gmail inbox.");
+                window.location.href = '/forgot-password';
+            } else {
+                alert("❌ Error: " + data.message);
                 resetSubmitBtn.disabled = false;
                 resetSubmitBtn.innerText = originalText;
-            });
+            }
+        })
+        .catch(err => {
+            console.error("🚨 Forgot Password Error:", err);
+            alert("Kuch dikkat aa gayi bhai network me!");
+            resetSubmitBtn.disabled = false;
+            resetSubmitBtn.innerText = originalText;
         });
-    }
+    });
+}

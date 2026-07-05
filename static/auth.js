@@ -1,13 +1,56 @@
-// auth.js - Database Dynamic Connected Identity Controller
-
 document.addEventListener('DOMContentLoaded', function() {
-    const registerForm = document.getElementById('registerForm');
     
+    const authCard = document.getElementById('mainRegisterCard');
+    if (authCard) {
+        setTimeout(() => {
+            authCard.classList.add('reveal-active');
+        }, 300);
+    }
+
+    /* ==========================================================================
+       SMOOTH MULTI-ELEMENT IRIS TRACKING SYSTEM
+       ========================================================================== */
+    const bgEyeContainers = document.querySelectorAll('.bg-eye-container');
+    const bgIrisGroups = document.querySelectorAll('.iris-movement-group');
+    const normalInputs = document.querySelectorAll('#registerForm input:not([type="password"]), #registerForm select');
+    const secureInputs = document.querySelectorAll('input[type="password"]');
+
+    normalInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            let length = e.target.value.length || 0;
+            // Precise horizontal coordinate shift calculation
+            let xOffset = Math.min(35, Math.max(-35, (length - 12) * 2.5));
+            bgIrisGroups.forEach(group => {
+                group.style.transform = `translateX(${xOffset}px)`;
+            });
+        });
+        
+        input.addEventListener('focus', () => {
+            bgEyeContainers.forEach(container => container.classList.remove('close-action'));
+        });
+    });
+
+    secureInputs.forEach(pwd => {
+        pwd.addEventListener('focus', () => {
+            bgEyeContainers.forEach(container => container.classList.add('close-action'));
+        });
+        pwd.addEventListener('blur', () => {
+            bgEyeContainers.forEach(container => container.classList.remove('close-action'));
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#registerForm')) {
+            bgIrisGroups.forEach(group => group.style.transform = 'translateX(0px)');
+        }
+    });
+
+    // Existing Form Registration Request API Pipeline Handler
+    const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // 1. Extracting values from updated form input tags elements
             const fullName = document.getElementById('fullName').value.trim();
             const rollNumber = document.getElementById('rollNumber').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -17,11 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const role = document.getElementById('role').value || 'student';
-            
-            // 🎯 FIXED: Dropdown value extracted safely from html element
             const semester = document.getElementById('regSemester') ? document.getElementById('regSemester').value : 'Semester-1';
             
-            // 2. Strict Input Client-Side Validations
             if (password !== confirmPassword) {
                 alert('❌ Error: Passwords do not match!');
                 return;
@@ -35,41 +75,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // 3. Bundling structural network payload packet configuration maps
             const signupPayload = {
-                fullName: fullName,
-                rollNumber: rollNumber,
-                email: email,
-                phone: phone,
-                courseBranch: courseBranch,
-                section: section,
-                password: password,
-                role: role,
-                semester: semester // 🎯 FIXED: Linked perfectly to register payload block
+                fullName: fullName, rollNumber: rollNumber, email: email, phone: phone,
+                courseBranch: courseBranch, section: section, password: password, role: role, semester: semester
             };
             
-            console.log("🚀 Sending registration token stream data pack to python server...", signupPayload);
-            
-            // 4. Dispatching dynamic AJAX request packet directly inside SQLite nodes
             fetch('/api/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(signupPayload)
             })
             .then(res => res.json())
             .then(responseData => {
                 if (responseData.success) {
-                    alert('🎉 Registration Successful! Accounts entries permanently locked. Redirecting to sign-in page...');
+                    alert('🎉 Registration Successful! Redirecting to sign-in page...');
                     window.location.href = 'login.html';
                 } else {
                     alert('❌ Registration Failed: ' + responseData.message);
                 }
             })
             .catch(err => {
-                console.error("🚨 Network Exception caught processing dynamic signup flow:", err);
-                alert("❌ Server Connection Error: Check if your python application backend port is running properly.");
+                alert("❌ Server Connection Error: Check if backend is running.");
             });
         });
     }

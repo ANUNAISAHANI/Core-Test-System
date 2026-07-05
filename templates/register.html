@@ -7,8 +7,63 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="bg-eyes-wrapper">
+        <div class="bg-eye-container left">
+            <svg class="eye-svg" viewBox="0 0 450 200">
+                <defs>
+                    <radialGradient id="leftIrisGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" class="core-white" stop-color="#ffffff" />
+                        <stop offset="15%" class="core-highlight" stop-color="#ffffff" />
+                        <stop offset="55%" class="neon-main" stop-color="#d63031" />
+                        <stop offset="85%" class="neon-dark" stop-color="#1e0505" />
+                        <stop offset="100%" stop-color="#000000" />
+                    </radialGradient>
+                    <clipPath id="leftClip">
+                        <path d="M 20,100 C 90,25 240,15 430,100 C 330,175 120,175 20,100 Z" />
+                    </clipPath>
+                </defs>
+                <path class="eye-bg-shadow" d="M 20,100 C 90,25 240,15 430,100 C 330,175 120,175 20,100 Z" />
+                
+                <g clip-path="url(#leftClip)">
+                    <g class="iris-movement-group">
+                        <circle cx="230" cy="100" r="80" fill="url(#leftIrisGlow)" />
+                        <circle cx="230" cy="100" r="22" fill="#000000" />
+                        <circle cx="218" cy="88" r="6" fill="#ffffff" opacity="0.85" />
+                    </g>
+                </g>
+                <path class="eye-lid" d="M 20,100 C 90,25 240,15 430,100 C 330,175 120,175 20,100 Z" />
+            </svg>
+        </div>
+        
+        <div class="bg-eye-container right">
+            <svg class="eye-svg" viewBox="160 50 430 10">
+                <defs>
+                    <radialGradient id="rightIrisGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" class="core-white" stop-color="#ffffff" />
+                        <stop offset="15%" class="core-highlight" stop-color="#ffffff" />
+                        <stop offset="55%" class="neon-main" stop-color="#d63031" />
+                        <stop offset="85%" class="neon-dark" stop-color="#1e0505" />
+                        <stop offset="100%" stop-color="#000000" />
+                    </radialGradient>
+                    <clipPath id="rightClip">
+                        <path d="M 20,100 C 90,25 240,15 430,100 C 330,175 120,175 20,100 Z" />
+                    </clipPath>
+                </defs>
+                <path class="eye-bg-shadow" d="M 20,100 C 90,25 240,15 430,100 C 330,175 120,175 20,100 Z" />
+                <g clip-path="url(#rightClip)">
+                    <g class="iris-movement-group">
+                        <circle cx="220" cy="100" r="80" fill="url(#rightIrisGlow)" />
+                        <circle cx="220" cy="100" r="22" fill="#000000" />
+                        <circle cx="208" cy="88" r="6" fill="#ffffff" opacity="0.85" />
+                    </g>
+                </g>
+                <path class="eye-lid" d="M 20,100 C 90,25 240,15 430,100 C 330,175 120,175 20,100 Z" />
+            </svg>
+        </div>
+    </div>
+
     <div class="auth-container">
-        <div class="auth-card">
+        <div class="auth-card" id="mainRegisterCard">
             <div class="auth-header">
                 <h2>📝 Create Account</h2>
                 <p>Register to start your exam journey</p>
@@ -34,54 +89,8 @@
                     <input type="tel" id="phone" placeholder="Enter 10-digit number" required>
                 </div>
 
-                <div class="form-group">
-                 <label>Course & Branch</label>
-                 <select id="courseBranch" required>
-                 <option value="" disabled selected>-- Select Course & Branch --</option>
-                 <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
-                 <option value="BCA">BCA (Comp. Applications)</option>
-                 <option value="MCA">MCA (Master of Comp. Applications)</option>
-                 <option value="BBA">BBA (Business Administration)</option>
-                 <option value="B.COM">B.Com (Commerce)</option>
-                 <option value="MBA">MBA (Master of Business Admin.)</option>
-                 <option value="BSC.AG">B.Sc (Agriculture)</option>
-                 <option value="M.SC AG">M.Sc (Agriculture)</option>
-                 <option value="B.PHARM">B.Pharm (Pharmacy)</option>
-                 <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
-                 <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
-                 <option value="M.TECH">M.Tech (Master of Technology)</option>
-                 <option value="B.SC NURSING">B.Sc (Nursing)</option>
-                 <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
-                 </select>
-                 </div>
 
-                <div class="form-group">
-                <label>Section</label>
-                <select id="section" required>
-                     <option value="" disabled selected>-- Select Section --</option> 
-                     <option value="Section-A">Section-A</option>
-                     <option value="Section-B">Section-B</option>
-                     <option value="Section-C">Section-C</option>
-                     <option value="None">None (No Section)</option>
-                </select>
-                </div>
-             
-            <div class="form-group" style="margin-bottom: 15px;">
-                   <label style="font-weight: 500; color: #334155; display: block; margin-bottom: 5px;">Current Academic Semester</label>
-                   <select id="regSemester" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;">
-                   <option value="">-- Select Your Semester --</option>
-                   <option value="Semester-1">Semester-1</option>
-                   <option value="Semester-2">Semester-2</option>
-                   <option value="Semester-3">Semester-3</option>
-                   <option value="Semester-4">Semester-4</option>
-                   <option value="Semester-5">Semester-5</option>
-                   <option value="Semester-6">Semester-6</option>
-                   <option value="Semester-7">Semester-7</option>
-                   <option value="Semester-8">Semester-8</option>
-              </select>
-            </div>    
-
-                <div class="form-group">
+             <div class="form-group">
                     <label>Password</label>
                     <input type="password" id="password" placeholder="Create password" required>
                 </div>
@@ -90,6 +99,55 @@
                     <label>Confirm Password</label>
                     <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
                 </div>
+                
+
+
+                <div class="form-group">
+                     <label>Course & Branch</label>
+                     <select id="courseBranch" required>
+                         <option value="" disabled selected>-- Select Course & Branch --</option>
+                         <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+                         <option value="BCA">BCA (Comp. Applications)</option>
+                         <option value="MCA">MCA (Master of Comp. Applications)</option>
+                         <option value="BBA">BBA (Business Administration)</option>
+                         <option value="B.COM">B.Com (Commerce)</option>
+                         <option value="MBA">MBA (Master of Business Admin.)</option>
+                         <option value="BSC.AG">B.Sc (Agriculture)</option>
+                         <option value="M.SC AG">M.Sc (Agriculture)</option>
+                         <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+                         <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+                         <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+                         <option value="M.TECH">M.Tech (Master of Technology)</option>
+                         <option value="B.SC NURSING">B.Sc (Nursing)</option>
+                         <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+                     </select>
+                 </div>
+
+                <div class="form-group">
+                    <label>Section</label>
+                    <select id="section" required>
+                         <option value="" disabled selected>-- Select Section --</option> 
+                         <option value="Section-A">Section-A</option>
+                         <option value="Section-B">Section-B</option>
+                         <option value="Section-C">Section-C</option>
+                         <option value="None">None (No Section)</option>
+                    </select>
+                </div>
+             
+                <div class="form-group" style="margin-bottom: 15px;">
+                       <label style="font-weight: 500; color: #334155; display: block; margin-bottom: 5px;">Current Academic Semester</label>
+                       <select id="regSemester" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;">
+                       <option value="">-- Select Your Semester --</option>
+                       <option value="Semester-1">Semester-1</option>
+                       <option value="Semester-2">Semester-2</option>
+                       <option value="Semester-3">Semester-3</option>
+                       <option value="Semester-4">Semester-4</option>
+                       <option value="Semester-5">Semester-5</option>
+                       <option value="Semester-6">Semester-6</option>
+                       <option value="Semester-7">Semester-7</option>
+                       <option value="Semester-8">Semester-8</option>
+                  </select>
+                </div>    
                 
                 <input type="hidden" id="role" value="student">
 
@@ -100,6 +158,7 @@
             </div>
         </div>
     </div>
+    
     <script src="{{ url_for('static', filename='auth.js') }}"></script>
 </body>
 </html>

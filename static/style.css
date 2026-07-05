@@ -328,7 +328,9 @@ body {
 .remember-label input { width: auto !important; margin: 0; }
 .lamp-forgot-anchor { color: #a8ff78; text-decoration: none; font-size: 1rem; }
 .lamp-form-pane .divider span { background: #181c20 !important; }
-
+.auth-footer{
+    color: #27ae60;
+}
 
 /* ==========================================================================
    DASHBOARD INTRO ANIMATION (APPEND THIS AT THE VERY END OF YOUR CSS)

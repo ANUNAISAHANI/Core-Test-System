@@ -13,13 +13,13 @@ import random
 app = Flask(__name__)
 app.secret_key = "sahani_coretest_secure_key_99"
 
-# ==================== 📧 GMAIL SMTP CONFIGURATION ====================
+# ======================== GMAIL SMTP CONFIGURATION ========================
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'sahanianunay@gmail.com'  
-app.config['MAIL_PASSWORD'] = 'zpub blzj uxdv tapl'     
-app.config['MAIL_DEFAULT_SENDER'] = ('CoreTest Portal', 'sahanianunay@gmail.com')
+app.config['MAIL_USERNAME'] = os.getenv('ADMIN_GMAIL')
+app.config['MAIL_PASSWORD'] = os.getenv('ADMIN_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = ('CoreTest Portal', os.getenv('ADMIN_GMAIL'))
 
 mail = Mail(app)
 

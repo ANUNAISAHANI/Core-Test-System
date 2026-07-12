@@ -256,14 +256,50 @@ if (!currentUser || !currentExam) {
             body: JSON.stringify(resultPayload)
         })
         .then(res => res.json())
+        // --- exam.js mein processExamEvaluationPipeline ke andar ka fetch block ---
         .then(data => {
             if (data.success) {
                 localStorage.removeItem('currentExam');
-                alert(`🎉 Exam Submitted Successfully!\nYour Score: ${finalPercentage.toFixed(2)}%`);
-                window.location.href = 'dashboard.html';
+                
+                const overlay = document.getElementById('resultAnimationOverlay');
+                overlay.style.display = 'flex';
+                
+                // 1. Emoji set karo
+                let emojiChar = finalPercentage < 40 ? '😂' : (finalPercentage < 80 ? '😊' : '🤩');
+                const spans = document.querySelectorAll('#emojiContainer span');
+                spans.forEach(s => s.innerText = emojiChar);
+                
+                // 2. English Feedback Messages (Update)
+                let feedbackText = "";
+                if (finalPercentage < 40) {
+                    feedbackText = "You got poor marks, no worries! Work hard and perform better next time to get good marks.";
+                } else if (finalPercentage < 80) {
+                    feedbackText = "You got good marks! Keep practicing, you can achieve even better marks next time.";
+                } else {
+                    feedbackText = "You got excellent marks! Keep up the hard work and maintain this performance to get such marks again.";
+                }
+                
+                // Feedback message ka colour aur visibility thik karne ke liye
+               document.getElementById('resultMsg').innerHTML = `
+               <div style="color: #ffffff; font-size: 1.2rem; margin-bottom: 5px;">Final Score: ${finalPercentage.toFixed(2)}%</div>
+               <div style="color: #e2e8f0; font-size: 0.95rem; font-weight: 500; line-height: 1.4; padding: 0 20px;">${feedbackText}</div>`;
+
+                // 3. Animation: Fly wala logic hat gaya, sirf rotate aur disappear
+                document.getElementById('goToDashboardBtn').onclick = () => {
+                    const btn = document.getElementById('goToDashboardBtn');
+                    const container = document.getElementById('emojiContainer');
+                    
+                    btn.style.display = 'none';
+                    // Sirf rotateAndDisappear call hoga
+                    container.classList.add('animation-sequence'); 
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                };
             } else {
                 alert("❌ Critical Server Error saving results entry!");
-                isSubmitting = false; // Reset flag on failure
+                isSubmitting = false;
             }
         })
         .catch(err => {

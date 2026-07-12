@@ -223,29 +223,48 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================================================
-//   DASHBOARD INTRO ANIMATION LOGIC (PASTE AT THE VERY END OF dashboard.js)
+// DASHBOARD INTRO ANIMATION LOGIC (UPDATED WITH PERSISTENCE)
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const barrier = document.getElementById('clickBarrier');
     const blackScreen = document.getElementById('blackScreen');
     const emojiChar = document.getElementById('emojiChar');
-    const mainEmoji = document.getElementById('mainEmoji');
-    const leftWing = document.getElementById('leftWing');
-    const dashboardApp = document.getElementById('mainDashboardApp'); 
+    const dashboardApp = document.getElementById('mainDashboardApp');
 
+    // 1. Animation check: Kya user pehle login kar chuka hai?
+    if (localStorage.getItem('hasSeenAnimation') === 'true') {
+        if (barrier) barrier.style.display = 'none';
+        if (blackScreen) blackScreen.style.display = 'none';
+        if (emojiChar) emojiChar.style.display = 'none';
+        if (dashboardApp) {
+            dashboardApp.classList.remove('hidden-initially');
+            dashboardApp.classList.add('showAnim');
+        }
+    } else {
+        // 2. Pehli baar: Animation logic
+        if (barrier) {
+            barrier.addEventListener('click', () => {
+                localStorage.setItem('hasSeenAnimation', 'true'); // Flag set
+                initAudio();
+                barrier.style.opacity = '0';
+                setTimeout(() => {
+                    barrier.style.display = 'none';
+                    startIntroAnimation();
+                }, 500);
+            });
+        }
+    }
+
+    // --- Saare functions jo pehle se the ---
     let audioCtx = null;
     function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     function playTunSound() {
         try {
-            initAudio(); 
+            initAudio();
             const makeNote = (freq, startTime, duration, gain = 0.6) => {
                 const osc = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
@@ -260,27 +279,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 osc.stop(startTime + duration);
             };
             const now = audioCtx.currentTime;
-            makeNote(659.25, now, 0.4, 0.8);  
-            makeNote(1046.50, now + 0.05, 0.6, 0.5); 
-        } catch(e) {
-            console.log("Audio Error:", e);
-        }
+            makeNote(659.25, now, 0.4, 0.8);
+            makeNote(1046.50, now + 0.05, 0.6, 0.5);
+        } catch(e) { console.log("Audio Error:", e); }
     }
 
     function startIntroAnimation() {
+        // ... (Tumhara pura wahi startIntroAnimation ka logic jo tumne diya tha)
+        // Main ye code wahi hai, sirf bracket structure sahi kar diya hai
         emojiChar.style.opacity = '1';
         emojiChar.classList.add('flapping');
         emojiChar.style.animation = 'cinematicEnter 3.2s cubic-bezier(0.25, 1, 0.5, 1) forwards';
 
         setTimeout(() => {
-            // FIX: Animation badalte waqt base position (top/left) ab lose nahi hoga
             emojiChar.style.animation = 'hoverFloat 2s infinite ease-in-out';
-            
+            const mainEmoji = document.getElementById('mainEmoji');
             mainEmoji.innerText = '😉'; 
             mainEmoji.style.transform = 'scaleX(-1)'; 
-
             playTunSound();
-
             blackScreen.classList.add('fadeOut');
             if(dashboardApp) {
                 dashboardApp.classList.remove('hidden-initially');
@@ -289,41 +305,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3200); 
 
         setTimeout(() => {
+            const mainEmoji = document.getElementById('mainEmoji');
+            const leftWing = document.getElementById('leftWing');
             mainEmoji.innerText = '🙂';
             mainEmoji.style.transform = 'scaleX(1)'; 
-
             leftWing.style.animation = 'none'; 
             const waveAnim = leftWing.animate([
                 { transform: 'scaleX(-1) rotate(0deg) translateY(4px)' },
                 { transform: 'scaleX(-1) rotate(45deg) translateY(-15px)' },
                 { transform: 'scaleX(-1) rotate(0deg) translateY(4px)' }
-            ], {
-                duration: 300,
-                iterations: 3, 
-                easing: 'ease-in-out'
-            });
+            ], { duration: 300, iterations: 3, easing: 'ease-in-out' });
 
             waveAnim.onfinish = () => {
                 leftWing.style.animation = 'flapLeft 0.4s ease-in-out infinite'; 
-                
                 emojiChar.style.animation = 'flyLeftExit 1.5s ease-in forwards';
-                
                 setTimeout(() => {
                     emojiChar.style.display = 'none';
                     blackScreen.style.display = 'none';
                 }, 1500);
             };
         }, 4600);
-    }
-
-    if(barrier) {
-        barrier.addEventListener('click', () => {
-            initAudio(); 
-            barrier.style.opacity = '0';
-            setTimeout(() => {
-                barrier.style.display = 'none';
-                startIntroAnimation(); 
-            }, 500); 
-        });
     }
 });

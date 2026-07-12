@@ -329,7 +329,19 @@ body {
 .lamp-forgot-anchor { color: #a8ff78; text-decoration: none; font-size: 1rem; }
 .lamp-form-pane .divider span { background: #181c20 !important; }
 .auth-footer{
-    color: #27ae60;
+    color: red;
+}
+#forgotPasswordLink{
+    color: #00a8ff;
+}
+#forgotPasswordLink:hover{
+    color: red;
+}
+#auth-footer{
+    color:#00a8ff;
+}
+#auth-footer:hover{
+    color: red;
 }
 
 /* ==========================================================================
@@ -407,4 +419,41 @@ body {
     60%  { opacity: 0.85; transform: scale(0.97); filter: blur(3px); }
     80%  { opacity: 1; transform: scale(1.02); filter: blur(1px); }
     100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+}
+
+
+
+
+/* Animation classes for the result overlay */
+.morph-rotate { animation: morphRotate 1.5s ease-in-out forwards; }
+@keyframes morphRotate {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(720deg) scale(0.5); opacity: 0.5; }
+}
+/* Emojis ghoomte hue gayab honge aur turant fly-away shuru karenge */
+.animation-sequence {
+    animation: rotateAndDisappear 1.5s forwards ease-in-out;
+}
+
+@keyframes rotateAndDisappear {
+    0% { transform: rotate(0deg) scale(1); opacity: 1; }
+    50% { transform: rotate(720deg) scale(0.5); opacity: 1; }
+    100% { transform: rotate(720deg) scale(0); opacity: 0; } /* Yahan gayab ho jayega */
+}
+
+.fly-away { animation: flyAway 1s forwards ease-out; }
+@keyframes flyAway {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-300px) scale(1.5); opacity: 0; } /* Fly concept */
+}
+
+
+/* Emojis ko halka shake/float effect dene ke liye */
+#emojiContainer span {
+    animation: floatingEmoji 2s ease-in-out infinite;
+}
+
+@keyframes floatingEmoji {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
 }

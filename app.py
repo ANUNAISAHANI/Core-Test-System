@@ -453,18 +453,15 @@ def api_results():
             conn.close()
             return jsonify({})
             
-        # 2. Student Dashboard ya Teacher Panel (Dono ke liye safe logic)
+        # 2. Student Dashboard ya Teacher Panel
         else:
             if user_id:
-                # Agar student dashboard hai toh sirf uske results
                 cursor.execute('SELECT * FROM results WHERE userId = %s ORDER BY id ASC', (user_id,))
             else:
-                # Agar teacher/admin ledger hai toh saare results purane se naye ke order mein fetch karo calculation ke liye
                 cursor.execute('SELECT * FROM results ORDER BY id ASC')
                 
             all_results = cursor.fetchall()
             
-            # Master tracker: user_id aur subject ke hisab se count rakhne ke liye
             tracker = {}
             formatted_results = []
             
@@ -486,8 +483,13 @@ def api_results():
                 db_remarks = row.get('remarks', '') or ''
                 if db_remarks and " | Log Timestamp: " in db_remarks:
                     parts = db_remarks.split(" | Log Timestamp: ")
+                    
+                    # 🎯 FIX #1: Dashboard loop me bhi 'reason' variable map kar diya!
+                    row['reason'] = parts[0] 
                     display_date = parts[1]
                 else:
+                    # 🎯 FIX #2: Agar timestamp na ho, toh jo text hai wahi reason banega
+                    row['reason'] = db_remarks or "Normal Termination Submission"
                     display_date = "Date Not Found"
                 
                 row['submittedAt'] = display_date
@@ -500,7 +502,8 @@ def api_results():
         
     elif request.method == 'POST':
         data = request.json
-        exam_remarks = data.get('reason', 'Normal Submission')
+        # 🎯 FIX #3: Frontend se aane wali 'reason' key ko clean capture karna
+        exam_remarks = data.get('reason', 'Normal Termination Submission')
         current_time_str = datetime.now().strftime('%d/%m/%Y, %I:%M:%S %p')
         final_remarks = f"{exam_remarks} | Log Timestamp: {current_time_str}"
 
@@ -557,30 +560,44 @@ def get_result_detail(result_id):
             map_int_to_char = {0: 'A', 1: 'B', 2: 'C', 3: 'D'}
             db_correct_char = map_int_to_char.get(row['correct'], 'A')
             
-            if selected_val is None: selected_val = 'A'
-            elif isinstance(selected_val, int): selected_val = map_int_to_char.get(selected_val, 'A')
-            else: selected_val = str(selected_val).strip().upper()
+            # 🎯 FIX #1: Agar student ne answer nahi kiya (None) toh use 'NONE' rakhenge, 'A' nahi banayenge!
+            if selected_val is None: 
+                selected_val = 'NONE'
+            elif isinstance(selected_val, int): 
+                selected_val = map_int_to_char.get(selected_val, 'A')
+            else: 
+                selected_val = str(selected_val).strip().upper()
 
             questions_list.append({
                 'id': row['id'], 'questionText': row['text'], 'selectedOption': selected_val, 'correctOption': db_correct_char,
                 'options': {'A': row['optionA'], 'B': row['optionB'], 'C': row['optionC'], 'D': row['optionD']}
             })
             
+        # 🎯 FIX #2: Remarks split karke system text dynamic extract karna
         db_remarks = result_data.get('remarks', '') or ''
         display_date = "Date Not Found"
-        if db_remarks and " | Log Timestamp: " in db_remarks:
-            parts = db_remarks.split(" | Log Timestamp: ")
-            display_date = parts[1]
+        clean_reason = "System Normal Termination"
+        
+        if db_remarks:
+            if " | Log Timestamp: " in db_remarks:
+                parts = db_remarks.split(" | Log Timestamp: ")
+                clean_reason = parts[0] # Extract text (e.g. 🚨 Cheating Detected)
+                display_date = parts[1] # Extract date string
+            else:
+                clean_reason = db_remarks
+                display_date = "Date Not Found"
             
         conn.close()
         
+        # 🎯 FIX #3: Response Object me 'reason' key ko parse karke map kiya
         return jsonify({
             'success': True, 
             'subject': result_data['examSubject'], 
             'studentName': result_data['fullName'], 
             'percentage': float(result_data['percentage'] or 0), 
             'questions': questions_list,
-            'submittedAt': display_date
+            'submittedAt': display_date,
+            'reason': clean_reason # 👈 Ye key ab direct result-details.js ko mil jayegi
         })
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500

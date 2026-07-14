@@ -226,8 +226,19 @@ if (!currentUser || !currentExam) {
             }
         });
 
+       // Line 229: Percentage calculation
         const finalPercentage = (correctAnswersCount / liveQuestionsList.length) * 100;
 
+        // 🌟 REASON STRING LOGIC REPAIR (Naya safe logic)
+        let finalReasonStatus = "Normal Termination Submission"; 
+
+        if (submissionReason === "TIMEOUT_AUTO_SUBMIT") {
+            finalReasonStatus = "⌛ Timeout Auto-Submission";
+        } else if (submissionReason !== "USER_MANUAL_SUBMIT") {
+            finalReasonStatus = `🚨 Cheating Detected: ${submissionReason}`;
+        }
+
+        // Line 231 ka purana payload ab aise modify hoga:
         const resultPayload = {
             userId: currentUser.id,
             userName: currentUser.fullName,
@@ -237,17 +248,14 @@ if (!currentUser || !currentExam) {
             examSubject: currentExam.subject,
             totalQuestions: liveQuestionsList.length,
             attemptedQuestions: attemptedCount,
-            correctAnswers: correctAnswersCount, // 🎯 Dono format secure kar diye
-            score: correctAnswersCount,          // 🎯 Agar backend 'score' dhoondhe toh bhi mile
+            correctAnswers: correctAnswersCount, 
+            score: correctAnswersCount,          
             percentage: finalPercentage.toFixed(2),
             submittedAt: new Date().toISOString(),
             userAnswers: JSON.stringify(userSelectedAnswers),
-            
-           // 🎯 FIX: Brackets hata kar saaf clean comma-separated IDs string backend ko bhejenge
-           questionsOrder: liveQuestionsList.map(q => q.id).join(','),
-
+            questionsOrder: liveQuestionsList.map(q => q.id).join(','),
             attemptNumber: currentExam.nextAttemptNumber || 1,
-            reason: submissionReason === "TIMEOUT_AUTO_SUBMIT" ? "⌛ Timeout Auto-Submission" : (submissionReason.includes("Lost") || submissionReason.includes("Tab") ? `🚨 Cheating Detected: ${submissionReason}` : "✅ Normal User Submission")
+            reason: finalReasonStatus // 🎯 FIXED: Ab sahi dynamic text database me jayega
         };
 
         fetch('/api/results', {
@@ -309,62 +317,89 @@ if (!currentUser || !currentExam) {
         });
     }
 
-    document.getElementById('submitExamBtn').onclick = () => {
-        const totalQs = liveQuestionsList.length;
-        const answeredCount = Object.keys(userSelectedAnswers).length;
-        const unattemptedCount = totalQs - answeredCount;
+  document.getElementById('submitExamBtn').onclick = () => {
+    const totalQs = liveQuestionsList.length;
+    const answeredCount = Object.keys(userSelectedAnswers).length;
+    const unattemptedCount = totalQs - answeredCount;
 
-        if (confirm(`⚠️ Confirmation Alert:\n\nTotal Questions: ${totalQs}\nAnswered: ${answeredCount}\nSkipped/Left: ${unattemptedCount}\n\nAre you sure you want to finalize and lock your exam choice card sheet now?`)) {
-            isSubmitting = true; // 🌟 SAFE BOUND: Trigger submit flag immediately to stop anti-cheat popup loops
+    // 1. Pehle flag ko true karenge
+    isPopupOpen = true; 
+
+    // 2. setTimeout use karenge taaki browser ko flag memory me update karne ka poora waqt mile
+    setTimeout(() => {
+        const userChoice = confirm(`⚠️ Confirmation Alert:\n\nTotal Questions: ${totalQs}\nAnswered: ${answeredCount}\nSkipped/Left: ${unattemptedCount}\n\nAre you sure you want to finalize and lock your exam choice card sheet now?`);
+        
+        if (userChoice) {
+            isSubmitting = true; 
+            isPopupOpen = false;
             clearInterval(timerIntervalNode);
             processExamEvaluationPipeline("USER_MANUAL_SUBMIT");
+        } else {
+            // Cancel dabane par pehle focus wapas laao, fir safe delay ke baad flag hatao
+            window.focus(); 
+            setTimeout(() => {
+                isPopupOpen = false;
+            }, 300);
         }
-    };
+    }, 50); // 50ms ka chota sa delay event loop ko normal karega
+};
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+   function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+   }
 
-    // ⚡ AUTO SUBMIT ENGINE WITH REASON
-    function triggerAutoSubmit(reason) {
-        // Agar submit process pehle se chalu ho chuka hai, toh doosre call block karo
-        if (isSubmitting) return; 
-        
-        isSubmitting = true; // Block further anti-cheat loops
-        clearInterval(timerIntervalNode);
-        
-        alert(`🚨 EXAM TERMINATED: ${reason}\nAapka exam auto-submit kiya ja raha hai!`);
-        processExamEvaluationPipeline(reason);
-    }
+        // 🌟 GLOBAL VARIABLES (Sirf tabhi 'let' lagayein agar ye pehle se pooray code me upar declared NAHO)
+        if (typeof isSubmitting === 'undefined') {
+        window.isSubmitting = false; 
+     }
+        if (typeof isPopupOpen === 'undefined') {
+       window.isPopupOpen = false; 
+     }
 
-    // ⚡ 2. FOCUS LOST DETECTION (Split screen aur multi-window cheat block)
-    window.addEventListener('blur', function() {
-        if (isSubmitting) return; // 🛡️ Submit button click ho chuka hai, toh chup rho
+       // ⚡ AUTO SUBMIT ENGINE WITH REASON
+       function triggerAutoSubmit(reason) {
+       if (isSubmitting || isPopupOpen) return; 
+    
+       isSubmitting = true; 
+       clearInterval(timerIntervalNode);
+    
+       alert(`🚨 EXAM TERMINATED: ${reason}\nAapka exam auto-submit kiya ja raha hai!`);
+       processExamEvaluationPipeline(reason);
+     }
+
+       // ⚡ 2. FOCUS LOST DETECTION (Micro-delay verification ke sath)
+       window.addEventListener('blur', function() {
+       if (isSubmitting || isPopupOpen) return; 
+    
+       // 150ms ruk kar verify karega ki sachme screen chodi hai ya sirf popup aaya hai
+        setTimeout(() => {
+        if (isSubmitting || isPopupOpen) return; 
         triggerAutoSubmit("Split Screen ya Dusri Window par click kiya gaya (Focus Lost).");
-    });
+      }, 150); 
+  });
 
-    // 🔒 3. TAB SWITCH DETECTION ENGINE (Jab bacha doosri tab par jaye)
-    document.addEventListener('visibilitychange', function () {
-        if (isSubmitting) return; // 🛡️ Submit button click ho chuka hai, toh chup rho
-        if (document.hidden) {
-            triggerAutoSubmit("Browser Tab badalne ki koshish ki gayi.");
-        }
-    });
+      // 🔒 3. TAB SWITCH DETECTION ENGINE
+      document.addEventListener('visibilitychange', function () {
+      if (isSubmitting || isPopupOpen) return; 
+      if (document.hidden) {
+      triggerAutoSubmit("Browser Tab badalne ki koshish ki gayi.");
+    }
+  });
 
-    // 🔒 4. RIGHT CLICK BLOCK (Taki inspect element na khol sake)
-    document.addEventListener('contextmenu', event => event.preventDefault());
+     // 🔒 4. RIGHT CLICK BLOCK
+     document.addEventListener('contextmenu', event => event.preventDefault());
 
-    // 🔒 5. SHORTCUT KEYS LOCK (F12, Ctrl+Shift+I, Ctrl+U block karne ke liye)
-    document.addEventListener('keydown', function(e) {
-        if (e.keyCode == 123 || 
-            (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || 
-            (e.ctrlKey && e.keyCode == 85)) {
-            e.preventDefault();
-            alert("🔒 Security Lock: Developer Tools is exam mein disable hain!");
-        }
-    });
+     // 🔒 5. SHORTCUT KEYS LOCK
+     document.addEventListener('keydown', function(e) {
+    if (e.keyCode == 123 || 
+        (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || 
+        (e.ctrlKey && e.keyCode == 85)) {
+        e.preventDefault();
+        alert("🔒 Security Lock: Developer Tools is exam mein disable hain!");
+    }
+   });
 
     // 🔄 Exam questions paper ko load karne wala function call
     loadExamQuestionsPaper();

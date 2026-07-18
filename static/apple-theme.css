@@ -1,0 +1,376 @@
+/* ==================== HIGH CONTRST COMPACT COMPUTER DISPLAY SYNCHRONIZER ==================== */
+
+body {
+    min-height: 100vh !important;
+    background: radial-gradient(circle at 10% 20%, rgba(4, 159, 185, 0.6) 0%, rgba(12, 192, 178, 0.4) 40%, rgba(30, 80, 200, 0.5) 100%), 
+                linear-gradient(135deg, #1aa3ba 0%, #1572b6 40%, #0e5287 100%) !important;
+    background-attachment: fixed !important;
+    color: #2d3748 !important;
+}
+
+/* Main Layout Wrapper */
+.dashboard-container {
+    background: transparent !important; 
+    border: none !important;
+    box-shadow: none !important;
+    padding: 25px 20px !important; 
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+
+/* TOP NAVBAR CONTAINER LAYER */
+.dashboard-nav {
+    background: transparent !important; 
+    border: none !important;
+    box-shadow: none !important;
+    padding: 15px 10px !important;
+    margin-bottom: 35px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+/* Logo Setup: FIXED COLOR (NO BLINK) */
+.logo h2 {
+    font-size: 2.4rem !important; 
+    font-weight: 900 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 15px !important; 
+    
+    /* 🟢 ABHI GREEN HAI | 🟠 ORANGE KE LIYE niche #00ff66 ki jagah #ff6600 likhein */
+    color: #ffcc00 !important; 
+    
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    animation: none !important; /* Strict No Blink */
+}
+
+/* 🎯 FIXED: LOGO CANVAS BACKGROUND REMOVAL */
+.logo img,
+.logo h2 img,
+.dashboard-nav .logo img {
+    width: 90px !important;        
+    height: 90px !important;       
+    min-width: 90px !important;    
+    min-height: 90px !important;   
+    max-height: none !important;   
+    object-fit: contain !important;
+    vertical-align: middle !important;
+    margin-right: 12px !important;
+    background: transparent !important; 
+    background-color: transparent !important;
+    mix-blend-mode: multiply !important; 
+    filter: brightness(1.1) contrast(1.1) !important;
+    
+    /* 💡 NOTE: Agar abhi bhi white box dikhe, toh is upar wali line ko hata kar niche wali line use karein (ye logo ko pure white silhouete bana dega): */
+    /* filter: brightness(0) invert(1) !important; */
+}
+
+/* User Info Panel Scale Up */
+.user-info {
+    gap: 20px !important; 
+    align-items: center !important;
+}
+
+.user-avatar {
+    width: 52px !important;  
+    height: 52px !important;
+    border: 2px solid rgba(255, 255, 255, 0.8) !important;
+    border-radius: 50px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+#userNameDisplay {
+    color: #ffffff !important;
+    font-size: 1.35rem !important; 
+    font-weight: 900 !important;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    margin-right: 5px !important;
+}
+
+/* 🌈 AVAILABLE EXAMS: FIXED COLOR & SHIFTED UP (NO BLINK) */
+.dashboard-content h1 {
+    text-align: center !important; 
+    font-size: 3.2rem !important; 
+    font-weight: 900 !important;
+    letter-spacing: -0.5px !important;
+    margin-top: -15px !important; 
+    margin-bottom: 20px !important;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.25) !important;
+    
+    /* 🟢 ABHI GREEN HAI | 🟠 ORANGE KE LIYE niche #00ff66 ki jagah #ff6600 likhein */
+    color: #00ff66 !important; 
+    
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    animation: none !important; /* Strict No Blink */
+}
+
+/* 📊 YOUR RESULTS TITLE ONLY WILL BLINK */
+.results-section h2 {
+    text-align: center !important; 
+    font-size: 2.4rem !important; 
+    font-weight: 900 !important;
+    letter-spacing: -0.5px !important;
+    margin-top: 20px !important;
+    margin-bottom: 25px !important;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.12) !important;
+    animation: fastVibrantRainbow 1.8s infinite linear !important; 
+}
+
+@keyframes fastVibrantRainbow {
+    0% { color: #ff0055; }   
+    20% { color: #ff6600; }  
+    40% { color: #ffcc00; }  
+    60% { color: #00ff66; }  
+    80% { color: #0066ff; }  
+    100% { color: #cc00ff; } 
+}
+
+/* AVAILABLE EXAM CARD GRID FORM COMPONENTS: UPPER SHIFTED */
+.exams-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important; 
+    gap: 30px !important;
+    margin-top: -10px !important; 
+    margin-bottom: 35px !important;
+    width: 100% !important;
+}
+
+.exams-grid > div, .card {
+    background:pink !important; 
+    border-radius: 18px !important; 
+    border: none !important;
+    padding: 25px !important;
+    box-shadow: 0 10px 30px rgba(0, 40, 70, 0.1) !important; 
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* Heading ke liye Deep Navy/Indigo */
+.exams-grid > div h3, .card h3 {
+    font-size: 1.35rem !important;
+    color: #1e3a8a !important; /* Deep Royal Navy Blue */
+    font-weight: 800 !important;
+}
+
+/* Chote text ke liye stylish blue-grey */
+.exams-grid > div p, .exams-grid > div span, .card p {
+    font-size: 0.9rem !important;
+    color:red !important; 
+    font-weight: 600 !important;
+}
+
+.exams-grid > div:hover, .card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 16px 35px rgba(0, 40, 70, 0.15) !important;
+}
+
+/* 📊 YOUR RESULTS BIG OUTER BOX CONTAINER: UPPER SHIFTED */
+#resultsSection.results-section {
+    background: #f4f6f9 !important; 
+    border-radius: 24px !important;
+    padding: 15px 25px !important; 
+    margin-top: 25px !important; 
+    border: none !important;
+    box-shadow: 0 12px 35px rgba(0, 40, 70, 0.08) !important;
+    width: 100% !important; 
+    box-sizing: border-box !important;
+}
+
+/* 📥 INSIDE ROWS LIST STRIP CARD COMPONENT */
+.results-list > div, .result-row {
+    display: flex !important;
+    justify-content: space-between !important; 
+    align-items: center !important;
+    background: #ffffff !important; 
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 16px 25px !important;
+    box-shadow: 0 4px 12px rgba(0, 40, 70, 0.03) !important;
+    color: #2d3748 !important;
+    margin-bottom: 12px !important;
+    font-size: 0.9rem !important;
+    width: 100% !important; 
+    box-sizing: border-box !important;
+    transition: all 0.2s ease !important;
+}
+
+/* TARGET RE-ALIGNMENT FOR ACTION VIEW DETAILS LABELS BUTTON */
+.results-list > div button, 
+.results-list > div a,
+.result-row button,
+.result-row a,
+[id*="userResults"] button,
+[id*="userResults"] a {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-width: max-content !important; 
+    padding: 6px 12px !important;
+    background: rgba(59, 130, 246, 0.1) !important;
+    color: #2563eb !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.results-list > div button:hover, 
+.results-list > div a:hover,
+.result-row button:hover,
+.result-row a:hover {
+    background: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.results-list > div:hover, .result-row:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 22px rgba(0, 40, 70, 0.08) !important;
+}
+
+/* Interactive Controllers Action buttons scale up slightly for comfort */
+.exams-grid button, .exams-grid .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important; 
+    padding: 12px 24px !important;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2) !important;
+}
+
+/* Upper Navigation Buttons Panel Scale Up */
+.btn-small {
+    padding: 10px 18px !important; 
+    font-size: 0.95rem !important; 
+    font-weight: 750 !important;
+    border-radius: 12px !important;
+}
+
+.btn-outline {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.btn-outline:hover {
+    background: #ffffff !important;
+    color: #1a202c !important;
+}
+
+#logoutBtn {
+    background: rgba(239, 68, 68, 0.25) !important;
+    color: #ff9999 !important;
+    border: 1px solid rgba(239, 68, 68, 0.45) !important;
+}
+
+#logoutBtn:hover {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+.btn-admin {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.btn-admin:hover {
+    background: #ffffff !important;
+    color: #4f46e5 !important;
+}
+
+/* Click barrier elements syncing */
+#clickBarrier {
+    background: linear-gradient(135deg, #1aa3ba 0%, #0e5287 100%) !important;
+}
+
+
+/* ==================== YOUR RESULTS SECTION DESIGN (COMPLETE FIX) ==================== */
+
+/* 📊 1. OUTER BIG BOX: Light Red aur Orange mix gradient ka colour config */
+#resultsSection.results-section {
+    /* 🎨 COLOUR CONFIG: Niche diye gaye dono HEX codes (#ffe4e6 aur #ffedd5) ko badal sakte hain */
+    background: linear-gradient(135deg, #ffe4e6 0%, #ffedd5 100%) !important; 
+    border-radius: 24px !important;
+    padding: 20px 25px !important; 
+    margin-top: 25px !important; 
+    border: none !important;
+    box-shadow: 0 12px 35px rgba(0, 40, 70, 0.08) !important;
+    width: 100% !important; 
+    box-sizing: border-box !important;
+}
+
+/* 📥 2. INNER STRIP BOX: Strip ke andar ka background aur strict horizontal alignment */
+.results-list > div, .result-row, [id*="userResults"] > div {
+    /* 🎨 PINK BACKGROUND: Strip ke andar ka background colour */
+    background: #fce7f3 !important; 
+    border-radius: 14px !important;
+    padding: 16px 25px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(244, 63, 94, 0.2) !important; 
+    width: 100% !important; 
+    box-sizing: border-box !important;
+    transition: all 0.2s ease !important;
+    
+    /* 🌟 HORIZONTAL LAYOUT LOCK: Isse text hamesha ek line me seedha rahega */
+    display: flex !important;
+    justify-content: space-between !important; 
+    align-items: center !important;
+}
+
+/* 🔴 3. FORCED TEXT COLOURS: Strip ke andar ka saara text (Web Tech, description, numbers) red karne ke liye */
+.results-list > div,
+.result-row,
+[id*="userResults"] > div,
+.results-list > div * {
+    /* 🎨 TEXT COLOUR: Sabhi text ka colour code yahan se change karein */
+    color: #dc2626 !important; 
+    font-weight: 700 !important;
+}
+
+/* 🚨 4. WORK HARD / STATUS BADGE TEXT FIX: Isko special white override diya taaki red me mix na ho */
+.results-list > div span[style*="background"] *, 
+.result-row span[style*="background"] *,
+[id*="userResults"] span[style*="background-color"] *,
+.results-list > div .status-badge *,
+[id*="userResults"] > div span:last-child,
+[id*="userResults"] > div span:last-child * {
+    /* 🌟 WORK HARD TEXT FIX: Isko pure white kiya taaki dark pill ke andar ekdam saaf visible ho */
+    color: #ffffff !important; 
+    font-weight: 800 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+}
+
+/* 🖱️ 5. VIEW DETAILS BUTTON STYLE */
+.results-list > div button, 
+.results-list > div a,
+.result-row button,
+.result-row a,
+[id*="userResults"] a {
+    /* 🎨 BUTTON BASE: Default state style */
+    background: #ffffff !important; 
+    color: #dc2626 !important; 
+    font-weight: 750 !important;
+    border: 1px solid #f43f5e !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    transition: all 0.2s ease !important;
+}
+
+/* BUTTON HOVER */
+.results-list > div button:hover, 
+.results-list > div a:hover,
+.result-row button:hover,
+.result-row a:hover,
+[id*="userResults"] a:hover {
+    /* 🎨 HOVER COLOUR: Touch karne par background color change code */
+    background: #dc2626 !important; 
+    color: #ffffff !important; 
+}

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoreTest System - Student Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='apple-theme.css') }}">
     <style>
         /* Thoda extra style taki button aapke theme se match kare */
         .btn-admin {
@@ -32,12 +33,20 @@
         <span id="rightWing">🪽</span>
     </div>
     <div class="dashboard-container hidden-initially" id="mainDashboardApp">
+        <!-- 🎯 NAV BAR SECTION: Background clear aur items properly aligned hain -->
         <nav class="dashboard-nav">
-            <div class="logo"><h2>📚 CoreTest System</h2></div>
+            <div class="logo">
+                <h2>
+                    <!-- 3D Logo text ke pehle (Left side) perfect spacing ke sath link ho gaya hai -->
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; vertical-align: middle; margin-right: 6px;">
+                    CoreTest System
+                </h2>
+            </div>
             <div class="user-info">
-                <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com/api/?background=667eea&color=fff&bold=true" alt="Avatar">
+                <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com" alt="Avatar">
                 <span id="userNameDisplay"></span>
-                <span id="adminBtnContainer"></span> <a href="profile.html" class="btn btn-small btn-outline">👤 Profile</a>
+                <span id="adminBtnContainer"></span> 
+                <a href="profile.html" class="btn btn-small btn-outline">👤 Profile</a>
                 <button id="logoutBtn" class="btn btn-small btn-outline">Logout</button>
             </div>
         </nav>

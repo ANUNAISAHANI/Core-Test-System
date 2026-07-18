@@ -1,0 +1,19 @@
+/* ==================== VIEW DETAILS PAGE BACKGROUND MATCH ==================== */
+
+/* 🎯 Pure background ko Dashboard ke cyan-blue layout se exact match kiya */
+body {
+    min-height: 100vh !important;
+    background: radial-gradient(circle at 10% 20%, rgba(4, 159, 185, 0.6) 0%, rgba(12, 192, 178, 0.4) 40%, rgba(30, 80, 200, 0.5) 100%), 
+                linear-gradient(135deg, #1aa3ba 0%, #1572b6 40%, #0e5287 100%) !important;
+    background-attachment: fixed !important;
+    color: #2d3748 !important;
+    margin: 0 !important;
+    padding: 25px 20px !important;
+    box-sizing: border-box !important;
+}
+
+/* 🎨 PERFORMANCE CARD & CARDS: Inke corners ko thoda round aur smooth karne ke liye */
+div[class*="container"], div[class*="card"], .performance-report {
+    border-radius: 20px !important;
+    box-shadow: 0 12px 35px rgba(0, 40, 70, 0.15) !important;
+}

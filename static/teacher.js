@@ -47,7 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/api/results')
         .then(res => res.json())
         .then(results => {
-            globalResultsCache = results; 
+            globalResultsCache = results;
+           // Yahan paste karo (Line 50-51 ke beech)
+            const subSelect = document.getElementById('filterSubject');
+            const subjects = [...new Set(results.map(r => r.examSubject || 'General'))];
+            subSelect.innerHTML = '<option value="ALL">-- All Subjects --</option>'; // Pehle clear karo taki double na aaye
+            subjects.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s; opt.textContent = s;
+                subSelect.appendChild(opt);
+            });  
             renderFilteredLedger(); 
         })
         .catch(err => {
@@ -62,6 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const searchQuery = document.getElementById('tableSearchInput').value.toLowerCase().trim();
         const sectionFilter = document.getElementById('filterSection').value;
+        const semFilter = document.getElementById('filterSemester').value;
+        const subFilter = document.getElementById('filterSubject').value;
 
         const matchingRecords = globalResultsCache.filter(r => {
             const studentName = (r.userName || '').toLowerCase();
@@ -71,9 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const matchesSearch = studentName.includes(searchQuery) || studentRoll.includes(searchQuery);
             const matchesSection = (sectionFilter === 'ALL') || (r.section === sectionFilter);
+            const matchesSemester = (semFilter === 'ALL') || (r.semester === semFilter);
+            const matchesSubject = (subFilter === 'ALL') || (r.examSubject === subFilter);
             const matchesBranchScope = !teacherBranch || studentBranch.includes(teacherBranch) || teacherBranch.includes(studentBranch);
 
-            return matchesSearch && matchesSection && matchesBranchScope;
+            return matchesSearch && matchesSection && matchesBranchScope && matchesSemester && matchesSubject;
         });
 
         document.getElementById('totalRecordsCount').textContent = `Department Records: ${matchingRecords.length}`;
@@ -127,7 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
                    <span style="color:#c62828; font-size:0.75rem;">✖ ${wrongQ} Galat</span>
                    </td>
              
-                   <td style="font-size:0.85rem; color:#888;">${r.submittedAt || formattedDate}</td>
+                   <td style="font-size:0.85rem; color:#888;">
+                       ${r.submittedAt || formattedDate}<br>
+                       <span style="font-size:0.75rem; font-weight:bold; color: ${r.reason && r.reason.toLowerCase().includes('cheating') ? '#c62828' : '#2e7d32'}">
+                           ${r.reason && r.reason.toLowerCase().includes('cheating') ? '⚠️ Cheating Detected' : '✅ Normal Submission'}
+                       </span>
+                   </td>
     
                    <td>
                   <button onclick="viewDetailedExamSheet(${r.id || r.resultId})" class="view-btn" style="background:#4f46e5; color:white; border:none; padding:5px 10px; border-radius:5px; font-size:0.8rem; cursor:pointer; font-weight:500; transition:all 0.2s;">
@@ -144,6 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (document.getElementById('filterSection')) {
         document.getElementById('filterSection').addEventListener('change', renderFilteredLedger);
+    }
+    if (document.getElementById('filterSemester')) {
+        document.getElementById('filterSemester').addEventListener('change', renderFilteredLedger);
+    }
+    if (document.getElementById('filterSubject')) {
+        document.getElementById('filterSubject').addEventListener('change', renderFilteredLedger);
     }
 
     loadFacultyLedger();

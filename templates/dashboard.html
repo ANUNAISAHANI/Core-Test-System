@@ -54,9 +54,14 @@
             <h1>Available Exams</h1>
             <div class="exams-grid" id="examsGrid"></div>
             <div id="resultsSection" class="results-section">
-                <h2>📊 Your Results</h2>
-                <div id="userResults" class="results-list"></div>
-            </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
+        <h2 style="margin: 0;">📊 Your Results</h2>
+        <select id="studentSubjectFilter" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.9rem; color: #16a34a; background-color: #f0fdf4; font-weight: 600;">
+    <option value="ALL">Show All Subjects</option>
+    </select>
+    </div>
+    <div id="userResults" class="results-list"></div>
+    </div>
         </div>
     </div>
 

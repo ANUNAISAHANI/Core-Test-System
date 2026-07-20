@@ -203,17 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    function updateSubjectDropdown() {
-        fetch('/api/exams')
-        .then(res => res.json())
-        .then(exams => {
-            localExamsCache = exams;
-            const dropdown = document.getElementById('questionSubject');
-            if (dropdown) {
-                dropdown.innerHTML = exams.map(ex => `<option value="${ex.subject}">${ex.subject}</option>`).join('');
-            }
-        });
-    }
 
     // ==================== EXAMS CARDS GENERATOR ====================
     function loadAllExams() {
@@ -285,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // ==================== RESULTS TRACKING REPORT ====================
+   // ==================== RESULTS TRACKING REPORT ====================
     function loadAllResults() {
         fetch('/api/results')
         .then(res => res.json())
@@ -858,6 +847,7 @@ function applyResultFilters() {
     const branch = document.getElementById('resFilterBranch').value;
     const sem = document.getElementById('resFilterSemester').value;
     const sec = document.getElementById('resFilterSection').value;
+    const sub = document.getElementById('resFilterSubject') ? document.getElementById('resFilterSubject').value : 'ALL';
     const container = document.getElementById('allResultsList');
 
     if (!container || !globalCachedResults.length) return;
@@ -878,21 +868,74 @@ function applyResultFilters() {
             filtered = filtered.filter(r => r.section === sec || r.user_section === sec);
         }
     }
+    if (sub !== 'ALL') {
+        filtered = filtered.filter(r => (r.examSubject || r.subject) === sub);
+    }
 
-    filtered.sort((a, b) => (a.studentName || a.fullName || '').localeCompare(b.studentName || b.fullName || ''));
+    filtered.sort((a, b) => (a.userName || a.studentName || '').localeCompare(b.userName || a.studentName || ''));
 
-    container.innerHTML = filtered.map(r => `
-        <div class="result-card-admin" style="background:white; padding:1.2rem; border-radius:8px; margin-bottom:0.8rem; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.01);">
-            <div>
-                <span style="font-weight:600; color:#1e293b; font-size:1.05rem;">Name: ${r.studentName || r.fullName || 'Student'}</span> 
-                <span style="font-size:0.85rem; color:#64748b;">(${r.course_branch || 'N/A'} | ${r.semester || 'N/A'} | ${r.section || 'N/A'})</span>
-                <div style="font-size:0.88rem; margin-top:6px; color:#475569;">
-                    Exam Title: <b style="color:#4f46e5;">${r.subject}</b> | Percentage: <b style="color:#10b981;">${r.percentage}%</b> (${r.score}/${r.totalQuestions})
+    // Attempt tracker calculation
+    const studentAttemptTracker = {};
+    filtered.forEach(r => {
+        const trackerKey = `${r.userId || r.studentId}_${r.examSubject || r.subject}`;
+        if (!studentAttemptTracker[trackerKey]) {
+            studentAttemptTracker[trackerKey] = 0;
+        }
+        studentAttemptTracker[trackerKey]++;
+        r.calculatedAttempt = r.attemptNumber || studentAttemptTracker[trackerKey];
+    });
+
+    container.innerHTML = filtered.slice().reverse().map(r => {
+        const examSubName = r.examSubject || r.subject || 'General Paper';
+        const studentNameVal = r.userName || r.studentName || 'Unknown Student';
+        const scorePercentage = parseFloat(r.percentage || 0).toFixed(2);
+        
+        // Cheating / Normal Status Logic
+        const reasonText = r.reason || r.status || 'Normal Submission';
+        const isCheating = reasonText.toLowerCase().includes('cheat') || reasonText.toLowerCase().includes('tab') || reasonText.toLowerCase().includes('switch') || reasonText.toLowerCase().includes('warning');
+        
+        const statusBadge = isCheating 
+            ? `<span style="font-size:0.75rem; padding: 2px 8px; border-radius: 10px; background: #fee2e2; color: #991b1b; font-weight: bold; margin-left: 8px;">⚠️ Cheating Detected</span>`
+            : `<span style="font-size:0.75rem; padding: 2px 8px; border-radius: 10px; background: #dcfce7; color: #166534; font-weight: bold; margin-left: 8px;">✅ Normal Submission</span>`;
+
+        // Timing formatting
+        let formattedTime = 'N/A';
+        const rawTime = r.submittedAt || r.timestamp;
+        if (rawTime) {
+            const dateObj = new Date(rawTime);
+            if (!isNaN(dateObj.getTime())) {
+                formattedTime = dateObj.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            } else {
+                formattedTime = rawTime;
+            }
+        }
+
+        return `
+            <div class="result-item" style="background: white; padding: 1.2rem; border-radius: 8px; margin-bottom: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-left: 4px solid #667eea; display: flex; justify-content: space-between; align-items: center;">
+                <div style="flex-grow: 1;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+                        <strong>👤 Student: ${studentNameVal} ${r.roll_number ? `(${r.roll_number})` : ''}</strong>
+                        <div>
+                            <span style="font-size:0.75rem; padding: 2px 8px; border-radius: 10px; background: #e0f2fe; color: #0369a1; font-weight: bold;">Score: ${scorePercentage}%</span>
+                            ${statusBadge}
+                        </div>
+                    </div>
+                    <div style="font-size:0.85rem; color:#666; margin-top:5px;">
+                        Branch: <b>${r.course_branch || r.user_branch || 'N/A'}</b> | Section: <b>${r.section || r.user_section || 'N/A'}</b> | Subject: <b style="color:#2e7d32;">${examSubName}</b> (Attempt #${r.calculatedAttempt || 1})
+                    </div>
+                    <div style="font-size:0.75rem; color:#888; margin-top:4px; display:flex; justify-content:space-between; padding-right: 20px;">
+                        <span>Reason Node: ${reasonText}</span>
+                        <span>Submitted At: ${formattedTime}</span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; margin-left: 15px;">
+                    <button onclick="viewDetailedExamSheetAdmin(${r.id || r.resultId})" class="view-btn" style="background:#4f46e5; color:white; border:none; padding:8px 14px; border-radius:5px; font-size:0.8rem; cursor:pointer; font-weight:500; transition:all 0.2s; white-space: nowrap;">
+                        👁️ View Exam
+                    </button>
                 </div>
             </div>
-            <span style="font-size:0.8rem; color:#94a3b8; font-weight: 500;">${r.timestamp || ''}</span>
-        </div>
-    `).join('') || '<p style="text-align:center; color:#64748b; padding:20px;">No active candidate submissions match current parameters.</p>';
+        `;
+    }).join('') || '<p style="text-align:center; color:#64748b; padding:20px;">No active candidate submissions match current parameters.</p>';
 }
 
 // 3. Network Interceptor Setup Injection
@@ -932,6 +975,91 @@ document.addEventListener('DOMContentLoaded', () => {
         teacherTabBtn.addEventListener('click', () => {
             currentDirectorySegment = 'teachers';
             setTimeout(applyDirectoryFilters, 50);
+        });
+    }
+});
+
+
+// 🎯 Smart Results-Driven Subject Filter & Question Modal Sync Logic
+window.updateSubjectDropdown = function() {
+    // 1. Question Modal wala dropdown fix karne ke liye (black line wali problem solve)
+    const qSubjectSelect = document.getElementById('questionSubject');
+    if (qSubjectSelect) {
+        fetch('/api/exams')
+        .then(res => res.json())
+        .then(exams => {
+            const subjects = [...new Set(exams.map(ex => ex.subject))].filter(Boolean);
+            const currentQVal = qSubjectSelect.value;
+            
+            qSubjectSelect.innerHTML = '<option value="" disabled selected>-- Select Target Subject Paper --</option>' + 
+                subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+                
+            if (subjects.includes(currentQVal)) {
+                qSubjectSelect.value = currentQVal;
+            }
+        })
+        .catch(err => console.error("Question subject sync error:", err));
+    }
+
+    // 2. Tumhara original track results cascading filter logic
+    const branchSelect = document.getElementById('resFilterBranch');
+    const subjectSelect = document.getElementById('resFilterSubject');
+    
+    if (!subjectSelect) return;
+
+    const selectedBranch = branchSelect ? branchSelect.value.trim().toUpperCase() : 'ALL';
+
+    // Hum live exams ki jagah seedhe saved results se data fetch kar rahe hain
+    fetch('/api/results')
+    .then(res => res.json())
+    .then(results => {
+        let filteredResults = results;
+        
+        // Agar koi specific branch select ki hai
+        if (selectedBranch && selectedBranch !== 'ALL') {
+            filteredResults = results.filter(r => {
+                const b = (r.course_branch || r.user_branch || '').trim().toUpperCase();
+                return b === '' || b === 'ALL' || b.includes(selectedBranch) || selectedBranch.includes(b);
+            });
+        }
+
+        // Sirf unhi subjects ko nikalenge jinka result database mein actually exist karta hai
+        const subjects = [...new Set(filteredResults.map(r => r.examSubject || r.subject).filter(Boolean))];
+        const currentSubVal = subjectSelect.value;
+
+        // Dropdown dynamically populate hoga bas un subjects ke sath jinke results available hain
+        subjectSelect.innerHTML = '<option value="ALL">All Subjects</option>' + 
+            subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+
+        if (subjects.includes(currentSubVal) || currentSubVal === 'ALL') {
+            subjectSelect.value = currentSubVal;
+        } else {
+            subjectSelect.value = 'ALL';
+        }
+
+        if (typeof applyResultFilters === 'function') {
+            applyResultFilters();
+        }
+    })
+    .catch(err => console.error("Results-driven cascading error:", err));
+};
+
+
+
+// 🎯 AUTO-TRIGGER & SYNC HOOK FOR BRANCH-SUBJECT CASCADING DROPDOWN
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Jaise hi page load ho, ek baar dropdown populate karwa do
+    if (typeof updateSubjectDropdown === 'function') {
+        updateSubjectDropdown();
+    }
+
+    // 2. Jab bhi track results wala branch filter change ho, subject dropdown update ho jaye
+    const resFilterBranchElement = document.getElementById('resFilterBranch');
+    if (resFilterBranchElement) {
+        resFilterBranchElement.addEventListener('change', () => {
+            if (typeof updateSubjectDropdown === 'function') {
+                updateSubjectDropdown();
+            }
         });
     }
 });

@@ -64,23 +64,23 @@
 
    <!-- 🎯 FIXED: Track Results Filter Grid with 8 Semesters & Section E -->
         <div id="resultsFilterRow" style="display: flex; gap: 10px; margin: 15px 0; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <select id="resFilterBranch" onchange="applyResultFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                <option value="ALL">All Branches</option>
-                <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
-                <option value="BCA">BCA (Comp. Applications)</option>
-                <option value="MCA">MCA (Master of Comp. Applications)</option>
-                <option value="BBA">BBA (Business Administration)</option>
-                <option value="B.COM">B.Com (Commerce)</option>
-                <option value="MBA">MBA (Master of Business Admin.)</option>
-                <option value="BSC.AG">B.Sc (Agriculture)</option>
-                <option value="M.SC AG">M.Sc (Agriculture)</option>
-                <option value="B.PHARM">B.Pharm (Pharmacy)</option>
-                <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
-                <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
-                <option value="M.TECH">M.Tech (Master of Technology)</option>
-                <option value="B.SC NURSING">B.Sc (Nursing)</option>
-                <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
-            </select>
+            <select id="resFilterBranch" onchange="updateSubjectDropdown(); applyResultFilters();" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+    <option value="ALL">All Branches</option>
+    <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
+    <option value="BCA">BCA (Comp. Applications)</option>
+    <option value="MCA">MCA (Master of Comp. Applications)</option>
+    <option value="BBA">BBA (Business Administration)</option>
+    <option value="B.COM">B.Com (Commerce)</option>
+    <option value="MBA">MBA (Master of Business Admin.)</option>
+    <option value="BSC.AG">B.Sc (Agriculture)</option>
+    <option value="M.SC AG">M.Sc (Agriculture)</option>
+    <option value="B.PHARM">B.Pharm (Pharmacy)</option>
+    <option value="D.PHARM">D.Pharm (Diploma in Pharmacy)</option>
+    <option value="M.PHARM">M.Pharm (Master of Pharmacy)</option>
+    <option value="M.TECH">M.Tech (Master of Technology)</option>
+    <option value="B.SC NURSING">B.Sc (Nursing)</option>
+    <option value="BSC CS DS">B.Sc (CS & Data Science)</option>
+</select>
 
             <select id="resFilterSemester" onchange="applyResultFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
                 <option value="ALL">All Semesters</option>
@@ -103,6 +103,11 @@
                 <option value="Section-D">Section-D</option>
                 <option value="Section-E">Section-E</option>
             </select>
+
+            <select id="resFilterSubject" onchange="applyResultFilters()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+            <option value="ALL">All Subjects</option>
+            </select>
+
         </div>
 
 
@@ -406,7 +411,7 @@
     <div class="cleanup-card" style="background: #fff5f5; border: 2px dashed #f5c6cb; padding: 2rem; border-radius: 12px; margin-top: 2rem;">
         <h3 style="color: #721c24; margin-top: 0;">🛑 University Semester Nuclear Cleanup Desk</h3>
         <p style="font-size: 0.9rem; color: #721c24; line-height: 1.5;">
-            <b>WARNING:</b> Yeh action poori tarah irreversible hai. Aap jo bhi Semester select karke button dabayenge, us semester ke <b>Saare Generated Exams</b> aur <b>Bacchon ke Results Ledger</b> database se permanently delete ho jayenge. Students ke accounts safe rahenge.
+            <b>WARNING:</b> Yeh action poori tarah irreversible hai. Aap jo bhi Semester select karke button dabayenge, us semester ke <b>Bacchon ke Results Ledger</b> database se permanently delete ho jayenge. Students ke accounts safe rahenge.
         </p>
         
         <div style="display: flex; gap: 15px; align-items: center; margin-top: 1.5rem; flex-wrap: wrap;">

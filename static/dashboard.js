@@ -37,12 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
    function loadDashboardData() {
     // Pehle real backend se user results records logs khinchte hain
     fetch(`/api/results?userId=${currentUser.id}`)
-    .then(res => res.json())
-    .then(resultsData => {
-        globalResultsArray = resultsData; // Sync global state structure
+.then(res => res.json())
+.then(resultsData => {
+    globalResultsArray = resultsData; // Database se data yahan aagaya
 
-        // Render historical reports tables layout first
-        renderUserResultsSection(globalResultsArray);
+    // 🎯 Database + Student Branch restriction ke sath dropdown populate hoga
+    populateStudentSubjectDropdown(resultsData, currentUser);
+
+    renderUserResultsSection(globalResultsArray);
 
        // 🎯 FIXED: Dynamic filtration parameters for both branch AND semester injected safely
         const roleParam = currentUser.role || 'student';
@@ -327,3 +329,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4600);
     }
 });
+
+// 🎯 Database aur Branch restriction ke sath subject dropdown chalana
+function populateStudentSubjectDropdown(resultsList, user) {
+    const filterSelect = document.getElementById('studentSubjectFilter');
+    if (!filterSelect) return;
+
+    // Database ke records se unique subjects nikal rahe hain jo is student ne diye hain
+    // Aur yahan branch check bhi ensure ho raha hai ki sirf valid data aaye
+    const subjects = [...new Set(resultsList
+        .filter(r => !user.course_branch || !r.course_branch || r.course_branch.toUpperCase() === user.course_branch.toUpperCase())
+        .map(r => r.examSubject)
+    )];
+
+    const currentValue = filterSelect.value;
+
+    filterSelect.innerHTML = '<option value="ALL">Show All Subjects</option>' + 
+        subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+
+    if (subjects.includes(currentValue) || currentValue === 'ALL') {
+        filterSelect.value = currentValue;
+    }
+
+    // Database filtered data render logic with branch safety
+    filterSelect.onchange = function() {
+        const selectedSub = this.value;
+        if (selectedSub === 'ALL') {
+            renderUserResultsSection(globalResultsArray);
+        } else {
+            const filteredResults = globalResultsArray.filter(r => r.examSubject === selectedSub);
+            renderUserResultsSection(filteredResults);
+        }
+    };
+}

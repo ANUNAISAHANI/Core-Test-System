@@ -1,0 +1,180 @@
+/* ==========================================================================
+   🍏 TEACHER PANEL CUSTOM THEME STYLING
+   ========================================================================== */
+
+/* 1. Background Gradient (Same as Student Dashboard / Apple Theme) */
+body {
+    min-height: 100vh !important;
+    background: radial-gradient(circle at 10% 20%, rgba(4, 159, 185, 0.6) 0%, rgba(12, 192, 178, 0.4) 40%, rgba(30, 80, 200, 0.5) 100%), 
+                linear-gradient(135deg, #1aa3ba 0%, #1572b6 40%, #0e5287 100%) !important;
+    background-attachment: fixed !important;
+    color: #2d3748 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    margin: 0;
+}
+
+/* 2. Main Faculty Container Layout */
+.faculty-container {
+    max-width: 1200px !important;
+    margin: 2rem auto !important;
+    padding: 0 1rem !important;
+}
+
+
+/* ==========================================================================
+   🍏 TEACHER PANEL: CORRECTED HERO ALIGNMENT (WITHOUT TOUCHING BG)
+   ========================================================================== */
+
+.faculty-hero {
+    /* 🎨 BACKGROUND COLOUR: Isko red gradient par set kiya hai */
+    background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    padding: 1.8rem 2.2rem !important;
+    border-radius: 14px !important;
+    margin-bottom: 2rem !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.faculty-hero > div {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+}
+
+/* 🌟 Profile Picture: Clean aur proper alignment bina zoom kiye */
+.faculty-hero img, 
+.faculty-hero .user-avatar,
+.faculty-hero #userAvatar {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.9) !important;
+    object-fit: cover !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    margin-left: 10px !important;
+    margin-right: 15px !important;
+    vertical-align: middle !important;
+    display: inline-block !important;
+}
+
+/* Text formatting */
+.faculty-hero h1, .faculty-hero #facultyTitle {
+    font-size: 1.7rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin: 0 0 4px 0 !important;
+}
+
+.faculty-hero p, .faculty-hero #facultyScope {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    margin: 0 !important;
+}
+
+/* 🌟 Read-Only Mode aur Logout buttons ka bada size */
+.faculty-hero .badge-read, 
+.faculty-hero button, 
+.faculty-hero .btn {
+    padding: 11px 20px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+}
+
+/* 4. Filter Cards & Tables Container (Exact match with "Your Results" box style) */
+.filter-card, .report-table-wrapper {
+    /* 🎨 CARD BACKGROUND COLOUR: Exact Your Results box ka gradient (Light Pink & Orange Mix) */
+    background: linear-gradient(135deg, #ffe4e6 0%, #ffedd5 100%) !important;
+    border: 1px solid rgba(244, 63, 94, 0.25) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 12px 35px rgba(0, 40, 70, 0.08) !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* 5. Typography & Headings inside Cards (Forced Red Colour) */
+.filter-card h3, .report-table-wrapper h3, .filter-card label, .report-table th {
+    /* 🎨 TEXT COLOUR: Sabhi headings aur labels red colour ke honge */
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+}
+
+/* 6. Form Inputs & Select Dropdowns inside Cards */
+.filter-group input, .filter-group select {
+    background: #ffffff !important;
+    border: 1.5px solid #f43f5e !important;
+    color: #dc2626 !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+}
+
+.filter-group input:focus, .filter-group select:focus {
+    border-color: #b91c1c !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2) !important;
+    outline: none !important;
+}
+
+/* 7. Tables Ledger Styling */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table th {
+    background: rgba(255, 255, 255, 0.6) !important;
+    padding: 12px 15px !important;
+    border-bottom: 2px solid rgba(244, 63, 94, 0.2) !important;
+}
+
+.report-table td {
+    padding: 12px 15px !important;
+    border-bottom: 1px solid rgba(244, 63, 94, 0.1) !important;
+    /* 🎨 TABLE DATA TEXT COLOUR: Table ke andar ka text red */
+    color: #b91c1c !important;
+    font-weight: 600 !important;
+}
+
+.report-table tr:hover {
+    background: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* 8. Action Buttons */
+button, .btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer;
+}
+
+button:hover, .btn:hover {
+    transform: translateY(-1px);
+}
+
+
+/* Sirf 'Department Records: 1' wale badge/box ko 'Show All Subjects' jaisa green karne ke liye */
+#totalRecordsCount {
+    background: #f0fdf4 !important; /* Image 2 jaisa soft light green background */
+    color: #15803d !important;      /* Match karta hua dark green text */
+    border: 1px solid #bbf7d0 !important;
+    padding: 5px 12px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+
+
+
+
+
+
+
+
+

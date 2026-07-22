@@ -1,0 +1,274 @@
+/* ==========================================================================
+   🍏 ADMIN PANEL: APPLE / MACOS 3D GLASS & WIDGET THEME (EXACT RESULTS TINT)
+   ========================================================================== */
+
+/* 1. Global Background */
+body {
+    background: radial-gradient(circle at 10% 20%, rgba(4, 159, 185, 0.7) 0%, rgba(12, 192, 178, 0.5) 40%, rgba(30, 80, 200, 0.6) 100%), 
+                linear-gradient(135deg, #1aa3ba 0%, #1572b6 40%, #0e5287 100%) !important;
+    background-attachment: fixed !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    color: #333 !important;
+    margin: 0;
+}
+
+/* 2. Admin Container & Spacing Structure */
+.admin-container {
+    max-width: 96% !important;
+    width: 96% !important;
+    margin: 0 auto !important;
+    padding: 30px 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Header Text Exact Match with Golden/Yellow Glow Effect */
+.admin-nav {
+    background: transparent !important;
+    border: none !important;
+    padding: 20px 10px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    box-shadow: none !important;
+    margin-bottom: 25px !important;
+}
+
+.admin-nav .logo h2 {
+    color: #ffb900 !important; 
+    font-size: 2.2rem !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+    text-shadow: 0 3px 6px rgba(220, 100, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    letter-spacing: -0.5px !important;
+}
+
+.admin-user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+}
+
+#adminName {
+    color: #ffffff !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Student View Button custom state with sharp clarity */
+.admin-user-info .btn-outline, a[href="dashboard.html"] {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.6) !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    border-radius: 10px !important;
+    padding: 10px 18px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.admin-user-info .btn-outline:hover, a[href="dashboard.html"]:hover {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #dc2626 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(220, 38, 38, 0.4) !important;
+}
+
+/* 3. Navigation Tabs Menu Bar */
+.admin-tabs {
+    display: flex !important;
+    gap: 14px !important;
+    background: transparent !important;
+    padding: 12px 5px !important;
+    border: none !important;
+    margin-bottom: 40px !important;
+    flex-wrap: wrap !important;
+    box-shadow: none !important;
+}
+
+.admin-tabs .tab-btn {
+    background: rgba(255, 255, 255, 0.16) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 14px 24px !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease-in-out !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.admin-tabs .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.28) !important;
+    transform: translateY(-2px) !important;
+}
+
+.admin-tabs .tab-btn.active {
+    background: #ffffff !important;
+    color: #0e5287 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+    transform: scale(1.03) !important;
+    border-color: #ffffff !important;
+}
+
+/* 4. Main Tab Background Wrapper (Large Box) */
+.tab-content {
+    background: #fff0ea !important; 
+    border: 1px solid rgba(244, 63, 94, 0.2) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 15px 40px rgba(0, 40, 70, 0.14) !important;
+    padding: 2.5rem !important;
+    margin-top: 10px !important;
+    margin-bottom: 2rem !important;
+}
+
+.tab-content h2, .tab-content h3 {
+    color: #dc2626 !important;
+    font-weight: 850 !important;
+    font-size: 1.8rem !important;
+    margin-top: 0;
+}
+
+/* 5. INDIVIDUAL QUESTION BOXES & EXAMS CARDS (EXACT YOUR RESULTS MATCH) */
+.exams-list-admin, .questions-list {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 10px 0 !important;
+}
+
+/* 🎯 FIXED: Replaced card background with exact soft pink match from the results box inner card */
+.exams-list-admin > div, .exams-list-admin .card, .questions-list > div, .question-card {
+    background: #faae62 !important; /* 🎯 EXACT PREMIUM ULTRA-LIGHT PINK REPLICA FROM IMAGE */
+    border: 1px solid rgba(244, 63, 94, 0.2) !important; /* Discrete soft balance border alignment */
+    border-radius: 18px !important;
+    padding: 25px !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03) !important; 
+    transition: all 0.25s ease-in-out !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+}
+
+.exams-list-admin > div:hover, .exams-list-admin .card:hover, .questions-list > div:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 25px rgba(244, 63, 94, 0.1) !important;
+}
+
+.exams-list-admin h3, .exams-list-admin h4, .questions-list h3, .questions-list h4 {
+    color: #0e5287 !important;
+    font-weight: 850 !important;
+    font-size: 1.5rem !important;
+    margin: 0 !important;
+}
+
+.exams-list-admin p, .questions-list p {
+    color: #ff4757 !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    margin: 2px 0 !important;
+}
+
+/* Buttons within matrices */
+.exams-list-admin .btn, .exams-list-admin button, .questions-list .btn {
+    margin-top: 15px !important;
+    background: linear-gradient(135deg, #1aa3ba 0%, #1572b6 100%) !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(21, 114, 182, 0.25) !important;
+}
+
+/* 6. + CREATE EXAM CARD / ADD NEW QUESTION BUTTONS */
+#addExamBtn, .tab-content #addExamBtn, #questionsTab #addQuestionBtn {
+    background: #f2fbf7 !important; 
+    border: 1.5px solid #bbf7d0 !important; 
+    color: #22c55e !important; 
+    font-size: 0.95rem !important;
+    font-weight: 700 !important; 
+    border-radius: 8px !important; 
+    padding: 10px 18px !important;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.06) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin-left: auto !important; 
+    height: fit-content !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+#addExamBtn:hover, #questionsTab #addQuestionBtn:hover {
+    background: #e6f9f0 !important; 
+    border-color: #86efac !important;
+    color: #16a34a !important; 
+    transform: translateY(-1px) !important;
+}
+
+/* 7. Sub-bars, Filters & Inputs Specifications */
+#bulkDeleteBar, #resultsFilterRow, #directoryFilterRow, .directory-toggle-bar {
+    background: rgba(255, 255, 255, 0.65) !important;
+    border: 1px solid rgba(244, 63, 94, 0.25) !important;
+    border-radius: 14px !important;
+    padding: 14px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+}
+
+select, input[type="text"], input[type="number"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+    background: #ffffff !important;
+    border: 1.5px solid #f43f5e !important;
+    color: #dc2626 !important;
+    border-radius: 9px !important;
+    padding: 11px 15px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+}
+
+
+/* 🎯 ONLY TARGETING THE STUDENT RESULT LOG CARD WINDOW BOX */
+.results-list-admin > div, 
+.results-list-admin .card {
+    background: #faae62 !important; /* 🎯 Box background color changes to orange-gold */
+    color: #dc2626 !important;      /* 🎯 Inside text defaults to high-contrast red */
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+}
+
+/* Hardening font color rules for all inner texts inside this box */
+.results-list-admin > div h3, 
+.results-list-admin > div h4, 
+.results-list-admin > div p, 
+.results-list-admin > div span, 
+.results-list-admin > div strong, 
+.results-list-admin > div div {
+    color: green !important;      /* 🎯 Makes name, branch, score, and all details solid RED */
+    font-weight: 700 !important;
+}
+
+/* 🎯 ONLY TARGETING THE EXPORT REPORT (CSV) BUTTON */
+#exportResultsBtn {
+    background: #f2fbf7 !important;     /* 🎯 Soft light greenish background */
+    border: 1.5px solid #bbf7d0 !important; /* 🎯 Soft green border */
+    color: #22c55e !important;          /* 🎯 Sharp mint green text color */
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;        /* Clear bold visible text */
+    border-radius: 8px !important;      /* Symmetrical edge rounding */
+    padding: 10px 18px !important;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.06) !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+#exportResultsBtn:hover {
+    background: #e6f9f0 !important;     /* Subtle rich green overlay on hover */
+    border-color: #86efac !important;
+    color: #16a34a !important;          /* Darker green text focus */
+}

@@ -250,7 +250,7 @@ select, input[type="text"], input[type="number"], input[type="email"], input[typ
 .results-list-admin > div span, 
 .results-list-admin > div strong, 
 .results-list-admin > div div {
-    color: green !important;      /* 🎯 Makes name, branch, score, and all details solid RED */
+    color: #0e5287 !important;      /* 🎯 Makes name, branch, score, and all details solid RED */
     font-weight: 700 !important;
 }
 
@@ -271,4 +271,228 @@ select, input[type="text"], input[type="number"], input[type="email"], input[typ
     background: #e6f9f0 !important;     /* Subtle rich green overlay on hover */
     border-color: #86efac !important;
     color: #16a34a !important;          /* Darker green text focus */
+}
+
+/* ==========================================================================
+   👥 DIR TAB: REGISTERED USERS DIRECTORY SPECIFIC CUSTOM STYLES
+   ========================================================================== */
+
+/* 1. 🎯 ONLY TARGETING THE USER/STUDENT DIRECTORY LIST CARD BOX */
+#usersList > div, 
+.users-list > div, 
+.users-list .card {
+    background: #faae62 !important; /* Box background color orange-gold */
+    color: #fff1f2 !important;      /* 🎯 ISSE DIRECT TEXT BHI LIGHT PINK HO JAYEGA */
+    border: 1px solid rgba(220, 38, 38, 0.15) !important;
+    border-radius: 16px !important; /* Premium smooth organic curves */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 🎯 Iske andar jo bhi tags ho (jaise strong, span) sabko force pink karega */
+#usersList > div *, 
+.users-list > div * {
+    color: #ffffff !important;      /* 🎯 Saare inner elements ka text color light pink */
+    font-weight: 700 !important;
+}
+
+
+
+/* 2. 🎯 ONLY TARGETING THE ADD NEW FACULTY BUTTON */
+#addTeacherBtn {
+    background: #f2fbf7 !important;     /* 🎯 Soft light greenish background matching blueprint */
+    border: 1.5px solid #bbf7d0 !important; /* 🎯 Soft green border link style */
+    color: #22c55e !important;          /* 🎯 Sharp mint green font text color */
+    font-size: 0.95rem !important;
+    font-weight: 750 !important;        /* Clear premium typography layout */
+    border-radius: 8px !important;      /* Symmetrical edge rounding factor */
+    padding: 10px 18px !important;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.05) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+#addTeacherBtn:hover {
+    background: #e6f9f0 !important;     /* Rich green highlight blend overlay on hover */
+    border-color: #86efac !important;
+    color: #16a34a !important;          /* Darker mint green focus shift */
+    transform: translateY(-1px) !important;
+}
+
+
+/* ==========================================================================
+   🔍 STUDENT HISTORY TAB: ADVANCED LOOKUP CUSTOM SPECIFIC STYLES
+   ========================================================================== */
+
+/* 1. 🎯 SEARCH ACCOUNT BUTTON MATCHING WITH THE MINT GREEN BLUEPRINT */
+#searchStudentBtn {
+    background: #f2fbf7 !important;     /* 🎯 Soft light greenish background */
+    border: 1.5px solid #bbf7d0 !important; /* 🎯 Soft green border framework */
+    color: #22c55e !important;          /* 🎯 Sharp mint green font text color */
+    font-size: 0.95rem !important;
+    font-weight: 750 !important;        /* Clear bold emphasis */
+    border-radius: 8px !important;      /* Symmetrical edge curves */
+    padding: 11px 20px !important;      /* Uniform padding adjustments */
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.05) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+#searchStudentBtn:hover {
+    background: #e6f9f0 !important;     /* Riper overlay highlight on cursor focus */
+    border-color: #86efac !important;
+    color: #16a34a !important;
+}
+
+
+/* 2. 🎯 STUDENT FILE RESULT WRAPPER AND CARDS BOX COLOR */
+#studentSearchResult > div,
+#studentSearchResult div[style*="background: white"],
+#studentSearchResult .card {
+    background: #faae62 !important;     /* 🎯 Box background color forced to orange-gold */
+    border: 1px solid rgba(220, 38, 38, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 22px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Forcing structural inner string texts inside the gold frame box to clear white for premium crisp vision */
+#studentSearchResult h3, 
+#studentSearchResult h4,
+#studentSearchResult > div,
+#studentSearchResult > div * {
+    color: #ffffff !important;          /* 🎯 Absolute white text to contrast perfectly with orange background */
+    font-weight: 700 !important;
+}
+
+
+/* 3. 🎯 ACTION BUTTONS SIZE SCALING UP (VIEW & DROP LOGS SYSTEM) */
+#studentSearchResult button[id*="View"],
+#studentSearchResult button[onclick*="View"],
+#studentSearchResult .btn-primary,
+#studentSearchResult .btn-danger,
+#studentSearchResult button {
+    font-size: 0.85rem !important;      /* Increased font weight metrics */
+    padding: 6px 14px !important;      /* Expanded clickable footprint size slightly */
+    font-weight: 700 !important;
+    transform: none !important;
+    width: auto !important;
+    display: inline-flex !important;
+    margin: 5px 4px !important;         /* Balanced spacing metrics */
+    border-radius: 8px !important;
+}
+
+
+/* 🎯 ONLY TARGETING THE CLEAR BUTTON IN STUDENT HISTORY TAB */
+#clearSearchBtn {
+    background: #ffffff !important;     /* Clean white background layout */
+    border: 1.5px solid #dc2626 !important; /* 🎯 Border colour forced to sharp solid RED */
+    color: #dc2626 !important;          /* 🎯 Text font colour forced to sharp solid RED */
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;        /* Clear bold emphasis */
+    border-radius: 8px !important;      /* Symmetrical standard curves edge factor */
+    padding: 11px 20px !important;      /* Perfectly balanced padding matching search button */
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+#clearSearchBtn:hover {
+    background: #fff5f5 !important;     /* Soft red tint highlight overlay on hover focus */
+    color: #b91c1c !important;          /* Darker primary red text shift */
+    border-color: #b91c1c !important;   /* Darker primary red border shift */
+}
+ 
+
+/* ==========================================================================
+   🎯 MODAL HEADINGS: TEXT COLOUR SYNC WITH MINT GREEN BUTTONS
+   ========================================================================== */
+
+/* Teeno modals ke heading text ka color direct sharp mint green kiya */
+#examModal h3, 
+#teacherModal h3, 
+#questionModal h3,
+.modal-content h3 {
+    color: #22c55e !important; /* 🎯 Exact mint green font text match from the blueprint buttons */
+    font-weight: 850 !important; /* Premium thick dynamic presentation weight */
+    text-shadow: none !important; /* Extra shadows tracking disabled for clean view */
+}
+
+
+/* ==========================================================================
+   📦 MODAL: BULK QUESTION UPLOAD BOX CUSTOM SPECIFIC STYLES
+   ========================================================================== */
+
+/* 1. 🎯 MAIN OUTER BULK UPLOAD CONTAINER BOX ADJUSTMENTS */
+.bulk-upload-box, 
+#questionModal .bulk-upload-box {
+    background: #ffffff !important;         /* 🎯 Soft light greenish background matching search profile */
+    border: 2px dashed red !important;  /* 🎯 Matching soft green dashed border line formatting */
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+/* Forcing all inner heading and descriptions inside this container to standard mint green */
+.bulk-upload-box h5,
+.bulk-upload-box p,
+.bulk-upload-box i,
+.bulk-upload-box .text-muted {
+    color: #22c55e !important;              /* 🎯 Text color forced to clear sharp mint green */
+    font-weight: 600 !important;
+}
+
+
+/* 2. 🎯 UPLOAD SHEET ACTION BUTTON ENGINE SYNC */
+.bulk-upload-box button,
+.bulk-upload-box button[onclick*="uploadBulkQuestions"] {
+    background: #f2fbf7 !important;
+    border: 1.5px solid #bbf7d0 !important;
+    color: #22c55e !important;              /* 🎯 Exact mint green button text color matching blueprint */
+    font-size: 0.9rem !important;
+    font-weight: 750 !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    box-shadow: 0 2px 5px rgba(34, 197, 94, 0.05) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.bulk-upload-box button:hover {
+    background: #e6f9f0 !important;
+    border-color: #86efac !important;
+    color: #16a34a !important;
+}
+
+
+/* 3. 🎯 CHOOSE FILE INPUT FIELD OVERRIDES AND STYLING */
+.bulk-upload-box input[type="file"] {
+    background: #ffffff !important;
+    border: 1.5px solid #bbf7d0 !important;
+    color: #22c55e !important;              /* Input selection properties */
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    padding: 6px 12px !important;
+}
+
+
+/* 4. 🎯 TARGETING THE NATIVE BROWSER "NO FILE CHOSEN" INLINE LABELS EXTENSION */
+.bulk-upload-box input[type="file"]::-webkit-file-upload-button {
+    background: #f2fbf7 !important;
+    border: 1.5px solid #bbf7d0 !important;
+    color: #22c55e !important;
+    font-weight: 700 !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+}
+
+/* 🎯 FULLY FORCING THE CHOOSE FILE AND NO FILE CHOSEN INLINE COLOR ENGINE */
+#csvFile, 
+.bulk-upload-box input[type="file"],
+.bulk-upload-box input#csvFile {
+    color: #dc2626 !important; /* 🎯 Native text inside input string explicitly forced to RED */
+}
+
+/* Chrome/Edge buttons explicit text protection to keep button green */
+.bulk-upload-box input[type="file"]::-webkit-file-upload-button {
+    color: #22c55e !important; 
 }

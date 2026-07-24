@@ -157,3 +157,87 @@ body {
     letter-spacing: -0.5px !important;
     text-shadow: 0 4px 8px rgba(220, 100, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.2) !important; 
 }
+
+
+/* ==========================================================================
+   🎬 INTRO SYSTEM: CLICKABLE BOTTOM BUTTON & ABSOLUTE DEAD CENTER TRACK
+   ========================================================================== */
+
+#cinemaIntroOverlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #000000 !important; /* Pure theatrical black */
+    z-index: 9999999 !important;
+    overflow: hidden !important;
+    transition: opacity 0.6s ease-in-out !important;
+}
+
+/* 🎯 CANVAS ALLOWS POINTER EVENTS ONLY FOR RENDER IN THE BACKGROUND */
+#particleGlobeCanvas {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: block !important;
+    background: transparent !important;
+    z-index: 1 !important;
+    pointer-events: none !important; /* 🎯 Invisible wall destroyed! Click handles will bypass this sheet safely */
+}
+
+/* 🎯 BUTTON FORCED STRICKLY TO THE BOTTOM MATRIX WITH HIGHEST CLICK LAYER INTERCEPT */
+#startIntroTimelineBtn {
+    position: absolute !important;
+    bottom: 12% !important; /* 🎯 Globe ke upar se hatakar nichle hisse (base) par completely drop kiya */
+    left: 50% !important;
+    transform: translateX(-50%) !important; /* Perfect horizontal layout anchor */
+    z-index: 99999999 !important; /* 🎯 Topmost layer priority so click triggers flawlessly */
+    background: transparent !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+    color: #ffffff !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    padding: 12px 35px !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    transition: all 0.2s ease !important;
+    display: block !important;
+}
+
+#startIntroTimelineBtn:hover {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Text scene alignment grid layer specs */
+.text-scene {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 10 !important;
+}
+
+#kineticTextHeader {
+    color: #dc2626 !important; 
+    font-size: 4.8rem !important; 
+    font-weight: 900 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    text-shadow: 0 0 45px rgba(220, 38, 38, 0.9) !important;
+    text-align: center;
+    font-family: 'Impact', 'Arial Black', sans-serif !important;
+    margin: 0 !important;
+}
+
+.hidden { display: none !important; }

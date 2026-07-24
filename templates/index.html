@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='landing-style.css') }}">
 </head>
 <body>
+
+   <!-- 🎬 LAYER RE-ORDERED SYSTEM: CONTROLS PLACED SAFELY ON TOP -->
+<div id="cinemaIntroOverlay">
+    <!-- Full-screen simulation particles sheet canvas -->
+    <canvas id="particleGlobeCanvas"></canvas>
+
+    <!-- Absolute layered dead center cinematic text layout -->
+    <div class="text-scene hidden" id="introTextStage">
+        <h1 id="kineticTextHeader"></h1>
+    </div>
+
+    <!-- 🎯 ALWAYS FLOATING AT THE BOTTOM LAYER TRACK WITH MAXIMUM CLICK PRIORITY -->
+    <button id="startIntroTimelineBtn" onclick="triggerCinematicTextTimeline()">Start Account View</button>
+</div>
+
+
     <div class="landing-container">
         <nav class="navbar">
          <!-- 🎯 LOGO AND TEXT UPDATED FOR HOME PAGE PROMINENCE -->

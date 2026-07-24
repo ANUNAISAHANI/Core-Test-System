@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoreTest System - Secure Online Examination Platform</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing-style.css') }}">
 </head>
 <body>
     <div class="landing-container">
         <nav class="navbar">
-            <div class="logo">
-                <h2>📚 CoreTest System</h2>
-            </div>
+         <!-- 🎯 LOGO AND TEXT UPDATED FOR HOME PAGE PROMINENCE -->
+         <div class="logo" style="display: flex; align-items: center; gap: 15px;">
+         <!-- Dashboard wala standard logo image source call -->
+        <img src="{{ url_for('static', filename='logo.png') }}" id="landingLogo" alt="Logo" style="height: 45px; width: auto; object-fit: contain;">
+         <h2>CoreTest System</h2>
+    </div>
             <div class="nav-buttons">
                 <a href="login.html" class="btn btn-outline">Login</a>
                 <a href="register.html" class="btn btn-primary">Register</a>

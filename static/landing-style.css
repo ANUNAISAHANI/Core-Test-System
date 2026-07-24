@@ -1,0 +1,159 @@
+/* ==========================================================================
+   🌐 CORETEST SYSTEM - LANDING PAGE PREMIUM SEPARATE GLOBAL THEME
+   ========================================================================== */
+
+/* 1. Global Background - Exact Matching Sync */
+body {
+    background: radial-gradient(circle at 10% 20%, rgba(4, 159, 185, 0.7) 0%, rgba(12, 192, 178, 0.5) 40%, rgba(30, 80, 200, 0.6) 100%), 
+                linear-gradient(135deg, #1aa3ba 0%, #1572b6 40%, #0e5287 100%) !important;
+    background-attachment: fixed !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    margin: 0;
+}
+
+.landing-container {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* 2. Top Navigation Header Box - White Background Removed (Transparent) */
+.navbar {
+    background: transparent !important;   /* Solid white box framework completely removed */
+    box-shadow: none !important;           /* Structural outline drops hidden */
+    border: none !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 20px 40px !important;
+}
+
+/* Brand Identifier Text Styles */
+.navbar .logo h2 {
+    color: #ffb900 !important;             /* Premium matching system gold accent logo branding */
+    font-size: 1.6rem !important;
+    font-weight: 850 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+
+/* 3. Main Center Section Headings Text Overrides to SOLID RED */
+.hero-section h1, 
+.hero-section h1 span,
+.hero-content h1,
+.hero-content h1 span {
+    color: green !important;             /* 🎯 "Secure Online Examination Platform" forced to RED */
+    font-size: 3rem !important;
+    font-weight: 900 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 15px !important;
+}
+
+.hero-section p,
+.hero-content p {
+    color: green !important;             /* 🎯 Inner description context strings forced to RED */
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    max-width: 700px;
+    margin: 0 auto 30px auto !important;
+}
+
+
+/* 4. 🎯 ALL INTERACTION BUTTONS SYNC WITH EXACT ACCOUNT SEARCH MINIMAL SKIN */
+.nav-buttons .btn,
+.hero-buttons .btn,
+.btn-primary,
+.btn-outline,
+.navbar a.btn,
+.hero-section a.btn {
+    background: #f2fbf7 !important;         /* 🎯 Exact soft mint light-green background */
+    border: 1.5px solid #bbf7d0 !important; /* 🎯 Light green framing border outline */
+    color: #22c55e !important;              /* 🎯 Sharp mint green font text color */
+    font-size: 1rem !important;
+    font-weight: 750 !important;            
+    border-radius: 8px !important;          
+    padding: 11px 22px !important;          
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.05) !important;
+    transition: all 0.2s ease-in-out !important;
+    cursor: pointer !important;
+}
+
+/* Dynamic hovering styles for interactive responsiveness */
+.nav-buttons .btn:hover,
+.hero-buttons .btn:hover,
+.navbar a.btn:hover,
+.hero-section a.btn:hover {
+    background: #e6f9f0 !important;         /* Slightly richer green highlight on cursor focus */
+    border-color: #86efac !important;
+    color: #16a34a !important;              
+    transform: translateY(-1px) !important;
+}
+
+
+/* ==========================================================================
+   📦 LANDING PAGE: FOUR FEATURE CARDS CUSTOM STYLES
+   ========================================================================== */
+
+/* 🎯 ONLY TARGETING THE FOUR BOTTOM FEATURE CARDS */
+.features .feature-card,
+.feature-card {
+    background: #faae62 !important; /* 🎯 Cards background color forced to orange-gold */
+    border: 1px solid rgba(220, 38, 38, 0.15) !important; /* Soft premium border line */
+    border-radius: 16px !important;  /* Premium rounded corners like macOS widgets */
+    padding: 20px !important;
+    min-width: 180px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06) !important; /* Clean soft drop shadow */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover effect for premium smoothness on mouse cursor */
+.features .feature-card:hover,
+.feature-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Forcing all text and icons inside the card to look sharp and dark for high contrast */
+.feature-card h3,
+.feature-card p,
+.feature-card .feature-icon {
+    color: red !important;      /* 🎯 Deep dark readable text to contrast with gold background */
+    font-weight: 700 !important;
+    margin: 5px 0 !important;
+}
+
+.feature-card .feature-icon {
+    font-size: 2rem !important;     /* Icon size scaled up slightly */
+}
+
+
+/* ==========================================================================
+   🍏 NAVBAR: HERO HOME PAGE LOGO AND TITLE SCALING FIX (UPDATED SIZE)
+   ========================================================================== */
+
+/* 🎯 LOGO IMAGE SIZE SCALED UP FURTHER */
+#landingLogo, 
+.navbar .logo img {
+    height: 60px !important;    /* 🎯 Size ko 48px se badha kar 60px kar diya hai */
+    width: auto !important;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)) !important;
+    transition: transform 0.25s ease !important;
+}
+
+#landingLogo:hover {
+    transform: scale(1.05) !important;
+}
+
+/* 🎯 CORETEST SYSTEM TEXT SCALED UP FURTHER WITH GOLDEN GLOW */
+.navbar .logo h2 {
+    color: #ffb900 !important;   
+    font-size: 2.6rem !important; /* 🎯 Font size ko 2.1rem se badha kar 2.6rem kar diya hai */
+    font-weight: 900 !important;
+    margin: 0 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: 0 4px 8px rgba(220, 100, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.2) !important; 
+}

@@ -9,7 +9,7 @@
 </head>
 <body>
 
-   <!-- 🎬 LAYER RE-ORDERED SYSTEM: CONTROLS PLACED SAFELY ON TOP -->
+   <!-- 🎬 FULL CINEMATIC STAGE: WITH EMBEDDED VIDEO LOGO TIMELINE -->
 <div id="cinemaIntroOverlay">
     <!-- Full-screen simulation particles sheet canvas -->
     <canvas id="particleGlobeCanvas"></canvas>
@@ -19,9 +19,15 @@
         <h1 id="kineticTextHeader"></h1>
     </div>
 
-    <!-- 🎯 ALWAYS FLOATING AT THE BOTTOM LAYER TRACK WITH MAXIMUM CLICK PRIORITY -->
+    <!-- 🎯 10-SECOND INTRO VIDEO LINK ELEMENT IN DEAD CENTER -->
+    <video id="introLogoVideo" class="hidden" preload="auto" playsinline>
+        <source src="{{ url_for('static', filename='logo-intro2.mp4') }}" type="video/mp4">
+    </video>
+
+    <!-- Always floating at the bottom layer track with maximum click priority -->
     <button id="startIntroTimelineBtn" onclick="triggerCinematicTextTimeline()">Start Account View</button>
 </div>
+
 
 
     <div class="landing-container">

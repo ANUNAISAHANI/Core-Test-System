@@ -254,29 +254,26 @@ function triggerCinematicTextTimeline() {
     renderFrame();
 })();
 
-// 🎯 TRIGGER TIMELINE CONTROL WITH INSTANT BUTTON ERASURE
+// 🎯 TIMELINE TRIGGER EXECUTION: CONNECTING WELCOME TEXT TO VIDEO SYSTEM
 function triggerCinematicTextTimeline() {
     const startBtn = document.getElementById('startIntroTimelineBtn');
     const textStage = document.getElementById('introTextStage');
     const textHeader = document.getElementById('kineticTextHeader');
-    const mainOverlay = document.getElementById('cinemaIntroOverlay');
     
-    // 🎯 REMOVE BUTTON INSTANTLY WITH MAXIMUM DISPATCH RESPONSE
     if (startBtn) {
         startBtn.style.display = 'none';
         startBtn.style.visibility = 'hidden';
     }
 
-    // Detonate canvas points layout smoothly
+    // Detonate points outward smoothly across screens
     window.isExplodingActive = true;
 
-    // Smooth delay before initializing typewriter letters animation strings streams
     setTimeout(() => {
         if (textStage) {
             textStage.classList.remove('hidden');
             textStage.style.display = 'flex';
         }
-    }, 80); 
+    }, 100); 
     
     const targetString = "Welcome to CoreTest System";
     let index = 0;
@@ -288,15 +285,60 @@ function triggerCinematicTextTimeline() {
             index++;
         } else {
             clearInterval(dynamicTypingTimer);
+            
+            // 🎯 STAGE 2: Welcome Text finishes typing ➔ Start 10-Second Video Panel
             setTimeout(() => {
-                if (mainOverlay) {
-                    mainOverlay.style.opacity = '0';
-                    setTimeout(() => { 
-                        mainOverlay.classList.add('hidden'); 
-                        mainOverlay.style.display = 'none';
-                    }, 600);
+                // 🎯 FIXED: Instantly wipe out text and canvas elements so they NEVER show behind video
+                if (textStage) textStage.remove(); 
+                
+                const canvasElement = document.getElementById('particleGlobeCanvas');
+                if (canvasElement) {
+                    canvasElement.style.display = 'none';
+                    canvasElement.remove(); // Absolute hard erasure from layout DOM tree
                 }
-            }, 2500);
+                
+                const introVideo = document.getElementById('introLogoVideo');
+                if (introVideo) {
+                    introVideo.classList.remove('hidden');
+                    introVideo.play(); 
+                    
+                    // 🎯 STAGE 3: Video ended handler
+                    introVideo.onended = () => {
+                        proceedToVideoMorphSequence(introVideo);
+                    };
+                    
+                    // Fail-safe protection timeout trigger set at exactly 10.2 seconds
+                    setTimeout(() => {
+                        if (!introVideo.classList.contains('fly-active')) {
+                            proceedToVideoMorphSequence(introVideo);
+                        }
+                    }, 10200);
+                }
+            }, 3000); 
         }
     }, 65);
+}
+
+// 🎯 STAGE 4: VIDEO STARTS SHRINKING AND FLYING TO CORNER WHILE LANDING PAGE REVEALS
+function proceedToVideoMorphSequence(introVideo) {
+    const mainOverlay = document.getElementById('cinemaIntroOverlay');
+    
+    // 🎯 REVEAL LANDING PAGE: Turns black backdrop transparent so page layout shows up smoothly!
+    if (mainOverlay) {
+        mainOverlay.style.setProperty('background-color', 'rgba(0,0,0,0)', 'important');
+    }
+    
+    // 🎯 START FLIGHT: Video shrinks and shoots up towards the top-left logo position using rigid CSS transition
+    introVideo.classList.add('fly-active');
+
+    // Final clean up phase to destroy overlay completely from layout DOM branch
+    setTimeout(() => {
+        if (mainOverlay) {
+            mainOverlay.style.opacity = '0';
+            setTimeout(() => {
+                mainOverlay.classList.add('hidden');
+                mainOverlay.style.display = 'none';
+            }, 600);
+        }
+    }, 1400); // Matches the 1.4s CSS transition tracking layout perfectly
 }

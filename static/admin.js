@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // ==================== EXAMS CARDS GENERATOR ====================
+   // ==================== EXAMS CARDS GENERATOR ====================
     function loadAllExams() {
         fetch('/api/exams')
         .then(res => res.json())
@@ -237,14 +237,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (examForm) {
        examForm.onsubmit = (e) => {
         e.preventDefault();
+        
+        // 🎯 NAYE JOGAAD KE LIYE: Dono selected input values ko read karna
+        const selectedSemesterRaw = document.getElementById('examSemester').value;
+        const selectedSectionRaw = document.getElementById('examSection') ? document.getElementById('examSection').value : 'ALL';
+        
+        // Backend ko bina chhede Semester database column me Section ka string merge (jodh) kar bhej rahe hain
+        const finalSemesterPayload = `${selectedSemesterRaw} | Section-${selectedSectionRaw}`;
+
         const exPayload = {
             subject: document.getElementById('examSubject').value.trim(),
             topic: document.getElementById('examTopic').value.trim(),
             icon: document.getElementById('examIcon').value.trim(),
             duration: parseInt(document.getElementById('examDuration').value) * 60,
             totalQuestions: parseInt(document.getElementById('examTotalQ').value),
-            // 🎯 FIXED: Semester and Target Branch fields mapped safely inside original payload
-            semester: document.getElementById('examSemester').value,
+            
+            // 🎯 FIXED POSITION: Jahan aapka cursor tha, theek wahi par safe combination apply kiya
+            semester: finalSemesterPayload,
             course_branch: document.getElementById('examCourseBranch').value
         };
 
@@ -258,9 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('examModal').style.display = 'none';
             loadAllExams();
             examForm.reset();
-            // 🎯 FIXED: Reset dropdown selects back to original indexes
+            
+            // 🎯 FIXED RESET: Form submit hone ke baad saare dropdown original indexes par reset ho jayenge
             document.getElementById('examCourseBranch').value = "ALL";
             document.getElementById('examSemester').value = "";
+            if (document.getElementById('examSection')) {
+                document.getElementById('examSection').value = "ALL";
+            }
         });
     };
     }

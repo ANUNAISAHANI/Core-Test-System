@@ -980,9 +980,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// 🎯 Smart Results-Driven Subject Filter & Question Modal Sync Logic
+// ===================================================================================
+// 🎯 SMART ADVANCED RESULTS-DRIVEN CASCADING DROPDOWN FILTER (BRANCH, SEMESTER, SECTION)
+// ===================================================================================
 window.updateSubjectDropdown = function() {
-    // 1. Question Modal wala dropdown fix karne ke liye (black line wali problem solve)
+    
+    // --- PART 1: QUESTION MODAL DROPDOWN SYNC LOGIC ---
+    // (Isse question modal ke andar ka subject dropdown default manage hota hai)
     const qSubjectSelect = document.getElementById('questionSubject');
     if (qSubjectSelect) {
         fetch('/api/exams')
@@ -1001,65 +1005,106 @@ window.updateSubjectDropdown = function() {
         .catch(err => console.error("Question subject sync error:", err));
     }
 
-    // 2. Tumhara original track results cascading filter logic
+    // --- PART 2: ADVANCED TRACK RESULTS CASCADING FILTER LOGIC ---
+    // Teeno main filters (Branch, Semester, Section) aur target Subject dropdown ko target karna
     const branchSelect = document.getElementById('resFilterBranch');
+    const semesterSelect = document.getElementById('resFilterSemester'); // 👈 Naya Semester Element Hook
+    const sectionSelect = document.getElementById('resFilterSection');   // 👈 Naya Section Element Hook
     const subjectSelect = document.getElementById('resFilterSubject');
     
     if (!subjectSelect) return;
 
+    // Teeno values ko extract karke safe uppercase format me normalize karna
     const selectedBranch = branchSelect ? branchSelect.value.trim().toUpperCase() : 'ALL';
+    const selectedSemester = semesterSelect ? semesterSelect.value.trim().toUpperCase() : 'ALL'; // 👈 Semester Value Extract
+    const selectedSection = sectionSelect ? sectionSelect.value.trim().toUpperCase() : 'ALL';   // 👈 Section Value Extract
 
-    // Hum live exams ki jagah seedhe saved results se data fetch kar rahe hain
+    // Saved database results api se data fetch karke dynamic cascading match karna
     fetch('/api/results')
     .then(res => res.json())
     .then(results => {
         let filteredResults = results;
         
-        // Agar koi specific branch select ki hai
+        // 1️⃣ [BRANCH FILTER LOGIC]: Agar koi specific branch select ki hai
         if (selectedBranch && selectedBranch !== 'ALL') {
-            filteredResults = results.filter(r => {
-                const b = (r.course_branch || r.user_branch || '').trim().toUpperCase();
+            filteredResults = filteredResults.filter(r => {
+                const b = (r.course_branch || r.user_branch || r.branch || '').trim().toUpperCase();
                 return b === '' || b === 'ALL' || b.includes(selectedBranch) || selectedBranch.includes(b);
             });
         }
 
-        // Sirf unhi subjects ko nikalenge jinka result database mein actually exist karta hai
+        // 2️⃣ [SEMESTER FILTER LOGIC]: Agar koi specific semester select kiya hai
+        if (selectedSemester && selectedSemester !== 'ALL') {
+            filteredResults = filteredResults.filter(r => {
+                // Database row se available semester keys (.semester ya .course_semester) ko parse karna
+                const sem = String(r.semester || r.course_semester || r.user_semester || '').trim().toUpperCase();
+                return sem === '' || sem === 'ALL' || sem.includes(selectedSemester) || selectedSemester.includes(sem);
+            });
+        }
+
+        // 3️⃣ [SECTION FILTER LOGIC]: Agar koi specific section select kiya hai
+        if (selectedSection && selectedSection !== 'ALL') {
+            filteredResults = filteredResults.filter(r => {
+                // Database row se available section keys (.section ya .course_section) ko parse karna
+                const sec = String(r.section || r.course_section || r.user_section || '').trim().toUpperCase();
+                return sec === '' || sec === 'ALL' || sec.includes(selectedSection) || selectedSection.includes(sec);
+            });
+        }
+
+        // Final filtered data se sirf unhi unique subjects ki list nikalna jinka result available hai
         const subjects = [...new Set(filteredResults.map(r => r.examSubject || r.subject).filter(Boolean))];
         const currentSubVal = subjectSelect.value;
 
-        // Dropdown dynamically populate hoga bas un subjects ke sath jinke results available hain
+        // Subject dropdown ko filtered subjects ke sath reload karwana
         subjectSelect.innerHTML = '<option value="ALL">All Subjects</option>' + 
             subjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
 
+        // Agar select kiya hua subject naye filtered list me h toh text select rakho, nahi toh ALL par fallback karo
         if (subjects.includes(currentSubVal) || currentSubVal === 'ALL') {
             subjectSelect.value = currentSubVal;
         } else {
             subjectSelect.value = 'ALL';
         }
 
+        // Global report filter apply listener ko refresh karwana table update ke liye
         if (typeof applyResultFilters === 'function') {
             applyResultFilters();
         }
     })
-    .catch(err => console.error("Results-driven cascading error:", err));
+    .catch(err => console.error("Results-driven cascading filter error:", err));
 };
 
 
-
-// 🎯 AUTO-TRIGGER & SYNC HOOK FOR BRANCH-SUBJECT CASCADING DROPDOWN
+// ===================================================================================
+// 🎯 AUTO-TRIGGER & SYNC HOOK FOR MULTI-LEVEL CASCADING DROPDOWNS
+// ===================================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Jaise hi page load ho, ek baar dropdown populate karwa do
+    // Page load hote hi ek baar cascading filters default load karwana
     if (typeof updateSubjectDropdown === 'function') {
         updateSubjectDropdown();
     }
 
-    // 2. Jab bhi track results wala branch filter change ho, subject dropdown update ho jaye
+    // 1. Branch filter change listener handler
     const resFilterBranchElement = document.getElementById('resFilterBranch');
     if (resFilterBranchElement) {
         resFilterBranchElement.addEventListener('change', () => {
-            if (typeof updateSubjectDropdown === 'function') {
-                updateSubjectDropdown();
-            }
+            if (typeof updateSubjectDropdown === 'function') updateSubjectDropdown();
+        });
+    }
+
+    // 2. Naya Semester filter change listener handler 
+    const resFilterSemesterElement = document.getElementById('resFilterSemester');
+    if (resFilterSemesterElement) {
+        resFilterSemesterElement.addEventListener('change', () => {
+            if (typeof updateSubjectDropdown === 'function') updateSubjectDropdown();
+        });
+    }
+
+    // 3. Naya Section filter change listener handler
+    const resFilterSectionElement = document.getElementById('resFilterSection');
+    if (resFilterSectionElement) {
+        resFilterSectionElement.addEventListener('change', () => {
+            if (typeof updateSubjectDropdown === 'function') updateSubjectDropdown();
         });
     }
 });

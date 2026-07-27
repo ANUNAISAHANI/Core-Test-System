@@ -20,23 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(`/api/get_result_detail/${resultId}`)
     .then(res => res.json())
     .then(data => {
-        console.log("=== BACKEND DATA CHECK ===", data);
         if (!data || !data.success) {
             document.getElementById('questionsReviewSection').innerHTML = '<p style="text-align:center; color:red;">No historical performance sheets found under this entry id parameter.</p>';
             return;
         }
 
-        // Render Scoreboard Meta Metrics dynamically from mapped controller
         document.getElementById('reportTitle').textContent = `Performance Report Card: ${data.subject}`;
         document.getElementById('candidateName').textContent = data.studentName || currentUser.fullName;
         document.getElementById('subjectTag').textContent = data.subject;
         document.getElementById('scorePercentage').textContent = `${parseFloat(data.percentage).toFixed(2)}%`;
         document.getElementById('submissionTimestamp').textContent = data.submittedAt || "N/A";
         
-        // 🎯 EXACT ID FIX: Ab backend ka real reason data is completionReason element me link ho jayega
         const reasonEl = document.getElementById('completionReason');
         if (reasonEl) {
-            // Agar database se full remarks string (with timestamp) aa rahi hai toh use filter karke clear dikhayenge
             const fullRemarks = data.remarks || data.reason || "System Normal Termination";
             const cleanReasonText = fullRemarks.includes(' | Log Timestamp:') 
                 ? fullRemarks.split(' | Log Timestamp:')[0] 
@@ -45,10 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
             reasonEl.textContent = `Status: ${cleanReasonText}`;
         }
 
-        // Count total questions directly from the payload
         const totalQs = data.questions ? data.questions.length : 0;
         let correctCount = 0;
-        if (data.questions) {
+        if (data.questions && Array.isArray(data.questions)) {
             data.questions.forEach(q => {
                 const sAns = String(q.selectedOption || '').trim().toUpperCase();
                 const cAns = String(q.correctOption || '').trim().toUpperCase();
@@ -60,29 +55,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('totalCorrect').textContent = `${correctCount} / ${totalQs}`;
         
-        // Review container clear setup
         const reviewContainer = document.getElementById('questionsReviewSection');
         if (!reviewContainer) return;
         reviewContainer.innerHTML = '';
 
-        if (!data.questions || data.questions.length === 0) {
+        const questionList = data.questions || [];
+        if (questionList.length === 0) {
             reviewContainer.innerHTML = '<p style="color:#e74c3c; font-style:italic; text-align:center;">⚠️ Notice: No question logs found under this exam submission.</p>';
             return;
         }
 
-        // 🎯 FIX #2: Strict checking for Unattempted/Skipped options
-        data.questions.forEach((q, index) => {
+        questionList.forEach((q, index) => {
             let studentAns = String(q.selectedOption || '').trim().toUpperCase();
             const correctAns = String(q.correctOption || '').trim().toUpperCase();
             
-            // Agar backend se numerical index 0, 1, 2, 3 aa raha ho toh use letter me convert karenge safely, 
-            // par agar index khali ya undefined/none hai toh mapping bypass hogi
-            if (studentAns === "0" && !q.options["0"]) studentAns = "A";
-            if (studentAns === "1" && !q.options["1"]) studentAns = "B";
-            if (studentAns === "2" && !q.options["2"]) studentAns = "C";
-            if (studentAns === "3" && !q.options["3"]) studentAns = "D";
+            if (studentAns === "0" && q.options && !q.options["0"]) studentAns = "A";
+            if (studentAns === "1" && q.options && !q.options["1"]) studentAns = "B";
+            if (studentAns === "2" && q.options && !q.options["2"]) studentAns = "C";
+            if (studentAns === "3" && q.options && !q.options["3"]) studentAns = "D";
 
-            // Strict Unattempted condition check (0 index fallback check removed)
             const isUnattempted = q.selectedOption === null || 
                                  q.selectedOption === undefined || 
                                  String(q.selectedOption).trim() === "" || 
@@ -111,13 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 evaluationStatusHtml = `<span style="background:#fdedec; color:#922b21; padding:2px 10px; border-radius:20px; font-size:0.8rem; font-weight:600;">❌ Wrong Option Marked</span>`;
             }
 
-            // Options checking safely
             const optA = q.options ? (q.options['A'] || q.options[0] || '') : '';
             const optB = q.options ? (q.options['B'] || q.options[1] || '') : '';
             const optC = q.options ? (q.options['C'] || q.options[2] || '') : '';
             const optD = q.options ? (q.options['D'] || q.options[3] || '') : '';
 
-            // Grid block backgrounds updates for unattempted cases
             const bgA = correctAns === 'A' ? '#e8f5e9' : (!isUnattempted && studentAns === 'A' ? '#fdedec' : '#f8f9fa');
             const bgB = correctAns === 'B' ? '#e8f5e9' : (!isUnattempted && studentAns === 'B' ? '#fdedec' : '#f8f9fa');
             const bgC = correctAns === 'C' ? '#e8f5e9' : (!isUnattempted && studentAns === 'C' ? '#fdedec' : '#f8f9fa');
@@ -154,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(err => console.error("Detailed results fetch error:", err));
 
-    // Balanced navigation redirection actions mapping
     document.getElementById('returnBtn').onclick = () => {
         if (currentUser.role === 'admin') { window.location.href = 'admin.html'; }
         else if (currentUser.role === 'teacher') { window.location.href = 'teacher.html'; }

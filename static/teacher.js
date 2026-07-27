@@ -43,134 +43,191 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let globalResultsCache = [];
 
-    function loadFacultyLedger() {
-        fetch('/api/results')
-        .then(res => res.json())
-        .then(results => {
-            globalResultsCache = results;
-           // Yahan paste karo (Line 50-51 ke beech)
-            const subSelect = document.getElementById('filterSubject');
-            const subjects = [...new Set(results.map(r => r.examSubject || 'General'))];
-            subSelect.innerHTML = '<option value="ALL">-- All Subjects --</option>'; // Pehle clear karo taki double na aaye
-            subjects.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s; opt.textContent = s;
-                subSelect.appendChild(opt);
-            });  
-            renderFilteredLedger(); 
-        })
-        .catch(err => {
-            console.error("🚨 Ledger Engine Error:", err);
-            document.getElementById('facultyLedgerBody').innerHTML = `<tr><td colspan="8" style="color:red; text-align:center;">Failed to establish stream link with Sqlite node logs.</td></tr>`;
-        });
+    // ===================================================================================
+// 🎯 TEACHER LEDGER LOAD ENGINE WITH REAL-TIME DROPDOWN FILTER MANAGEMENT
+// ===================================================================================
+function loadFacultyLedger() {
+    fetch('/api/results')
+    .then(res => res.json())
+    .then(results => {
+        // Safe global caching context hook setup
+        globalResultsCache = results;
+        window.globalResultsCache = results;
+
+        // 🎯 DYNAMIC SUBJECT DROPDOWN REFINEMENT: Section aur Semester ke basis par refresh karna
+        updateTeacherSubjectDropdown();
+        
+        // Final screen matching data render function trigger
+        renderFilteredLedger(); 
+    })
+    .catch(err => {
+        console.error("🚨 Ledger Engine Error:", err);
+        document.getElementById('facultyLedgerBody').innerHTML = `<tr><td colspan="8" style="color:red; text-align:center;">Failed to establish stream link with Sqlite node logs.</td></tr>`;
+    });
+}
+
+// ===================================================================================
+// 🎯 SMART CASCADING SUBJECT FILTER LOGIC (SECTION & SEMESTER DRIVEN)
+// ===================================================================================
+function updateTeacherSubjectDropdown() {
+    const sectionSelect = document.getElementById('filterSection');
+    const semesterSelect = document.getElementById('filterSemester');
+    const subjectSelect = document.getElementById('filterSubject');
+    
+    // Safety check fallback
+    if (!subjectSelect || !window.globalResultsCache) return;
+
+    // Normalizing selected dynamic options values
+    const selectedSection = sectionSelect ? sectionSelect.value : 'ALL';
+    const selectedSemester = semesterSelect ? semesterSelect.value : 'ALL';
+
+    let filteredResults = window.globalResultsCache;
+
+    // 1️⃣ [SECTION FILTER CONDITION]: Selected data validation 
+    if (selectedSection && selectedSection !== 'ALL') {
+        filteredResults = filteredResults.filter(r => r.section === selectedSection);
     }
 
-    function renderFilteredLedger() {
-        const tbody = document.getElementById('facultyLedgerBody');
-        if (!tbody) return;
+    // 2️⃣ [SEMESTER FILTER CONDITION]: Selected data validation
+    if (selectedSemester && selectedSemester !== 'ALL') {
+        filteredResults = filteredResults.filter(r => r.semester === selectedSemester);
+    }
 
-        const searchQuery = document.getElementById('tableSearchInput').value.toLowerCase().trim();
-        const sectionFilter = document.getElementById('filterSection').value;
-        const semFilter = document.getElementById('filterSemester').value;
-        const subFilter = document.getElementById('filterSubject').value;
+    // Refined unique dynamic list mapping
+    const refinedSubjects = [...new Set(filteredResults.map(r => r.examSubject || 'General'))].filter(Boolean);
+    const currentSubjectValue = subjectSelect.value;
 
-        const matchingRecords = globalResultsCache.filter(r => {
-            const studentName = (r.userName || '').toLowerCase();
-            const studentRoll = (r.roll_number || '').toLowerCase();
-            const studentBranch = (r.course_branch || '').toLowerCase();
-            const teacherBranch = (currentTeacher && currentTeacher.course_branch || '').toLowerCase();
+    // Re-populating target selection element HTML dynamically
+    subjectSelect.innerHTML = '<option value="ALL">-- All Subjects --</option>' + 
+        refinedSubjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
 
-            const matchesSearch = studentName.includes(searchQuery) || studentRoll.includes(searchQuery);
-            const matchesSection = (sectionFilter === 'ALL') || (r.section === sectionFilter);
-            const matchesSemester = (semFilter === 'ALL') || (r.semester === semFilter);
-            const matchesSubject = (subFilter === 'ALL') || (r.examSubject === subFilter);
-            const matchesBranchScope = !teacherBranch || studentBranch.includes(teacherBranch) || teacherBranch.includes(studentBranch);
+    // Fallback alignment for active inputs values
+    if (refinedSubjects.includes(currentSubjectValue) || currentSubjectValue === 'ALL') {
+        subjectSelect.value = currentSubjectValue;
+    } else {
+        subjectSelect.value = 'ALL';
+    }
+}
 
-            return matchesSearch && matchesSection && matchesBranchScope && matchesSemester && matchesSubject;
-        });
+// ===================================================================================
+// 🎯 FINAL TABLE DATA GRAPH RENDERING LOGIC (NO LOGIC ALTERED)
+// ===================================================================================
+function renderFilteredLedger() {
+    const tbody = document.getElementById('facultyLedgerBody');
+    if (!tbody) return;
 
-        document.getElementById('totalRecordsCount').textContent = `Department Records: ${matchingRecords.length}`;
+    const searchQuery = document.getElementById('tableSearchInput').value.toLowerCase().trim();
+    const sectionFilter = document.getElementById('filterSection').value;
+    const semFilter = document.getElementById('filterSemester').value;
+    const subFilter = document.getElementById('filterSubject').value;
 
-        if (matchingRecords.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #999; padding: 2rem;">No candidates recorded under your assigned department scope.</td></tr>`;
-            return;
+    const matchingRecords = globalResultsCache.filter(r => {
+        const studentName = (r.userName || '').toLowerCase();
+        const studentRoll = (r.roll_number || '').toLowerCase();
+        const studentBranch = (r.course_branch || '').toLowerCase();
+        const teacherBranch = (currentTeacher && currentTeacher.course_branch || '').toLowerCase();
+
+        const matchesSearch = studentName.includes(searchQuery) || studentRoll.includes(searchQuery);
+        const matchesSection = (sectionFilter === 'ALL') || (r.section === sectionFilter);
+        const matchesSemester = (semFilter === 'ALL') || (r.semester === semFilter);
+        const matchesSubject = (subFilter === 'ALL') || (r.examSubject === subFilter);
+        const matchesBranchScope = !teacherBranch || studentBranch.includes(teacherBranch) || teacherBranch.includes(studentBranch);
+
+        return matchesSearch && matchesSection && matchesBranchScope && matchesSemester && matchesSubject;
+    });
+
+    document.getElementById('totalRecordsCount').textContent = `Department Records: ${matchingRecords.length}`;
+
+    if (matchingRecords.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #999; padding: 2rem;">No candidates recorded under your assigned department scope.</td></tr>`;
+        return;
+    }
+
+    const subjectCounters = {};
+
+    const processedRecords = [...matchingRecords].reverse().map(r => {
+        const sub = r.examSubject || 'General';
+        if (!subjectCounters[sub]) {
+            subjectCounters[sub] = 0;
+        }
+        subjectCounters[sub]++;
+        return { ...r, subjectAttemptNum: subjectCounters[sub] };
+    });
+
+    const finalRecordsToRender = processedRecords.reverse();
+
+    tbody.innerHTML = finalRecordsToRender.map(r => {
+        const dynamicAttempt = r.attemptNumber || r.attempt || r.subjectAttemptNum;
+        const totalQ = r.totalQuestions || 10; 
+        const correctQ = r.correctAnswers || Math.round((parseFloat(r.percentage) / 100) * totalQ);
+        const wrongQ = totalQ - correctQ;
+
+        let formattedDate = '15/06/2026';
+        if (r.submittedAt || r.timestamp) {
+            const rawDate = new Date(r.submittedAt || r.timestamp);
+            if (!isNaN(rawDate.getTime())) {
+                formattedDate = rawDate.toLocaleDateString('en-GB');
+            }
         }
 
-        const subjectCounters = {};
+        return `
+            <tr>
+               <td style="font-weight: 600; color: #333;">${r.roll_number || '<span style="color:#aaa;">N/A</span>'}</td>
+               <td><b>${r.userName || 'Unknown'}</b></td>
+               <td><span class="badge-read" style="background:#f1f3f9; color:#4f46e5;">${r.course_branch || 'Unassigned'}</span></td>
+               <td>${r.section || 'None'}</td>
+               <td><span style="color:#2e7d32; font-weight:500;">${r.examSubject}</span></td>
 
-        const processedRecords = [...matchingRecords].reverse().map(r => {
-            const sub = r.examSubject || 'General';
-            if (!subjectCounters[sub]) {
-                subjectCounters[sub] = 0;
-            }
-            subjectCounters[sub]++;
-            return { ...r, subjectAttemptNum: subjectCounters[sub] };
-        });
+               <td style="text-align:center;">#${r.attempt_number || dynamicAttempt}</td>
 
-        const finalRecordsToRender = processedRecords.reverse();
+               <td><b style="color: #667eea; font-size:1.05rem;">${parseFloat(r.percentage).toFixed(2)}%</b></td>
 
-        tbody.innerHTML = finalRecordsToRender.map(r => {
-            const dynamicAttempt = r.attemptNumber || r.attempt || r.subjectAttemptNum;
-            const totalQ = r.totalQuestions || 10; 
-            const correctQ = r.correctAnswers || Math.round((parseFloat(r.percentage) / 100) * totalQ);
-            const wrongQ = totalQ - correctQ;
+               <td style="font-size:0.85rem; color:#666;">
+               <span style="color:#2e7d32; font-weight:600;">✔ ${correctQ}/${totalQ} Sahi</span><br>
+               <span style="color:#c62828; font-size:0.75rem;">✖ ${wrongQ} Galat</span>
+               </td>
+         
+               <td style="font-size:0.85rem; color:#888;">
+                   ${r.submittedAt || formattedDate}<br>
+                   <span style="font-size:0.75rem; font-weight:bold; color: ${r.reason && r.reason.toLowerCase().includes('cheating') ? '#c62828' : '#2e7d32'}">
+                       ${r.reason && r.reason.toLowerCase().includes('cheating') ? '⚠️ Cheating Detected' : '✅ Normal Submission'}
+                   </span>
+               </td>
 
-            let formattedDate = '15/06/2026';
-            if (r.submittedAt || r.timestamp) {
-                const rawDate = new Date(r.submittedAt || r.timestamp);
-                if (!isNaN(rawDate.getTime())) {
-                    formattedDate = rawDate.toLocaleDateString('en-GB');
-                }
-            }
+               <td>
+              <button onclick="viewDetailedExamSheet(${r.id || r.resultId})" class="view-btn" style="background:#4f46e5; color:white; border:none; padding:5px 10px; border-radius:5px; font-size:0.8rem; cursor:pointer; font-weight:500; transition:all 0.2s;">
+             👁 View Exam
+             </button>
+             </td>
+          </tr>
+        `;
+    }).join('');
+}
 
-            return `
-                <tr>
-                   <td style="font-weight: 600; color: #333;">${r.roll_number || '<span style="color:#aaa;">N/A</span>'}</td>
-                   <td><b>${r.userName || 'Unknown'}</b></td>
-                   <td><span class="badge-read" style="background:#f1f3f9; color:#4f46e5;">${r.course_branch || 'Unassigned'}</span></td>
-                   <td>${r.section || 'None'}</td>
-                   <td><span style="color:#2e7d32; font-weight:500;">${r.examSubject}</span></td>
-    
-                   <td style="text-align:center;">#${r.attempt_number || dynamicAttempt}</td>
-    
-                   <td><b style="color: #667eea; font-size:1.05rem;">${parseFloat(r.percentage).toFixed(2)}%</b></td>
-    
-                   <td style="font-size:0.85rem; color:#666;">
-                   <span style="color:#2e7d32; font-weight:600;">✔ ${correctQ}/${totalQ} Sahi</span><br>
-                   <span style="color:#c62828; font-size:0.75rem;">✖ ${wrongQ} Galat</span>
-                   </td>
-             
-                   <td style="font-size:0.85rem; color:#888;">
-                       ${r.submittedAt || formattedDate}<br>
-                       <span style="font-size:0.75rem; font-weight:bold; color: ${r.reason && r.reason.toLowerCase().includes('cheating') ? '#c62828' : '#2e7d32'}">
-                           ${r.reason && r.reason.toLowerCase().includes('cheating') ? '⚠️ Cheating Detected' : '✅ Normal Submission'}
-                       </span>
-                   </td>
-    
-                   <td>
-                  <button onclick="viewDetailedExamSheet(${r.id || r.resultId})" class="view-btn" style="background:#4f46e5; color:white; border:none; padding:5px 10px; border-radius:5px; font-size:0.8rem; cursor:pointer; font-weight:500; transition:all 0.2s;">
-                 👁 View Exam
-                 </button>
-                 </td>
-              </tr>
-            `;
-        }).join('');
-    }
+// ===================================================================================
+// 🎯 SYNCHRONIZED INTERFACE ELEMENT EVENT LISTENERS SETUP
+// ===================================================================================
+if (document.getElementById('tableSearchInput')) {
+    document.getElementById('tableSearchInput').addEventListener('input', renderFilteredLedger);
+}
+if (document.getElementById('filterSection')) {
+    document.getElementById('filterSection').addEventListener('change', () => {
+        updateTeacherSubjectDropdown(); // Section badalne par dropdown live sync hoga
+        renderFilteredLedger();
+    });
+}
+if (document.getElementById('filterSemester')) {
+    document.getElementById('filterSemester').addEventListener('change', () => {
+        updateTeacherSubjectDropdown(); // Semester badalne par dropdown live sync hoga
+        renderFilteredLedger();
+    });
+}
+if (document.getElementById('filterSubject')) {
+    document.getElementById('filterSubject').addEventListener('change', renderFilteredLedger);
+}
 
-    if (document.getElementById('tableSearchInput')) {
-        document.getElementById('tableSearchInput').addEventListener('input', renderFilteredLedger);
-    }
-    if (document.getElementById('filterSection')) {
-        document.getElementById('filterSection').addEventListener('change', renderFilteredLedger);
-    }
-    if (document.getElementById('filterSemester')) {
-        document.getElementById('filterSemester').addEventListener('change', renderFilteredLedger);
-    }
-    if (document.getElementById('filterSubject')) {
-        document.getElementById('filterSubject').addEventListener('change', renderFilteredLedger);
-    }
-
-    loadFacultyLedger();
+// Initial direct execution load call
+loadFacultyLedger();
 });
 
 // ==================== STEP 3: VIEW DETAILED EXAM SHEET MODAL (FIXED ESCAPE) ====================
@@ -325,3 +382,5 @@ function setupAvatarUploadLogic() {
         }
     });
 }
+
+

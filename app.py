@@ -10,6 +10,7 @@ from datetime import datetime
 import json
 import random
 
+
 app = Flask(__name__)
 app.secret_key = "sahani_coretest_secure_key_99"
 
@@ -242,6 +243,93 @@ def api_login():
         return jsonify({"success": True, "user": dict(user)})
         
     return jsonify({"success": False, "message": "Invalid credentials!"}), 401
+
+# ==================== SECURE AUTH OTP ENGINE GENERATOR ====================
+# (Aapki original .env ke ADMIN_PASSWORD variable ko direct safely call karega)
+otp_store_memory = {}
+
+@app.route('/api/auth/generate-otp', methods=['POST'])
+def generate_otp_api():
+    try:
+        data = request.json
+        email_input = data.get('email', '').strip()
+        
+        if not email_input:
+            return jsonify({"success": False, "message": "Bhai email daalna zaroori hai!"}), 400
+            
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = %s', (email_input,))
+        user = cursor.fetchone()
+        conn.close()
+        
+        if not user:
+            return jsonify({"success": False, "message": "Bhai ye email registered nahi hai!"}), 404
+            
+        # 6-Digit Dynamic OTP token generation
+        generated_otp = str(random.randint(100000, 999999))
+        otp_store_memory[email_input] = generated_otp
+        
+        SENDER_GMAIL = os.getenv("ADMIN_GMAIL")
+        SENDER_APP_PASSWORD = os.getenv("ADMIN_PASSWORD") 
+
+        if not SENDER_GMAIL or not SENDER_APP_PASSWORD:
+            return jsonify({"success": False, "message": "🚨 Server error: Configuration parameters missing."}), 500
+            
+        # Force refresh Flask-Mail credentials
+        app.config['MAIL_USERNAME'] = SENDER_GMAIL
+        app.config['MAIL_PASSWORD'] = SENDER_APP_PASSWORD
+
+        msg = Message(
+            '🔒 CoreTest System Security OTP Token',
+            sender=SENDER_GMAIL,
+            recipients=[email_input]
+        )
+        msg.body = f"Hello,\n\nYour CoreTest System Login OTP token is: {generated_otp}\n\nDo not share this token with anyone for account security validation safety."
+        
+        try:
+            mail.send(msg)
+            print(f"✅ OTP email successfully dispatched to: {email_input}")
+        except Exception as mail_err:
+            # 🎯 STRICT PROTECTION BLOCK: Koi bhi internal info ya password error screen par nahi dikhega
+            # Bache ko sirf ek clean secure message milega
+            return jsonify({"success": False, "message": "Network connection error. Server rejected authentication check."}), 500
+
+        return jsonify({"success": True, "message": "OTP Deployed Successfully on your Email!"})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": "Internal server processing error."}), 500
+
+@app.route('/api/auth/verify-otp-login', methods=['POST'])
+def verify_otp_api():
+    try:
+        data = request.json
+        email_input = data.get('email', '').strip()
+        otp_input = data.get('otp', '').strip()
+        
+        saved_otp = otp_store_memory.get(email_input)
+        
+        if saved_otp and otp_input == saved_otp:
+            otp_store_memory.pop(email_input, None) # Clear security token session memory
+            
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM users WHERE email = %s', (email_input,))
+            user = cursor.fetchone()
+            conn.close()
+            
+            if user:
+                # Flask session verification flags synchronization
+                session['user_id'] = user['id']
+                session['role'] = user['role']
+                
+                # Dynamic context mapping parameter dictionary dispatch
+                user_dict = dict(user)
+                return jsonify({"success": True, "user": user_dict})
+                
+        return jsonify({"success": False, "message": "Bhai OTP galat hai! Sahi se dekh ke daalo."}), 401
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 
 @app.route('/api/auth/forgot-password-action', methods=['POST'])
 def forgot_password_action():

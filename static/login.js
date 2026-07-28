@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ==================== 4. OTP VERIFICATION SUBMIT ====================
+// ==================== 4. OTP VERIFICATION SUBMIT (DYNAMIC ROLE REDIRECT) ====================
 const verifyOtpBtn = document.getElementById('verifyOtpBtn');
 if (verifyOtpBtn) {
     verifyOtpBtn.addEventListener('click', function(e) {
@@ -183,21 +183,27 @@ if (verifyOtpBtn) {
             return;
         }
         
-        console.log("🔐 Submitting OTP token validation request for:", email);
-        
         fetch('/api/auth/verify-otp-login', { 
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email, otp: otpCode })
         })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
-                alert(`🎉 OTP Verified! Welcome back, ${data.user.fullName}.`);
-                window.location.href = 'dashboard.html'; 
+                alert(`🎉 OTP Verified! Welcome back, ${data.user.fullName || 'User'}.`);
+                
+                // 🎯 DYNAMIC PROTECTION: Database me bache ke role ke mutabik sahi screen par redirect karna
+                const userRole = (data.user.role || 'student').toLowerCase().trim();
+                
+                if (userRole === 'admin') {
+                    window.location.href = 'admin.html';
+                } else if (userRole === 'teacher' || userRole === 'faculty') {
+                    window.location.href = 'teacher.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
             } else {
                 alert("❌ Invalid OTP: Sahi se check karke daalo bhai.");
             }

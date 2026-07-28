@@ -254,11 +254,40 @@ function triggerCinematicTextTimeline() {
     renderFrame();
 })();
 
+// ==========================================================================
+// 🌌 REFRESH LOCK LOGIC VIA SESSION STORAGE (ANTI-LAG REVERSE LOGIC)
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const mainOverlay = document.getElementById('cinemaIntroOverlay');
+    const canvasElement = document.getElementById('particleGlobeCanvas');
+    
+    // Check karenge ki user ne isi browser tab me intro pehle dekha hai ya nahi
+    if (sessionStorage.getItem('cinemaIntroWatched') === 'true') {
+        // 🎯 REFRESH CASE: Agar pehle dekh chuka hai, toh display none hi rehne do aur canvas udao
+        if (mainOverlay) {
+            mainOverlay.style.display = 'none';
+            mainOverlay.classList.add('hidden');
+        }
+        if (canvasElement) {
+            canvasElement.style.display = 'none';
+            canvasElement.remove();
+        }
+    } else {
+        // 🎯 FRESH NEW TAB CASE: Agar user pehli baar aaya hai, tabhi screen render karwao bina lag ke
+        if (mainOverlay) {
+            mainOverlay.style.display = 'flex'; // Shuruat me hidden tha, ab safely screen par aayega
+        }
+    }
+});
+
 // 🎯 TIMELINE TRIGGER EXECUTION: CONNECTING WELCOME TEXT TO VIDEO SYSTEM
 function triggerCinematicTextTimeline() {
     const startBtn = document.getElementById('startIntroTimelineBtn');
     const textStage = document.getElementById('introTextStage');
     const textHeader = document.getElementById('kineticTextHeader');
+    
+    // 🎯 LOCK REGISTER: Memory lock register setup instantly
+    sessionStorage.setItem('cinemaIntroWatched', 'true');
     
     if (startBtn) {
         startBtn.style.display = 'none';
@@ -288,13 +317,12 @@ function triggerCinematicTextTimeline() {
             
             // 🎯 STAGE 2: Welcome Text finishes typing ➔ Start 10-Second Video Panel
             setTimeout(() => {
-                // 🎯 FIXED: Instantly wipe out text and canvas elements so they NEVER show behind video
                 if (textStage) textStage.remove(); 
                 
                 const canvasElement = document.getElementById('particleGlobeCanvas');
                 if (canvasElement) {
                     canvasElement.style.display = 'none';
-                    canvasElement.remove(); // Absolute hard erasure from layout DOM tree
+                    canvasElement.remove();
                 }
                 
                 const introVideo = document.getElementById('introLogoVideo');
@@ -323,15 +351,12 @@ function triggerCinematicTextTimeline() {
 function proceedToVideoMorphSequence(introVideo) {
     const mainOverlay = document.getElementById('cinemaIntroOverlay');
     
-    // 🎯 REVEAL LANDING PAGE: Turns black backdrop transparent so page layout shows up smoothly!
     if (mainOverlay) {
         mainOverlay.style.setProperty('background-color', 'rgba(0,0,0,0)', 'important');
     }
     
-    // 🎯 START FLIGHT: Video shrinks and shoots up towards the top-left logo position using rigid CSS transition
     introVideo.classList.add('fly-active');
 
-    // Final clean up phase to destroy overlay completely from layout DOM branch
     setTimeout(() => {
         if (mainOverlay) {
             mainOverlay.style.opacity = '0';
@@ -340,5 +365,5 @@ function proceedToVideoMorphSequence(introVideo) {
                 mainOverlay.style.display = 'none';
             }, 600);
         }
-    }, 1400); // Matches the 1.4s CSS transition tracking layout perfectly
+    }, 1400);
 }

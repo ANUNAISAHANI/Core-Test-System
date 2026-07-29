@@ -215,24 +215,23 @@ if (verifyOtpBtn) {
     });
 }
 
-// ==================== 5. FORGOT PASSWORD ACTION (UX PROTECTED) ====================
-const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-if (forgotPasswordForm) {
-    forgotPasswordForm.addEventListener('submit', function(e) {
+// ==================== 5. FORGOT PASSWORD ACTION (DIRECT LOGIN EMAIL LINK) ====================
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', function(e) {
         e.preventDefault();
         
-        const emailInput = document.getElementById('resetEmail');
-        if (!emailInput) {
-            alert("Email input field nahi mila bhai!");
+        // Direct main login form wale email input field se email check karna
+        const emailInput = document.getElementById('loginEmail');
+        if (!emailInput || !emailInput.value.trim()) {
+            alert("Bhai pehle Email wale box me apna registered email toh daalo!");
             return;
         }
         const email = emailInput.value.trim();
         
-        const resetSubmitBtn = document.getElementById('resetSubmitBtn');
-        const originalText = resetSubmitBtn.innerText;
-        
-        resetSubmitBtn.disabled = true;
-        resetSubmitBtn.innerText = "Checking Database... ⏳";
+        // Click hote hi user ko feedback dena
+        forgotPasswordLink.innerText = "Checking Database... ⏳";
+        forgotPasswordLink.style.pointerEvents = "none"; // Double click protection
         
         fetch('/api/auth/forgot-password-action', {
             method: 'POST',
@@ -243,20 +242,20 @@ if (forgotPasswordForm) {
         })
         .then(res => res.json())
         .then(data => {
+            forgotPasswordLink.innerText = "Forgot Password?";
+            forgotPasswordLink.style.pointerEvents = "auto";
+            
             if (data.success) {
                 alert("🎉 Password Sent! Please check your registered Gmail inbox.");
-                window.location.href = '/forgot-password';
             } else {
                 alert("❌ Error: " + data.message);
-                resetSubmitBtn.disabled = false;
-                resetSubmitBtn.innerText = originalText;
             }
         })
         .catch(err => {
             console.error("🚨 Forgot Password Error:", err);
             alert("Kuch dikkat aa gayi bhai network me!");
-            resetSubmitBtn.disabled = false;
-            resetSubmitBtn.innerText = originalText;
+            forgotPasswordLink.innerText = "Forgot Password?";
+            forgotPasswordLink.style.pointerEvents = "auto";
         });
     });
 }

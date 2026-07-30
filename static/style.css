@@ -97,98 +97,138 @@ body {
 }
 
 /* ==========================================================================
-   THE ULTIMATE HIGHEST-FIDELITY DEMON GLOWING EYES STYLING
+   THE ULTIMATE DYNAMIC BIG EYES STYLING (PERFECT SCALE)
    ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
 body {
     background: #000000 !important; /* Pitch Matte Black Backdrop */
     overflow-x: hidden;
     position: relative;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
 }
 
-/* Perfect alignment layout framework framing behind the registration template */
+/* ==========================================================================
+   ALIGNMENT FIX: PUSHING EYES A BIT MORE AWAY FOR PERFECT GAP
+   ========================================================================== */
 .bg-eyes-wrapper {
     position: fixed;
-    top: 26%;
-    left: 43%;
-    transform: translate(-50%, -100%);
-    height: -100px;
-    width: 1200px; /* Precise layout spacing covering card edges */
-    display: flex;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    max-width: 1250px; /* Isko thoda aur badha diya hai taaki gap ekdum standard ho jaye */
+    display: flex !important;
+    flex-direction: row !important;
     justify-content: space-between;
+    padding: 0;
     pointer-events: none;
     z-index: 1;
 }
 
+/* Eyes ka scale pehle se aur bada karne ke liye width badha kar 52% kar di hai */
 .bg-eye-container {
     position: relative;
-    width: 350px; /* Expanded clean majestic human eye width scale */
-    height: 250px;
+    width: 52% !important; /* Big size expansion override parameter */
+    max-width: 540px;
+    height: auto;
 }
 
-/* Organic fierce curvature positioning tilt */
-.bg-eye-container.left { transform: rotate(16deg); }
-.bg-eye-container.right { transform: rotate(-20deg); }
+/* ==========================================================================
+   ALIGNMENT FIX: TILTING THE OUTER CORNERS SLIGHTLY UPWARD
+   ========================================================================== */
+
+/* Left eye ka bahar ka kona upar uthane ke liye positive rotation */
+.bg-eye-container.left { 
+    transform: rotate(5deg) !important; 
+}
+
+/* Right eye ka bahar ka kona upar uthane ke liye negative rotation */
+.bg-eye-container.right { 
+    transform: rotate(-5deg) !important; 
+}
 
 .eye-svg {
-    width: 310%;
-    height: 350%;
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
-/* Smooth deep dark interior sockets background overlay mask */
 .eye-bg-shadow {
-    fill: #080808;
+    fill: #050505;
 }
 
-/* Outer neon sharp lid curve strokes setup */
+/* ==========================================================================
+   FINAL PERFECT MATCH: FORM TO CURSOR ONLY ON BOTH SIDES
+   ========================================================================== */
 .eye-lid {
     fill: none;
-    stroke-width: -1155px;
+    stroke-width: 5.5px;
     stroke-linecap: round;
-    animation: videoStrokeGlowLoop 12s infinite ease-in-out;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: videoStrokeGlowLoop 3s infinite ease-in-out;
+    transition: all 0.4s ease;
 }
 
-/* Moving Iris & Pupil group element structure */
+/* 🔥 LEFT EYE FIX: Iski lambai ko 440px se ghata kar 165px kar diya hai 
+   taaki ye cursor ke baad aage baahar ki taraf na bhage aur right se match kare */
+.left .eye-lid {
+    stroke-dasharray: 440,600;
+    stroke-dashoffset: -30;
+}
+
+/* 🔥 RIGHT EYE FIX: Isko bilkul touch nahi kiya jaisa tera chal raha tha waisa hi lock kar diya */
+.right .eye-lid {
+    stroke-dasharray: 440, 600;
+    stroke-dashoffset: 0;
+}
+
 .iris-movement-group {
-    transition: transform 0.12s ease-out;
+    transition: transform 0.15s ease-out;
 }
 
-/* 🔄 PRECISE NATIVE TRANSITION WAVE LOOPS SYNCHRONIZED */
+/* Smooth gradient transitions wave loops (3 Seconds) */
 @keyframes videoStrokeGlowLoop {
-    0%, 100% { stroke: #df80ff; filter: drop-shadow(0 0 14px #df80ff) drop-shadow(0 0 25px #df80ff); } /* Deep Purple */
-    25%      { stroke: #ff9f43; filter: drop-shadow(0 0 14px #ff9f43) drop-shadow(0 0 25px #ff9f43); } /* Orange Amber */
-    50%      { stroke: #00a8ff; filter: drop-shadow(0 0 14px #00a8ff) drop-shadow(0 0 25px #00a8ff); } /* Electric Neon Blue */
-    75%      { stroke: #ff3838; filter: drop-shadow(0 0 14px #ff3838) drop-shadow(0 0 25px #ff3838); } /* Crimson Dark Red */
+    0%, 100% { stroke: #ff2a74; filter: drop-shadow(0 0 10px #ff2a74) drop-shadow(0 0 22px #ff2a74); }
+    25%      { stroke: #9b51e0; filter: drop-shadow(0 0 10px #9b51e0) drop-shadow(0 0 22px #9b51e0); }
+    50%      { stroke: #00d2d3; filter: drop-shadow(0 0 10px #00d2d3) drop-shadow(0 0 22px #00d2d3); }
+    75%      { stroke: #ff9f43; filter: drop-shadow(0 0 10px #ff9f43) drop-shadow(0 0 22px #ff9f43); }
 }
 
-.core-white     { animation: cWhiteLoop 12s infinite; }
-.core-highlight { animation: cHighLoop 12s infinite; }
-.neon-main      { animation: nMainLoop 12s infinite; }
-.neon-dark      { animation: nDarkLoop 12s infinite; }
+.core-white     { animation: cWhiteLoop 3s infinite; }
+.core-highlight { animation: cHighLoop 3s infinite; }
+.neon-main      { animation: nMainLoop 3s infinite; }
+.neon-dark      { animation: nDarkLoop 3s infinite; }
 
 @keyframes cWhiteLoop { 0%, 100%, 25%, 50%, 75% { stop-color: #ffffff; } }
 @keyframes cHighLoop {
     0%, 100% { stop-color: #fce4ec; }
-    25%      { stop-color: #fff3e0; }
+    25%      { stop-color: #f3e5f5; }
     50%      { stop-color: #e0f7fa; }
-    75%      { stop-color: #ffebee; }
+    75%      { stop-color: #fff3e0; }
 }
 @keyframes nMainLoop {
-    0%, 100% { stop-color: #ff79c6; } /* Purple base */
-    25%      { stop-color: #ffb74d; } /* Orange base */
-    50%      { stop-color: #29b6f6; } /* Blue base */
-    75%      { stop-color: #ef5350; } /* Red base */
+    0%, 100% { stop-color: #ff2a74; }
+    25%      { stop-color: #9b51e0; }
+    50%      { stop-color: #00d2d3; }
+    75%      { stop-color: #ff9f43; }
 }
 @keyframes nDarkLoop {
-    0%, 100% { stop-color: #4a148c; }
-    25%      { stop-color: #e65100; }
-    50%      { stop-color: #01579b; }
-    75%      { stop-color: #b71c1c; }
+    0%, 100% { stop-color: #2a0515; }
+    25%      { stop-color: #1a032e; }
+    50%      { stop-color: #001f21; }
+    75%      { stop-color: #2e1600; }
 }
 
-/* 🔒 PASSWORD ACTIVE STATE: Completely flat seamless closing horizontal vector slit */
+/* Password click input active structural slit logic */
 .bg-eye-container.close-action .eye-lid {
-    d: path("M 20,100 Q 200,100 430,100 Q 200,100 20,100 Z") !important;
+    d: path("M 30,125 Q 250,125 470,125 Q 250,125 30,125 Z") !important;
     stroke: #ff2222 !important;
     filter: drop-shadow(0 0 15px #ff2222) !important;
     animation: none;
@@ -198,15 +238,120 @@ body {
     transform: scale(0) !important;
 }
 
-/* Elevated registration form structure visibility */
+/* ==========================================================================
+   GLASSMORPHIC AUTHENTIC FORM BACKGROUND
+   ========================================================================== */
 .auth-container {
     position: relative;
     z-index: 10;
-    background: transparent !important;
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
+
+.auth-container.reveal-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .auth-card {
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(12, 12, 16, 0.76) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 30px;
     box-shadow: 0 35px 85px rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.auth-header h2 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.auth-header p {
+    color: #8a8f98;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label, .semester-label {
+    display: block;
+    color: #cbd5e1 !important;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px !important;
+}
+
+.form-group input, .form-group select, #regSemester {
+    width: 100% !important;
+    padding: 11px 14px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    outline: none !important;
+    transition: border-color 0.25s;
+}
+
+.form-group select option, #regSemester option {
+    background: #0f1015 !important;
+    color: #ffffff !important;
+}
+
+.form-group input::placeholder {
+    color: #515866;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-block {
+    width: 100%;
+    padding: 12px;
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 30px !important;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s;
+}
+
+.btn-block:hover {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-footer p {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.auth-footer a {
+    color: #ff2a74;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 

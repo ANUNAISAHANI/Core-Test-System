@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     
-    const authCard = document.getElementById('mainRegisterCard');
+    const authCard = document.querySelector('.auth-container');
     if (authCard) {
         setTimeout(() => {
             authCard.classList.add('reveal-active');
@@ -18,8 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     normalInputs.forEach(input => {
         input.addEventListener('input', (e) => {
             let length = e.target.value.length || 0;
-            // Precise horizontal coordinate shift calculation
-            let xOffset = Math.min(35, Math.max(-35, (length - 12) * 2.5));
+            let xOffset = Math.min(22, Math.max(-22, (length - 12) * 1.8));
             bgIrisGroups.forEach(group => {
                 group.style.transform = `translateX(${xOffset}px)`;
             });
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Existing Form Registration Request API Pipeline Handler
+    // Form Submission Pipeline Framework
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {

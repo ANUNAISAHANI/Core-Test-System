@@ -17,14 +17,30 @@
 </head>
 <body>
     <div class="admin-container">
-        <nav class="admin-nav">
-            <div class="logo"><h2>👑 CoreTest System Admin</h2></div>
-            <div class="admin-user-info">
-                <span id="adminName" style="font-weight: 600;">👑 Admin</span>
-                <a href="dashboard.html" class="btn btn-outline btn-small">Student View</a>
-                <button id="adminLogoutBtn" class="btn btn-danger btn-small">Logout</button>
-            </div>
-        </nav>
+    <nav class="admin-nav">
+    <div class="logo">
+        <h2>
+            <!-- Default Code se Static Logo -->
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo" class="admin-header-logo">
+            CoreTest System 
+        </h2>
+        
+
+    </div>
+    <h1 class="admin-text">👑 ADMIN</h1>
+    <div class="admin-user-info">
+        <!-- Dynamic Uploadable Profile Avatar (Cursor pointer lagaya hai taaki click ho sake) -->
+        <div class="avatar-upload-wrapper">
+            <img src="{{ url_for('static', filename='avatar.png') }}" alt="Profile" class="admin-header-avatar" id="avatarPreview" style="cursor: pointer;" title="Click to upload profile picture">
+            <!-- Hidden File Input jo computer ki files kholega -->
+            <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+        </div>
+
+        <span id="adminName" style="font-weight: 600;">👑 Admin</span>
+        <a href="dashboard.html" class="btn btn-outline btn-small">Student View</a>
+        <button id="adminLogoutBtn" class="btn btn-danger btn-small">Logout</button>
+    </div>
+    </nav>
 
         <div class="admin-tabs">
             <button class="tab-btn active" data-tab="questions">📝 Manage Questions</button>

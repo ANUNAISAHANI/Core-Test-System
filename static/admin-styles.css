@@ -492,3 +492,90 @@
 }
 
 
+/* ==========================================================================
+   FINAL PERFECT LARGE ADMIN HEADER SYSTEM (COMBINED COMPLETE)
+   ========================================================================== */
+
+/* Logo Container Layout Alignment (Thoda left khiskane ke liye margin lagaya) */
+.admin-nav .logo h2 {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    
+    /* 1️⃣ TEXT KO THODA AUR LEFT KHISKANE KE LIYE: Is number ko -15px se badha kar -30px kar do */
+    margin-left: -30px !important; 
+    
+    /* 2️⃣ TEXT KA SIZE BADA KARNE KE LIYE: Is line ko yahan add kar do (2.2rem ya 2.4rem jitna bada chahiye) */
+    font-size: 2.2rem !important; 
+
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Gear/Settings Logo ka size 32px se badha kar 46px kiya */
+.admin-header-logo {
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: contain !important;
+    /* vertical-align: middle; */
+}
+
+/* Right Side Admin Info Bar (Flex Alignment) */
+.admin-user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important; /* Elements ke beech ka clean gap */
+}
+
+/* Avatar Wrapper to secure input trigger area */
+.avatar-upload-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Profile Photo ka size 38px se badha kar 52px kiya */
+.admin-header-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    transition: all 0.25s ease-in-out !important;
+}
+
+/* Premium Hover feedback indicator - bataega ki click karke upload karna h */
+.admin-header-avatar:hover {
+    border-color: #a8ff78 !important; /* Light neon border chamkega jo tere green buttons se match kare */
+    opacity: 0.85 !important;
+    transform: scale(1.05); /* Halka sa interactive zoom push */
+}
+
+
+/* ==========================================================================
+   FINAL CHAKACHAK ADMIN TEXT: NO ICON & LARGE DISPLAY
+   ========================================================================== */
+.admin-text {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: transparent !important; 
+    border: 1.5px solid rgba(255, 255, 255, 0.4) !important; 
+    padding: 6px 18px !important; /* Padding thodi perfect ki solid look ke liye */
+    border-radius: 20px !important;
+    box-shadow: none !important; 
+    
+    /* 1️⃣ SIZE BADA KIYA: Isko 1.05rem se badha kar 1.25rem kar diya hai */
+    font-size: 1.60rem !important; 
+    font-weight: 700 !important;
+    letter-spacing: 2px !important; /* Premium character spacing spacing */
+    color: ORANGE !important;
+    
+    vertical-align: middle !important;
+    margin: 0 0 0 15px !important; 
+}
+
+/* 2️⃣ CAPSULE ICON REMOVED: Isko poori tarah se khali (none) kar diya taki wo kala dhabba gayab ho jaye */
+.admin-text::before {
+    display: none !important;
+}

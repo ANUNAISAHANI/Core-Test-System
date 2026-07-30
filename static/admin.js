@@ -1121,3 +1121,92 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+
+// ==========================================================================
+// 👑 COMBINED HIGHEST-FIDELITY DYNAMIC ADMIN AVATAR SYSTEM (ONE BLOCK)
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+
+    // 1. REFRESH RETENTION GUARD: Reload karne par database se instant photo load karega
+    let currentUserData = localStorage.getItem('currentUser');
+    if (currentUserData) {
+        try {
+            let activeUser = JSON.parse(currentUserData);
+            if (activeUser && activeUser.avatar && activeUser.avatar.trim() !== "") {
+                if (avatarPreview) {
+                    avatarPreview.src = activeUser.avatar;
+                }
+            }
+        } catch (e) {
+            console.error("Local data parser malfunction:", e);
+        }
+    }
+
+    // 2. DYNAMIC INPUT BOUNDS INTERACTION
+    if (avatarPreview && avatarFileInput) {
+        // Photo par click karte hi computer explorer kholna
+        avatarPreview.addEventListener('click', () => {
+            avatarFileInput.click();
+        });
+
+        // File processing framework trigger execution
+        avatarFileInput.addEventListener('change', function() {
+            const selectedFile = this.files[0];
+            if (selectedFile) {
+                // 2MB validation constraint logic filter
+                if (selectedFile.size > 2 * 1024 * 1024) {
+                    alert("⚠️ Profile picture size must be under 2MB!");
+                    return;
+                }
+
+                const imageReader = new FileReader();
+                imageReader.onload = function(event) {
+                    const base64StringData = event.target.result;
+
+                    // Parse existing current user structure configuration
+                    let rawUser = localStorage.getItem('currentUser');
+                    let userObject = rawUser ? JSON.parse(rawUser) : { id: 'admin', fullName: 'Admin' };
+                    
+                    // Updates user state variables
+                    userObject.avatar = base64StringData;
+                    localStorage.setItem('currentUser', JSON.stringify(userObject));
+                    
+                    // Instantly preview in browser interface layout
+                    avatarPreview.src = base64StringData;
+
+                    // 3. BACKEND API PIPELINE HARD LINK SYNCHRONIZATION
+                    // Ye tere existing server routing system se bina backend change kiye chipak jayega
+                    fetch('/api/users/update', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: userObject.id || 'admin',
+                            fullName: userObject.fullName || 'Admin',
+                            phone: userObject.phone || '',
+                            avatar: base64StringData
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(syncResponse => {
+                        if (syncResponse.success) {
+                            alert("Profile Picture updated successfully! 🔥");
+                            window.location.reload(); // Hard refresh to lock session states
+                        } else {
+                            // Validation warning bypass mechanism handler logs
+                            console.log("Database response logs bypass:", syncResponse.message);
+                        }
+                    })
+                    .catch(networkError => {
+                        console.error("Error updating avatar pipeline status:", networkError);
+                        // Network error handled smoothly without breaking frontend operations
+                    });
+                };
+                imageReader.readAsDataURL(selectedFile);
+            }
+        });
+    }
+});

@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const currentAdmin = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentAdmin || currentAdmin.role !== 'admin') {
-        window.location.href = 'login.html';
+        window.location.href = '/login';
         return;
     }
     document.getElementById('adminName').textContent = `👑 ${currentAdmin.fullName}`;

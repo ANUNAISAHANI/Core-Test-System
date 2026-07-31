@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Session verification check (CurrentUser configuration stays inside LocalStorage safely)
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
-        window.location.href = 'login.html';
+        window.location.href = '/login';
         return;
     }
     
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chosenExam.nextAttemptNumber = currentAttemptCount + 1;
                 
                 localStorage.setItem('currentExam', JSON.stringify(chosenExam));
-                window.location.href = 'exam.html';
+                window.location.href = '/exam';
             });
         });
     }
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add event listeners for dynamic detailed parameters routing redirection
         document.querySelectorAll('.view-details-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                window.location.href = `result-details.html?id=${this.dataset.resultId}`;
+                window.location.href = `/result-details?id=${this.dataset.resultId}`;
             });
         });
     }

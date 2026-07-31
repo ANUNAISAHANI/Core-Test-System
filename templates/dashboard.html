@@ -46,7 +46,7 @@
                 <img id="userAvatar" class="user-avatar" src="https://ui-avatars.com" alt="Avatar">
                 <span id="userNameDisplay"></span>
                 <span id="adminBtnContainer"></span> 
-                <a href="profile.html" class="btn btn-small btn-outline">👤 Profile</a>
+                <a href="/profile" class="btn btn-small btn-outline">👤 Profile</a>
                 <button id="logoutBtn" class="btn btn-small btn-outline">Logout</button>
             </div>
         </nav>
@@ -77,7 +77,7 @@
             
             if (container) {
                 const adminBtn = document.createElement('a');
-                adminBtn.href = 'admin.html'; 
+                adminBtn.href = '/admin'; 
                 adminBtn.className = 'btn btn-small btn-admin'; // Humne upar wali style use ki
                 adminBtn.innerHTML = '👑 Admin Panel';
                 

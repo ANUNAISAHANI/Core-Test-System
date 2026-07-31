@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(responseData => {
                 if (responseData.success) {
                     alert('🎉 Registration Successful! Redirecting to sign-in page...');
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                 } else {
                     alert('❌ Registration Failed: ' + responseData.message);
                 }

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentExam = JSON.parse(localStorage.getItem('currentExam'));
 
 if (!currentUser || !currentExam) {
-        window.location.href = 'dashboard.html';
+        window.location.href = '/dashboard';
         return;
     }
 
@@ -92,7 +92,7 @@ if (!currentUser || !currentExam) {
 
             if (liveQuestionsList.length === 0) {
                 alert("📢 No questions loaded in this module yet.");
-                window.location.href = 'dashboard.html';
+                window.location.href = '/dashboard';
                 return;
             }
 
@@ -302,7 +302,7 @@ if (!currentUser || !currentExam) {
                     container.classList.add('animation-sequence'); 
 
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = '/dashboard';
                     }, 1500);
                 };
             } else {

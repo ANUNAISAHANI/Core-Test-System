@@ -153,40 +153,53 @@ try:
 except Exception as db_err:
     print(f"⚠️ Initial Setup Notice: Make sure you created 'coretest_system' database scheme inside MySQL server first! Error: {db_err}")
 
-# ==================== VIEW ROUTINGS ====================
+# ==================== VIEW ROUTINGS (CLEAN SECURE URL PATHS) ====================
 @app.route('/')
-def index(): return render_template('index.html')
+def index(): 
+    return render_template('index.html')
 
-@app.route('/login.html')
-def login_page(): return render_template('login.html')
+@app.route('/login')
+def login_page(): 
+    return render_template('login.html')
 
-@app.route('/register.html')
-def register_page(): return render_template('register.html')
+@app.route('/register')
+def register_page(): 
+    return render_template('register.html')
 
-@app.route('/dashboard.html')
+@app.route('/dashboard')
 def dashboard_page():
-    if 'user_id' not in session: return redirect('/login.html')
+    if 'user_id' not in session: 
+        return redirect('/login')
     return render_template('dashboard.html')
 
-@app.route('/exam.html')
+@app.route('/exam')
 def exam_page():
-    if 'user_id' not in session: return redirect('/login.html')
+    if 'user_id' not in session: 
+        return redirect('/login')
     return render_template('exam.html')
 
-@app.route('/admin.html')
+@app.route('/admin')
 def admin_page():
-    if 'user_id' not in session or session.get('role') != 'admin': return redirect('/login.html')
+    if 'user_id' not in session or session.get('role') != 'admin': 
+        return redirect('/login')
     return render_template('admin.html')
 
-@app.route('/profile.html')
+@app.route('/profile')
 def profile_page():
-    if 'user_id' not in session: return redirect('/login.html')
+    if 'user_id' not in session: 
+        return redirect('/login')
     return render_template('profile.html')
 
-@app.route('/result-details.html')
+@app.route('/result-details')
 def result_details_page():
-    if 'user_id' not in session: return redirect('/login.html')
+    if 'user_id' not in session: 
+        return redirect('/login')
     return render_template('result-details.html')
+
+@app.route('/teacher')
+def teacher_page():
+    # Agar tumhari template file ka naam faculty.html hai, toh wahi load karega
+    return render_template('teacher.html')
 
 # ==================== DATA API STREAM CHANNELS ====================
 
@@ -803,9 +816,7 @@ def bulk_cleanup_semester_data():
     except Exception as e:
         return jsonify({'success': False, 'message': f'Server Error: {str(e)}'}), 500
     
-@app.route('/teacher.html')
-def teacher_page():
-    return render_template('teacher.html')
+
 
 import csv
 import io

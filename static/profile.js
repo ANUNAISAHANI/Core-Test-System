@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
-        window.location.href = 'login.html';
+        window.location.href = '/login';
         return;
     }
     
@@ -190,11 +190,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function redirectToDashboard(role) {
         if (role === 'admin') {
-            window.location.href = 'admin.html';
+            window.location.href = '/admin';
         } else if (role === 'teacher') {
-            window.location.href = 'teacher.html';
+            window.location.href = '/teacher';
         } else {
-            window.location.href = 'dashboard.html';
+            window.location.href = '/dashboard';
         }
     }
 });

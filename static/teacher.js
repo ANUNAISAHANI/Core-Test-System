@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const currentTeacher = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentTeacher || currentTeacher.role !== 'teacher') {
-        window.location.href = 'login.html';
+        window.location.href = '/login';
         return;
     }
 

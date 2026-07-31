@@ -83,18 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     const nextRoute = urlParams.get('next');
 
                     if (responseData.user.role === 'admin') {
-                        window.location.href = 'admin.html';
+                        window.location.href = '/admin';
                     } else if (responseData.user.role === 'teacher') {
-                        window.location.href = 'teacher.html'; 
+                        window.location.href = '/teacher'; 
                     } else {
                         if (nextRoute === 'secure-exams') {
-                            window.location.href = 'dashboard.html';
+                            window.location.href = '/dashboard';
                         } else if (nextRoute === 'timed-tests') {
-                            window.location.href = 'exam.html'; 
+                            window.location.href = '/exam'; 
                         } else if (nextRoute === 'otp-login') {
-                            window.location.href = 'dashboard.html?mode=otp';
+                            window.location.href = '/dashboard?mode=otp';
                         } else {
-                            window.location.href = 'dashboard.html'; 
+                            window.location.href = '/dashboard'; 
                         }
                     }
                 }
@@ -198,11 +198,11 @@ if (verifyOtpBtn) {
                 const userRole = (data.user.role || 'student').toLowerCase().trim();
                 
                 if (userRole === 'admin') {
-                    window.location.href = 'admin.html';
+                    window.location.href = '/admin';
                 } else if (userRole === 'teacher' || userRole === 'faculty') {
-                    window.location.href = 'teacher.html';
+                    window.location.href = '/teacher';
                 } else {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = '/dashboard';
                 }
             } else {
                 alert("❌ Invalid OTP: Sahi se check karke daalo bhai.");

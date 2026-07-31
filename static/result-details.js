@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
-        window.location.href = 'login.html';
+        window.location.href = '/login';
         return;
     }
 
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!resultId) {
         alert("🚨 Technical Log Error: No report token reference id detected!");
-        window.location.href = 'dashboard.html';
+        window.location.href = '/dashboard';
         return;
     }
 
@@ -144,9 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => console.error("Detailed results fetch error:", err));
 
     document.getElementById('returnBtn').onclick = () => {
-        if (currentUser.role === 'admin') { window.location.href = 'admin.html'; }
-        else if (currentUser.role === 'teacher') { window.location.href = 'teacher.html'; }
-        else { window.location.href = 'dashboard.html'; }
+        if (currentUser.role === 'admin') { window.location.href = '/admin'; }
+        else if (currentUser.role === 'teacher') { window.location.href = '/teacher'; }
+        else { window.location.href = '/dashboard'; }
     };
 
     function escapeHtml(text) {

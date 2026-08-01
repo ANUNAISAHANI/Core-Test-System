@@ -239,42 +239,78 @@
                 <hr style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #eee; margin: 0; z-index: 0;">
             </div>
             <form id="questionForm">
-                <div class="form-group">
-                    <label>Target Subject Paper</label>
-                    <select id="questionSubject"></select>
-                </div>
-                <div class="form-group"><label>Question Text Context</label><textarea id="questionText" rows="3" required></textarea></div>
-                <div class="form-group"><label>Option A</label><input type="text" id="optionA" required></div>
-                <div class="form-group"><label>Option B</label><input type="text" id="optionB" required></div>
-                <div class="form-group"><label>Option C</label><input type="text" id="optionC" required></div>
-                <div class="form-group"><label>Option D</label><input type="text" id="optionD" required></div>
-                <div class="form-group">
-                    <label>Mark Correct Identifier</label>
-                    <select id="correctAnswer">
-                        <option value="0">Option A</option>
-                        <option value="1">Option B</option>
-                        <option value="2">Option C</option>
-                        <option value="3">Option D</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Commit to Database</button>
-            </form>
-        </div>
+    <!-- 1. Target Subject Paper -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Target Subject Paper</label>
+        <select id="questionSubject" style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;"></select>
     </div>
+
+    <!-- 2. Question Text Context -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Question Text Context</label>
+        <textarea id="questionText" rows="3" required style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;"></textarea>
+    </div>
+
+    <!-- 3. Option A -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Option A</label>
+        <input type="text" id="optionA" required style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;">
+    </div>
+
+    <!-- 4. Option B -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Option B</label>
+        <input type="text" id="optionB" required style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;">
+    </div>
+
+    <!-- 5. Option C -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Option C</label>
+        <input type="text" id="optionC" required style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;">
+    </div>
+
+    <!-- 6. Option D -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Option D</label>
+        <input type="text" id="optionD" required style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;">
+    </div>
+
+    <!-- 7. Mark Correct Identifier -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label style="color: #dc2626 !important; font-weight: bold;">Mark Correct Identifier</label>
+        <select id="correctAnswer" style="border: 2px solid #dc2626 !important; color: #dc2626 !important; width: 100%; padding: 8px; border-radius: 4px; color: #334155 !important;">
+            <option value="0" style="color: #dc2626 !important;">Option A</option>
+            <option value="1" style="color: #dc2626 !important;">Option B</option>
+            <option value="2" style="color: #dc2626 !important;">Option C</option>
+            <option value="3" style="color: #dc2626 !important;">Option D</option>
+        </select>
+    </div>
+
+    <!-- 8. Button (Normal: Green bg + Red text | Hover/Click: Red bg + Green text) -->
+    <button type="submit" 
+        style="background-color: #28a745 !important; color: #FFFF00 !important; border: 2px solid #28a745 !important; font-weight: bold; width: 100%; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 16px;"
+        onmouseover="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');" 
+        onmouseout="this.style.setProperty('background-color', '#28a745', 'important'); this.style.setProperty('border-color', '#28a745', 'important');"
+        onmousedown="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');">
+    Commit to Database
+   </button>
+   </form>
+   </div>
+   </div>
 
     <div id="examModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeExamModal">&times;</span>
             <h3>➕ Create New Subject Exam Card</h3><br>
             <form id="examForm">
-                <div class="form-group"><label>Subject Title</label><input type="text" id="examSubject" required placeholder="e.g. Mathematics"></div>
-                <div class="form-group"><label>Topics Covered</label><input type="text" id="examTopic" required placeholder="e.g. Algebra & Calculus"></div>
-                <div class="form-group"><label>Icon Glyph (Emoji)</label><input type="text" id="examIcon" value="📐"></div>
-                <div class="form-group"><label>Duration Allotted (Minutes)</label><input type="number" id="examDuration" value="60" required></div>
-                <div class="form-group"><label>Total Viewable Questions</label><input type="number" id="examTotalQ" value="20" required></div>
+                <div class="form-group"><label style="color: #dc2626 !important;">Subject Title</label><input type="text" id="examSubject" required placeholder="e.g. Mathematics" style="color: #334155 !important;"></div>
+                <div class="form-group"><label style="color: #dc2626 !important;">Topics Covered</label><input type="text" id="examTopic" required placeholder="e.g. Algebra & Calculus" style="color: #334155 !important;"></div>
+                <div class="form-group"><label style="color: #dc2626 !important;">Icon Glyph (Emoji)</label><input type="text" id="examIcon" value="📐" style="color: #334155 !important;"></div>
+                <div class="form-group"><label style="color: #dc2626 !important;">Duration Allotted (Minutes)</label><input type="number" id="examDuration" value="60" required style="color: #334155 !important;"></div>
+                <div class="form-group"><label style="color: #dc2626 !important;">Total Viewable Questions</label><input type="number" id="examTotalQ" value="20" required style="color: #334155 !important;"></div>
                 <div class="form-group" style="margin-top: 15px;">
-                <label>Target Course & Branch (Exam Visibility)</label>
-                <select id="examCourseBranch" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 5px; background: white;">
+                <label style="color: #dc2626 !important;">Target Course & Branch (Exam Visibility)</label>
+                <select id="examCourseBranch" required style="width: 100%; padding: 10px; border: 1px solid #dc2626 !important; border-radius: 6px; margin-top: 5px; color: #334155 !important;">
                 <option value="ALL" selected>ALL (Visible to Everyone)</option>
                 <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
                 <option value="BCA">BCA (Comp. Applications)</option>
@@ -295,8 +331,8 @@
      <!------------------- SEMESTER KO SELECT KARNE KA OPTION...........................!!!!!!!!!!!!! -->
              
              <div class="form-group" style="margin-bottom: 15px;">
-             <label style="font-weight: 500; display: block; margin-bottom: 5px; color: #334155;">Target Academic Semester</label>
-             <select id="examSemester" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: white;">
+             <label style="font-weight: 500; display: block; margin-bottom: 5px; color: #dc2626 !important;">Target Academic Semester</label>
+             <select id="examSemester" required style="width: 100%; padding: 10px; border: 1px solid #dc2626 !important; border-radius: 6px; font-size: 0.95rem; color: #334155 !important;">
              <option value="">-- Choose Target Semester --</option>
              <option value="Semester-1">Semester-1</option>
              <option value="Semester-2">Semester-2</option>
@@ -311,8 +347,8 @@
             
      <!------------------- NAYA SECTION KO SELECT KARNE KA DROPDOWN...........................!!!!!!!!!!!!! -->
              <div class="form-group" style="margin-bottom: 15px;">
-                 <label style="font-weight: 500; display: block; margin-bottom: 5px; color: #334155;">Target Section Filter</label>
-                 <select id="examSection" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; background: white;">
+                 <label style="font-weight: 500; display: block; margin-bottom: 5px; color: #dc2626 !important;">Target Section Filter</label>
+                 <select id="examSection" required style="width: 100%; padding: 10px; border: 1px solid #dc2626 !important; border-radius: 6px; font-size: 0.95rem; color: #334155 !important;">
                      <option value="ALL">ALL Sections</option>
                      <option value="NO SECTION">No Section</option>
                      <option value="A">Section - A</option>
@@ -323,7 +359,12 @@
                  </select>
              </div>        
 
-             <button type="submit" class="btn btn-primary btn-block">Deploy Exam Sheet</button>
+             <button type="submit" class="btn btn-primary btn-block"
+             style="background-color: #28a745 !important; color: #FFFF00 !important; border: 2px solid #28a745 !important; font-weight: bold; width: 100%; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 16px;"
+             onmouseover="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');" 
+             onmouseout="this.style.setProperty('background-color', '#28a745', 'important'); this.style.setProperty('border-color', '#28a745', 'important');"
+             onmousedown="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');"
+             >Deploy Exam Sheet</button>
             </form>
         </div>
     </div>
@@ -334,24 +375,24 @@
             <h3>👩‍🏫 Create Official Faculty Account</h3><br>
             <form id="teacherForm">
                 <div class="form-group">
-                    <label>Faculty Unique ID (Card Number)</label>
-                    <input type="text" id="teacherId" placeholder="e.g. TCH-2026-91" required>
+                    <label style="color: #dc2626 !important;">Faculty Unique ID (Card Number)</label>
+                    <input type="text" id="teacherId" placeholder="e.g. TCH-2026-91" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="teacherName" placeholder="Enter faculty name" required>
+                    <label style="color: #dc2626 !important;">Full Name</label>
+                    <input type="text" id="teacherName" placeholder="Enter faculty name" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Official Email Address</label>
-                    <input type="email" id="teacherEmail" placeholder="faculty@university.com" required>
+                    <label style="color: #dc2626 !important;">Official Email Address</label>
+                    <input type="email" id="teacherEmail" placeholder="faculty@university.com" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Contact Number</label>
-                    <input type="tel" id="teacherPhone" placeholder="10-digit primary phone" required>
+                    <label style="color: #dc2626 !important;">Contact Number</label>
+                    <input type="tel" id="teacherPhone" placeholder="10-digit primary phone" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Assigned Department Course</label>
-                    <select id="teacherCourse" required>
+                    <label style=" color: #dc2626 !important;">Assigned Department Course</label>
+                    <select id="teacherCourse" required style="color: #334155 !important; border: 2px solid #dc2626 !important;">
                     <option value="" disabled selected>-- Select Course & Branch --</option>
                     <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
                     <option value="BCA">BCA (Comp. Applications)</option>
@@ -370,20 +411,27 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Assigned Class Section</label>
-                    <select id="teacherSection" required>
+                    <label style="color: #dc2626 !important;">Assigned Class Section</label>
+                    <select id="teacherSection" required style="color: #334155 !important; border: 2px solid #dc2626 !important;">
+                        <option value="None" selected>None (No Section /Only Subject Teacher)</option>
                         <option value="Section-A">Section-A</option>
                         <option value="Section-B">Section-B</option>
                         <option value="Section-C">Section-C</option>
-                        <option value="None" selected>None (No Section /Only Subject Teacher)</option>
+                        <option value="Section-D">Section-D</option>
+                        <option value="Section-E">Section-E</option>
+                        
                     </select>
                 </div>        
 
                 <div class="form-group">
-                    <label>Security Access Password</label>
+                    <label style="color: #dc2626 !important;">Security Access Password</label>
                     <input type="password" id="teacherPassword" placeholder="Minimum 6 characters" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block" style="background:#2e7d32;">Lock Account & Save</button>
+            <button type="submit" class="btn btn-primary btn-block" 
+             style="background-color: #28a745 !important; color: #FFFF00 !important; border: 2px solid #28a745 !important; font-weight: bold; width: 100%; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 16px;"
+             onmouseover="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');" 
+             onmouseout="this.style.setProperty('background-color', '#28a745', 'important'); this.style.setProperty('border-color', '#28a745', 'important');"
+             onmousedown="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');">Lock Account & Save</button>
             </form>
         </div>
     </div>
@@ -395,21 +443,21 @@
             <form id="editTeacherForm">
                 <input type="hidden" id="editTeacherDbId">
                 <div class="form-group">
-                    <label>Faculty ID Number</label>
-                    <input type="text" id="editTeacherId" required>
+                    <label style="color: #dc2626 !important;">Faculty ID Number</label>
+                    <input type="text" id="editTeacherId" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="editTeacherName" required>
+                    <label style="color: #dc2626 !important;">Full Name</label>
+                    <input type="text" id="editTeacherName" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Contact Number</label>
-                    <input type="tel" id="editTeacherPhone" required>
+                    <label style="color: #dc2626 !important;">Contact Number</label>
+                    <input type="tel" id="editTeacherPhone" required style="color: #334155 !important;">
                 </div>
                 <div class="form-group">
-                    <label>Department Course Branch</label>
-                    <select id="editTeacherCourse" required>
-                    <option value="" disabled selected>-- Select Course & Branch --</option>
+                    <label style="color: #dc2626 !important;">Department Course Branch</label>
+                    <select id="editTeacherCourse" required style="color: #334155 !important; border: 2px solid #dc2626 !important;">
+                    <option value="disabled" selected>-- Select Course & Branch --</option>
                     <option value="B.TECH">B.Tech (Computer Science & Eng.)</option>
                     <option value="BCA">BCA (Comp. Applications)</option>
                     <option value="MCA">MCA (Master of Comp. Applications)</option>
@@ -427,15 +475,23 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Class Section</label>
-                    <select id="editTeacherSection" required>
+                    <label style="color: #dc2626 !important;">Class Section</label>
+                    <select id="editTeacherSection" required style="color: #334155 !important; border: 2px solid #dc2626 !important;">
+                        <option value="None" selected>None (No Section)</option>
                         <option value="Section-A">Section-A</option>
                         <option value="Section-B">Section-B</option>
                         <option value="Section-C">Section-C</option>
-                        <option value="None" selected>None (No Section)</option>
+                        <option value="Section-D">Section-D</option>
+                        <option value="Section-E">Section-E</option>
+                        
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Commit Modifications</button>
+                <button type="submit" class="btn btn-primary btn-block"
+                style="background-color: #28a745 !important; color: #FFFF00 !important; border: 2px solid #28a745 !important; font-weight: bold; width: 100%; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 16px;"
+                onmouseover="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');" 
+                onmouseout="this.style.setProperty('background-color', '#28a745', 'important'); this.style.setProperty('border-color', '#28a745', 'important');"
+                onmousedown="this.style.setProperty('background-color', '#FF0000', 'important'); this.style.setProperty('border-color', '#FF0000', 'important');">
+                Commit Modifications</button>
             </form>
         </div>
     </div>

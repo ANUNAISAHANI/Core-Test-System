@@ -30,9 +30,32 @@ body {
 .feature-card:hover { transform: translateY(-5px); }
 .feature-icon { font-size: 3rem; margin-bottom: 1rem; }
 
-/* Forms and Authentication */
-.auth-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 2rem; }
-.auth-card { background: white; padding: 2.5rem; border-radius: 1rem; width: 100%; max-width: 450px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+/* ==========================================================================
+   FORMS AND AUTHENTICATION - PROFILE LAYOUT AND INPUT FREEZE CORRECTION
+   ========================================================================== */
+
+/* Layout container fix: ensure regular profile pages remain 100% visible */
+.auth-container { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    padding: 2rem; 
+    opacity: 1 !important;        /* Static 100% visibility for inputs protection */
+    transform: translateY(0) !important; /* Disables regular page movement shift layout */
+}
+
+/* Card layout wrapper fix: maintains original clean readable white palette */
+.auth-card { 
+    background: white !important;  /* Locks profile page backdrop back to crisp clean white */
+    padding: 2.5rem; 
+    border-radius: 1rem; 
+    width: 100%; 
+    max-width: 600px !important;   /* Custom auto expansion matching your profile constraints */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+    color: #333333 !important;     /* Ensures all input texts and dropdowns are clearly legible */
+}
+
 .auth-header { text-align: center; margin-bottom: 2rem; }
 .auth-header h2 { color: #667eea; margin-bottom: 0.5rem; }
 .form-group { margin-bottom: 1.5rem; }

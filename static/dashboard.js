@@ -224,6 +224,26 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDashboardData();
 });
 
+
+
+/* 
+==========================================================================
+📢 FUTURE NOTE: AGAR INTRO ANIMATION KO POORI TARAH SE HATANA HO:
+1. Niche diye gaye poore animation code aur logout code ko comment out kar do.
+2. Niche diye gaye code ko COMMENT OUT SE HATA DENA (Uncomment kar dena) 
+   takih dashboard bina animation ke turant dikhne lage.
+==========================================================================
+*/
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const dashboardApp = document.getElementById('mainDashboardApp');
+//     if (dashboardApp) {
+//         dashboardApp.classList.remove('hidden-initially');
+//     }
+// });
+
+
+
 // ==========================================================================
 // DASHBOARD INTRO ANIMATION LOGIC (UPDATED WITH PERSISTENCE)
 // ==========================================================================
@@ -233,8 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const emojiChar = document.getElementById('emojiChar');
     const dashboardApp = document.getElementById('mainDashboardApp');
 
-    // 1. Animation check: Kya user pehle login kar chuka hai?
-    if (localStorage.getItem('hasSeenAnimation') === 'true') {
+    // 1. Animation check: Kya user pehle login kar chuka hai? (sessionStorage used here)
+    if (sessionStorage.getItem('hasSeenAnimation') === 'true') {
         if (barrier) barrier.style.display = 'none';
         if (blackScreen) blackScreen.style.display = 'none';
         if (emojiChar) emojiChar.style.display = 'none';
@@ -246,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Pehli baar: Animation logic
         if (barrier) {
             barrier.addEventListener('click', () => {
-                localStorage.setItem('hasSeenAnimation', 'true'); // Flag set
+                sessionStorage.setItem('hasSeenAnimation', 'true'); // Flag set in session
                 initAudio();
                 barrier.style.opacity = '0';
                 setTimeout(() => {
@@ -330,7 +350,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+//========================================================================//
+// Logout button ke click par animation ka data clear karne ke liye
+//=======================================================================//
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            sessionStorage.removeItem("hasSeenAnimation");
+        });
+    }
+});
+
+
+
+
+//===================================================================================//
 // 🎯 Database aur Branch restriction ke sath subject dropdown chalana
+//==================================================================================//
+
 function populateStudentSubjectDropdown(resultsList, user) {
     const filterSelect = document.getElementById('studentSubjectFilter');
     if (!filterSelect) return;

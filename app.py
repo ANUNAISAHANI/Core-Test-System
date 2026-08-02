@@ -201,6 +201,74 @@ def teacher_page():
     # Agar tumhari template file ka naam faculty.html hai, toh wahi load karega
     return render_template('teacher.html')
 
+
+
+# students or teachers ka error admin console mai error dekhane ke liye h...!!!#
+
+@app.route('/api/log-error', methods=['POST'])
+def log_error_from_frontend():
+    try:
+        data = request.get_json() or {}
+        error_msg = data.get('message', 'Unknown Error')
+        error_url = data.get('url', 'Unknown URL')
+        error_line = data.get('line', 'N/A')
+        
+        # 1. Real-time logged-in user_id session se uthana
+        user_id = session.get('user_id')
+        
+        # Default placeholders agar user logged in na ho
+        user_name = "Guest/Unknown"
+        user_role = "UNKNOWN"
+        user_roll = "N/A"
+        user_branch = "N/A"
+        user_section = "N/A"
+        user_semester = "N/A"
+        
+        # 2. Schema ke exact columns ke sath query (fullName, roll_number use kiya hai)
+        if user_id:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT fullName, role, roll_number, course_branch, section, semester, teacher_id FROM users WHERE id = %s", (user_id,))
+            user_data = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            
+            if user_data:
+                user_name = user_data.get('fullName', 'Unknown')
+                user_role = user_data.get('role', 'student').upper()
+                user_branch = user_data.get('course_branch', 'N/A')
+                
+                # Dynamic Logic: Agar user TEACHER/FACULTY hai
+                if 'TEACHER' in user_role or 'FACULTY' in user_role:
+                    user_roll = user_data.get('teacher_id', 'N/A')
+                else:
+                    # Agar STUDENT hai
+                    user_roll = user_data.get('roll_number', 'N/A')
+                    user_section = user_data.get('section', 'N/A')
+                    user_semester = user_data.get('semester', 'N/A')
+
+        # 3. Dynamic Console Output according to Role
+        print("\n" + "═"*80)
+        print(f"🚨 [FRONTEND ERROR] | Role: {user_role} | Name: {user_name}")
+        
+        if 'TEACHER' in user_role or 'FACULTY' in user_role:
+            # Teacher ke liye clean layout (No Semester, No Section)
+            print(f"🆔 Faculty ID: {user_roll}")
+            print(f"ℹ️  Department/Branch: {user_branch}")
+        else:
+            # Student ke liye poora complete layout
+            print(f"🆔 Roll No/ID: {user_roll} | Branch: {user_branch}")
+            print(f"📍 Section: {user_section} | Semester: {user_semester}")
+            
+        print(f"❌ Error Message: {error_msg}")
+        print(f"🔗 Location: {error_url} [Line: {error_line}]")
+        print("═"*80 + "\n")
+        
+        return jsonify({"status": "success", "message": "Logged successfully"}), 200
+    except Exception as e:
+        print(f"Error logging failed internally: {str(e)}")
+        return jsonify({"status": "error"}), 500
+
 # ==================== DATA API STREAM CHANNELS ====================
 
 @app.route('/api/register', methods=['POST'])

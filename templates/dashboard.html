@@ -85,6 +85,44 @@
             }
         }
     });
-    </script>
+
+
+
+// ==========================================================================
+// CENTRALIZED SECURITY & ERROR LOGGING (CLEAN CONSOLE VERSION)
+// ==========================================================================
+(function() {
+    window.onerror = function(message, url, line, col, error) {
+        fetch('/api/log-error', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                url: url,
+                line: line
+            })
+        }).catch(err => {});
+
+        return true; // Users ka console ekdum saaf rahega
+    };
+
+    window.addEventListener('unhandledrejection', function(event) {
+        fetch('/api/log-error', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: event.reason ? event.reason.message || event.reason : 'Unhandled Promise Rejection',
+                url: window.location.href,
+                line: 'Async'
+            })
+        }).catch(err => {});
+    });
+})();
+
+</script>
 </body>
 </html>

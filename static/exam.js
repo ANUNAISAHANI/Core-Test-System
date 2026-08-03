@@ -401,6 +401,29 @@ if (!currentUser || !currentExam) {
     }
    });
 
+
+   // ==========================================================================
+    // 🚨 ANTI-CHEATING: PERMANENT BROWSER BACK BUTTON FORCED AUTO-SUBMIT
+    // ==========================================================================
+    (function() {
+        // 1. Browser ki history state ko current page par completely lock karna
+        window.history.pushState(null, null, window.location.href);
+
+        // 2. Jaise hi student keyboard ya mouse se back button dabaye
+        window.addEventListener('popstate', function () {
+            // State ko dubara push karna takih page pichhe kisi haal me na jaye
+            window.history.pushState(null, null, window.location.href);
+            
+            // 3. Agar exam pehle se submit ho raha ho ya popup khula ho toh kuch nahi karna
+            if (window.isSubmitting || window.isPopupOpen) return; 
+
+            // 4. Tumhare automatic engine function ko call karna exact custom reason ke sath
+            if (typeof triggerAutoSubmit === 'function') {
+                triggerAutoSubmit("Browser Back button dabane ki koshish ki gayi.");
+            }
+        });
+    })();
+
     // 🔄 Exam questions paper ko load karne wala function call
     loadExamQuestionsPaper();
 });

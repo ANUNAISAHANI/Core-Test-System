@@ -515,16 +515,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+           // 1. Data filters lagana (Jaisa database se ulta ya seedha aa raha ho)
             const personalAttempts = results.filter(r => r.userId == student.id);
             
-            const subjectCounters = {};
+            // 2. Poori list ke subjects ka total count nikal lo pehle
+            const totalSubjectCounts = {};
             personalAttempts.forEach(r => {
                 const sub = r.examSubject || 'General';
-                if (!subjectCounters[sub]) {
-                    subjectCounters[sub] = 0;
-                }
-                subjectCounters[sub]++;
-                r.calculatedSubjectAttempt = r.attemptNumber || subjectCounters[sub];
+                totalSubjectCounts[sub] = (totalSubjectCounts[sub] || 0) + 1;
+            });
+
+            // 3. Ab har item ko niche se upar (Ulat kar) sahi number assign karo
+            const currentSubjectRunning = {};
+            personalAttempts.forEach(r => {
+                const sub = r.examSubject || 'General';
+                currentSubjectRunning[sub] = (currentSubjectRunning[sub] || 0) + 1;
+                
+                // Yeh math logic humesha chronological track number (#1, #2) hi nikalega
+                r.calculatedSubjectAttempt = r.attemptNumber || (totalSubjectCounts[sub] - currentSubjectRunning[sub] + 1);
             });
 
             resultDiv.innerHTML = `
@@ -535,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </p>
                     <p style="font-size:0.8rem; color:#777; margin-top:2px;">Email Identifier: ${student.email} | Telephone: ${student.phone || 'None'}</p>
                 </div>
-                ${personalAttempts.length > 0 ? personalAttempts.slice().reverse().map((r) => {
+                ${personalAttempts.length > 0 ? personalAttempts.map((r) => {
                     return `
                         <div style="padding:12px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:white; margin-bottom:5px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
                             <span>📝 Paper subject: <b>${r.examSubject}</b> - Grade: <b>${r.percentage}%</b> (Attempt Tracker: # ${r.calculatedSubjectAttempt})</span>

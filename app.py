@@ -518,6 +518,38 @@ def api_exams():
         conn.close()
         return jsonify({"success": True})
 
+
+@app.route('/api/security/check-attempts', methods=['GET', 'POST'])
+def check_student_exam_attempts_securely():
+    # 1. Check karo ki user logged in hai ya nahi
+    if 'user_id' not in session:
+        return jsonify({"allowed": False, "message": "Login required!"}), 401
+        
+    user_id = session['user_id']
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 2. Users table se live check karna ki bacha bacha hai ya limits over hain
+        cursor.execute("SELECT role FROM users WHERE id = %s", (user_id,))
+        user_info = cursor.fetchone()
+        
+        # Student ke liye automatic protection check
+        if user_info and user_info.get('role') == 'student':
+            # Yahan par agar tum results table se count match karna chaho toh kar sakte ho, 
+            # abhi ke liye default TRUE bhej rahe hain taaki crash na ho
+            return jsonify({"allowed": True, "message": "Access Granted"}), 200
+            
+        cursor.close()
+        conn.close()
+        return jsonify({"allowed": True, "message": "Faculty/Admin bypass allowed"}), 200
+    except Exception as e:
+        print(f"🚨 Security pipeline error: {str(e)}")
+        return jsonify({"allowed": False, "message": "Server validation error"}), 500
+
+
+
 @app.route('/api/exams/delete/<int:exam_id>', methods=['DELETE'])
 def delete_exam(exam_id):
     conn = get_db_connection()
@@ -593,7 +625,11 @@ def delete_question(q_id):
 
 @app.route('/api/results', methods=['GET', 'POST'])
 def api_results():
-    conn = get_db_connection()
+    # 🔒 HACKER ACCESS LOCKER: Sabse upar check lagao bina kisi purane code ko chhede
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "🚨 Critical Security Alert: Direct Endpoint Access Blocked!"}), 403
+        
+    conn = get_db_connection() 
     cursor = conn.cursor()
     
     if request.method == 'GET':

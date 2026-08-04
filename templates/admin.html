@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin-styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin-theme.css') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon_clean.png') }}">
     <style>
         /* Directory segmentation layout helper buttons */
         .directory-toggle-bar { display: flex; gap: 10px; margin-bottom: 1.5rem; background: #f1f3f9; padding: 6px; border-radius: 8px; max-width: fit-content; }
@@ -31,7 +32,7 @@
     <div class="admin-user-info">
         <!-- Dynamic Uploadable Profile Avatar (Cursor pointer lagaya hai taaki click ho sake) -->
         <div class="avatar-upload-wrapper">
-            <img src="{{ url_for('static', filename='avatar.png') }}" alt="Profile" class="admin-header-avatar" id="avatarPreview" style="cursor: pointer;" title="Click to upload profile picture">
+            <img src="{{ url_for('static', filename='avatar.jpeg') }}" alt="Profile" class="admin-header-avatar" id="avatarPreview" style="cursor: pointer;" title="Click to upload profile picture">
             <!-- Hidden File Input jo computer ki files kholega -->
             <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
         </div>

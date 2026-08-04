@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return `
                 <div class="result-card" style="background: white; padding: 1.2rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.03); border-left: 4px solid #667eea;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                        <h4 style="margin:0; color:#333; font-size:1.1rem;">${result.examSubject} <span style="font-size: 0.8rem; color: #888; font-weight: normal;">(Attempt No: #${result.attempt_number || computedAttemptNum})</span></h4>
+                        <h4 style="margin:0; color:#333; font-size:1.1rem;">${result.examSubject} <span style="font-size: 0.8rem; color: #888 !important; font-weight: normal;">(Attempt No: #${result.attempt_number || computedAttemptNum})</span></h4>
                         <button class="btn btn-small btn-outline view-details-btn" data-result-id="${result.id}" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; cursor:pointer;">📋 View Details</button>
                     </div>
                     <div class="result-details" style="display: flex; gap: 15px; margin-top: 0.8rem; font-size: 0.85rem; color: #666; flex-wrap: wrap; align-items: center;">

@@ -537,8 +537,20 @@ def check_student_exam_attempts_securely():
         
         # Student ke liye automatic protection check
         if user_info and user_info.get('role') == 'student':
-            # Yahan par agar tum results table se count match karna chaho toh kar sakte ho, 
-            # abhi ke liye default TRUE bhej rahe hain taaki crash na ho
+            # 🎯 REAL SECURITY LOCK: Database ke results table se check karna ki bacha pehle se kitne attempts kar chuka hai
+            # Note: Server automatically check karega ki bache ke attempts khatam toh nahi hue.
+            cursor.execute("SELECT COUNT(*) FROM results WHERE userId = %s", (user_id,))
+            attempt_count = cursor.fetchone()[0]
+            
+            # Agar bacha pehle hi exam de chuka hai aur attempts khatam hain (Manlo max limit 2 hai)
+            if attempt_count >= 2:
+                cursor.close()
+                conn.close()
+                return jsonify({"allowed": False, "message": "🚨 Access Denied: Aapke exam ke saare attempts khatam ho chuke hain!"}), 403
+                
+            # Agar attempts bache hain toh paper allow kar do
+            cursor.close()
+            conn.close()
             return jsonify({"allowed": True, "message": "Access Granted"}), 200
             
         cursor.close()

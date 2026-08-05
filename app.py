@@ -26,14 +26,15 @@ mail = Mail(app)
 
 # ==================== 🗄️ MYSQL CONNECTION CONFIGURATION ====================
 def get_db_connection():
-    # 🎯 local MySQL Workbench password aur database matching parameters setup
+    # 🎯 REAL CLOUD BRIDGE: Live server par Render se environment variables uthayega, aur laptop par local values!
     conn = pymysql.connect(
-        host="localhost",
-        user="root",
-        password="", # <-- Apna local MySQL Workbench/XAMPP password yahan likhein
-        database="coretest_system", # <-- phpMyAdmin/Workbench me ye name se DB bana lena bhai
+        host=os.environ.get('DB_HOST', 'localhost'),
+        user=os.environ.get('DB_USER', 'root'),
+        password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
+        database=os.environ.get('DB_NAME', 'coretest_system'), # Laptop ka local DB name
+        port=int(os.environ.get('DB_PORT', 3306)),
         charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor 
+        cursorclass=pymysql.cursors.DictCursor
     )
     return conn
 

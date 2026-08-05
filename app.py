@@ -31,7 +31,7 @@ def get_db_connection():
         host=os.environ.get('DB_HOST', 'localhost'),
         user=os.environ.get('DB_USER', 'root'),
         password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
-        database=os.environ.get('DB_NAME', 'defaultdb'), # Laptop ka local DB name
+        database=os.environ.get('DB_NAME', 'coretest_system'), # Laptop ka local DB name
         port=int(os.environ.get('DB_PORT', 3306)),
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor

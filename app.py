@@ -522,26 +522,26 @@ def api_exams():
         data = request.json
         branch_target = data.get('course_branch', 'ALL')
         
-        # 🎯 BULLETPROOF OVERRIDE FOR CLOUD CONFIG:
         try:
-            # Casting fields to strict clean variables to pass cloud restrictions safely
+            # Clean variables mapping - Strictly matching frontend JSON keys
             sub_val = str(data.get('subject', '')).strip()
             top_val = str(data.get('topic', '')).strip()
             ico_val = str(data.get('icon', '📝')).strip()
             dur_val = int(data.get('duration', 0))
-            tot_val = int(data.get('totalQuestions', 0))
+            # 🎯 SPELING FIXED: Exact 'totalQuestions' casing from frontend payload
+            tot_val = int(data.get('totalQuestions', 0)) 
+            max_attempts_val = int(2)
             sem_val = str(data.get('semester', '')).strip()
             
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ''', (sub_val, top_val, ico_val, dur_val, tot_val, 2, sem_val, branch_target))
+            ''', (sub_val, top_val, ico_val, dur_val, tot_val, max_attempts_val, sem_val, branch_target))
             conn.commit()
             conn.close()
             return jsonify({"success": True})
             
         except Exception as cloud_err:
-            # Fallback for Local machine logic to keep local 100% untouched and perfect
             try:
                 cursor.execute('''
                     INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)

@@ -520,38 +520,28 @@ def api_exams():
         
     elif request.method == 'POST':
         data = request.json
-        # 🎯 SAFE COLUMN EXTENSION: course_branch extraction mapping
         branch_target = data.get('course_branch', 'ALL')
         
-        # Smart Hybrid Parameters Packing: Handles types casting safely for Cloud strict configurations
+        # 🎯 BULLETPROOF OVERRIDE FOR CLOUD CONFIG:
         try:
-            subject_val = str(data.get('subject', '')).strip()
-            topic_val = str(data.get('topic', '')).strip()
-            icon_val = str(data.get('icon', '')).strip()
-            duration_val = int(data.get('duration', 0))
-            total_qs_val = int(data.get('totalQuestions', 0))
-            max_attempts_val = int(2) # Safe integer casting for strict mode fields mapping
-            semester_val = str(data.get('semester', '')).strip()
+            # Casting fields to strict clean variables to pass cloud restrictions safely
+            sub_val = str(data.get('subject', '')).strip()
+            top_val = str(data.get('topic', '')).strip()
+            ico_val = str(data.get('icon', '📝')).strip()
+            dur_val = int(data.get('duration', 0))
+            tot_val = int(data.get('totalQuestions', 0))
+            sem_val = str(data.get('semester', '')).strip()
             
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ''', (
-                subject_val, 
-                topic_val, 
-                icon_val, 
-                duration_val, 
-                total_qs_val, 
-                max_attempts_val, 
-                semester_val,
-                branch_target
-            ))
+            ''', (sub_val, top_val, ico_val, dur_val, tot_val, 2, sem_val, branch_target))
             conn.commit()
             conn.close()
             return jsonify({"success": True})
             
-        except Exception as e:
-            # Fallback wrapper to guarantee execution if safe formatting hits internal locks
+        except Exception as cloud_err:
+            # Fallback for Local machine logic to keep local 100% untouched and perfect
             try:
                 cursor.execute('''
                     INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
@@ -569,9 +559,9 @@ def api_exams():
                 conn.commit()
                 conn.close()
                 return jsonify({"success": True})
-            except Exception as final_err:
+            except Exception as final_crash:
                 conn.close()
-                return jsonify({"success": False, "error": str(final_err)}), 500
+                return jsonify({"success": False, "error": str(final_crash)}), 500
 
 
 @app.route('/api/security/check-attempts', methods=['GET', 'POST'])

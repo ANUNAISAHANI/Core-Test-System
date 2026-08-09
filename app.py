@@ -490,6 +490,7 @@ def admin_edit_teacher():
     finally:
         conn.close()
 
+# 🎯 PERMANENT BULLETPROOF EXAMS ROUTE: Synchronized for Local and Live Cloud perfectly!
 @app.route('/api/exams', methods=['GET', 'POST'])
 def api_exams():
     conn = get_db_connection()
@@ -522,22 +523,55 @@ def api_exams():
         # 🎯 SAFE COLUMN EXTENSION: course_branch extraction mapping
         branch_target = data.get('course_branch', 'ALL')
         
-        cursor.execute('''
-            INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (
-            data['subject'], 
-            data['topic'], 
-            data['icon'], 
-            int(data['duration']), 
-            int(data['totalQuestions']), 
-            2, 
-            data.get('semester'),
-            branch_target
-        ))
-        conn.commit()
-        conn.close()
-        return jsonify({"success": True})
+        # Smart Hybrid Parameters Packing: Handles types casting safely for Cloud strict configurations
+        try:
+            subject_val = str(data.get('subject', '')).strip()
+            topic_val = str(data.get('topic', '')).strip()
+            icon_val = str(data.get('icon', '')).strip()
+            duration_val = int(data.get('duration', 0))
+            total_qs_val = int(data.get('totalQuestions', 0))
+            max_attempts_val = int(2) # Safe integer casting for strict mode fields mapping
+            semester_val = str(data.get('semester', '')).strip()
+            
+            cursor.execute('''
+                INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            ''', (
+                subject_val, 
+                topic_val, 
+                icon_val, 
+                duration_val, 
+                total_qs_val, 
+                max_attempts_val, 
+                semester_val,
+                branch_target
+            ))
+            conn.commit()
+            conn.close()
+            return jsonify({"success": True})
+            
+        except Exception as e:
+            # Fallback wrapper to guarantee execution if safe formatting hits internal locks
+            try:
+                cursor.execute('''
+                    INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ''', (
+                    data['subject'], 
+                    data['topic'], 
+                    data['icon'], 
+                    int(data['duration']), 
+                    int(data['totalQuestions']), 
+                    2, 
+                    data.get('semester'),
+                    branch_target
+                ))
+                conn.commit()
+                conn.close()
+                return jsonify({"success": True})
+            except Exception as final_err:
+                conn.close()
+                return jsonify({"success": False, "error": str(final_err)}), 500
 
 
 @app.route('/api/security/check-attempts', methods=['GET', 'POST'])

@@ -25,30 +25,18 @@ app.config['MAIL_DEFAULT_SENDER'] = ('CoreTest Portal', os.getenv('ADMIN_GMAIL')
 mail = Mail(app)
 
 # ==================== 🗄️ MYSQL CONNECTION CONFIGURATION ====================
-# def get_db_connection():
-#     # 🎯 REAL CLOUD BRIDGE: Live server par Render se environment variables uthayega, aur laptop par local values!
-#     conn = pymysql.connect(
-#         host=os.environ.get('DB_HOST', 'localhost'),
-#         user=os.environ.get('DB_USER', 'root'),
-#         password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
-#         database=os.environ.get('DB_NAME', 'coretest_system'), # Laptop ka local DB name
-#         port=int(os.environ.get('DB_PORT', 3306)),
-#         charset='utf8mb4',
-#         cursorclass=pymysql.cursors.DictCursor
-#     )
-#     return conn
-
 def get_db_connection():
-    connection = pymysql.connect(
-        host=os.getenv('DB_HOST', 'localhost'),
-        user=os.getenv('DB_USER', 'root'),
-        password=os.getenv('DB_PASSWORD', ''),
-        database=os.getenv('DB_NAME', 'coretest_system'),  # <-- Yahan env variable use hoga
-        port=int(os.getenv('DB_PORT', 3306)),
+    # 🎯 REAL CLOUD BRIDGE: Live server par Render se environment variables uthayega, aur laptop par local values!
+    conn = pymysql.connect(
+        host=os.environ.get('DB_HOST', 'localhost'),
+        user=os.environ.get('DB_USER', 'root'),
+        password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
+        database=os.environ.get('DB_NAME', 'coretest_system'), # Laptop ka local DB name
+        port=int(os.environ.get('DB_PORT', 3306)),
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
-    return connection
+    return conn
 
 # ==================== MYSQL DATABASE SCHEMA DESIGN ====================
 def init_db():
@@ -502,47 +490,48 @@ def admin_edit_teacher():
     finally:
         conn.close()
 
-# 🎯 PERMANENT BULLETPROOF EXAMS ROUTE: Synchronized for Local and Live Cloud perfectly!
 @app.route('/api/exams', methods=['GET', 'POST'])
 def api_exams():
-    print("--- API EXAMS HIT SUCCESSFUL ---")  # <-- Ye line add karo
     try:
         conn = get_db_connection()
-        print("--- DATABASE CONNECTED SUCCESSFULLY ---")  # <-- Ye line bhi add karo
+        cursor = conn.cursor()
     except Exception as db_err:
         print("--- DATABASE CONNECTION FAILED:", str(db_err))
         return jsonify({"success": False, "error": "DB Connection Failed"}), 500
         
-    cursor = conn.cursor()
-    
     if request.method == 'GET':
         user_role = request.args.get('role')
         user_branch = request.args.get('course_branch')
-        user_semester = request.args.get('semester') # 🎯 NEW: Semester parameter link
+        user_semester = request.args.get('semester') # Yeh wahi string hai jo admin.js se "Semester-X | Section-Y" ban kar aa rahi hai
         
-        # 🎯 FIXED: Dual filtration on branch AND academic semester rows safely
-        if user_role == 'student' and user_branch:
-            if user_semester:
-                cursor.execute('''
-                    SELECT * FROM exams 
-                    WHERE (course_branch = %s OR course_branch = "ALL") 
-                    AND (semester = %s OR semester = "" OR semester IS NULL)
-                ''', (user_branch, user_semester))
+        try:
+            # Agar student login hai, toh uski branch aur semester/section ke hisaab se strict filter lagao
+            if user_role == 'student' and user_branch:
+                if user_semester:
+                    # Strict match: Branch match honi chahiye (ya ALL) aur semester/section pattern match hona chahiye
+                    semester_pattern = f"%{user_semester}%"
+                    cursor.execute('''
+                        SELECT * FROM exams 
+                        WHERE (course_branch = %s OR course_branch = "ALL") 
+                        AND (semester LIKE %s OR semester = "" OR semester IS NULL)
+                    ''', (user_branch, semester_pattern))
+                else:
+                    cursor.execute('SELECT * FROM exams WHERE course_branch = %s OR course_branch = "ALL"', (user_branch,))
             else:
-                cursor.execute('SELECT * FROM exams WHERE course_branch = %s OR course_branch = "ALL"', (user_branch,))
-        else:
-            cursor.execute('SELECT * FROM exams')
+                # Admin ke liye saare exams dikhenge
+                cursor.execute('SELECT * FROM exams')
+                
+            exams = cursor.fetchall()
+            conn.close()
+            return jsonify([dict(ex) for ex in exams])
+        except Exception as e:
+            print("--- GET EXAMS ERROR ---", str(e))
+            conn.close()
+            return jsonify([])
             
-        exams = cursor.fetchall()
-        conn.close()
-        return jsonify([dict(ex) for ex in exams])
-        
     elif request.method == 'POST':
         data = request.json
-        print("--- RECEIVED EXAM DATA ---", data)
-        
-        branch_target = data.get('course_branch', 'ALL')
-        semester_target = data.get('semester')
+        print("--- RECEIVED EXAM DATA ---", data, flush=True)
         
         try:
             duration_val = int(data.get('duration', 600))
@@ -564,8 +553,8 @@ def api_exams():
                 duration_val, 
                 total_q_val, 
                 max_att_val, 
-                str(semester_target) if semester_target else 'Semester-1',
-                str(branch_target)
+                str(data.get('semester', 'Semester-1')),
+                str(data.get('course_branch', 'ALL'))
             ))
             conn.commit()
             conn.close()

@@ -493,7 +493,14 @@ def admin_edit_teacher():
 # 🎯 PERMANENT BULLETPROOF EXAMS ROUTE: Synchronized for Local and Live Cloud perfectly!
 @app.route('/api/exams', methods=['GET', 'POST'])
 def api_exams():
-    conn = get_db_connection()
+    print("--- API EXAMS HIT SUCCESSFUL ---")  # <-- Ye line add karo
+    try:
+        conn = get_db_connection()
+        print("--- DATABASE CONNECTED SUCCESSFULLY ---")  # <-- Ye line bhi add karo
+    except Exception as db_err:
+        print("--- DATABASE CONNECTION FAILED:", str(db_err))
+        return jsonify({"success": False, "error": "DB Connection Failed"}), 500
+        
     cursor = conn.cursor()
     
     if request.method == 'GET':

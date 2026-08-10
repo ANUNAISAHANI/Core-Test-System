@@ -520,23 +520,33 @@ def api_exams():
         
     elif request.method == 'POST':
         data = request.json
-        print("RECEIVED EXAM DATA FROM FRONTEND:", data)  # <-- Ye line add karo
+        print("RECEIVED EXAM DATA FROM FRONTEND:", data)
         
         branch_target = data.get('course_branch', 'ALL')
         semester_target = data.get('semester')
-        max_attempts = int(data.get('maxAttempts', 2))
         
+        # Safe extraction of numeric fields to avoid type crash
         try:
+            duration_val = int(data.get('duration', 0))
+            total_q_val = int(data.get('totalQuestions', 0))
+            max_att_val = int(data.get('maxAttempts', 2))
+        except (ValueError, TypeError):
+            duration_val = 600
+            total_q_val = 10
+            max_att_val = 2
+
+        try:
+            # Safe Insert Query
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
-                data['subject'], 
-                data['topic'], 
-                data['icon'], 
-                int(data['duration']), 
-                int(data['totalQuestions']), 
-                max_attempts, 
+                data.get('subject', 'Untitled'), 
+                data.get('topic', 'General'), 
+                data.get('icon', '📝'), 
+                duration_val, 
+                total_q_val, 
+                max_att_val, 
                 semester_target,
                 branch_target
             ))
@@ -549,7 +559,9 @@ def api_exams():
             conn.close()
             import traceback
             err_msg = traceback.format_exc()
-            print("CRASH DETAILS IN EXAM POST:", err_msg)  # <-- Ye line Render logs mein error print karegi
+            print("--- LIVE SQL CRASH TRACEBACK ---")
+            print(err_msg)
+            print("--------------------------------")
             return jsonify({"success": False, "error": str(e)}), 500
 
 

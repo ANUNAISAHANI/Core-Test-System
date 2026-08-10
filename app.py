@@ -527,15 +527,14 @@ def api_exams():
         
     elif request.method == 'POST':
         data = request.json
-        print("RECEIVED EXAM DATA FROM FRONTEND:", data)
+        print("--- RECEIVED EXAM DATA ---", data)
         
         branch_target = data.get('course_branch', 'ALL')
         semester_target = data.get('semester')
         
-        # Safe extraction of numeric fields to avoid type crash
         try:
-            duration_val = int(data.get('duration', 0))
-            total_q_val = int(data.get('totalQuestions', 0))
+            duration_val = int(data.get('duration', 600))
+            total_q_val = int(data.get('totalQuestions', 10))
             max_att_val = int(data.get('maxAttempts', 2))
         except (ValueError, TypeError):
             duration_val = 600
@@ -543,19 +542,18 @@ def api_exams():
             max_att_val = 2
 
         try:
-            # Safe Insert Query
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
-                data.get('subject', 'Untitled'), 
-                data.get('topic', 'General'), 
-                data.get('icon', '📝'), 
+                str(data.get('subject', 'Test')), 
+                str(data.get('topic', 'General')), 
+                str(data.get('icon', '📝')), 
                 duration_val, 
                 total_q_val, 
                 max_att_val, 
-                semester_target,
-                branch_target
+                str(semester_target) if semester_target else 'Semester-1',
+                str(branch_target)
             ))
             conn.commit()
             conn.close()
@@ -565,10 +563,7 @@ def api_exams():
             conn.rollback()
             conn.close()
             import traceback
-            err_msg = traceback.format_exc()
-            print("--- LIVE SQL CRASH TRACEBACK ---")
-            print(err_msg)
-            print("--------------------------------")
+            print("--- FINAL INSERT ERROR ---", traceback.format_exc())
             return jsonify({"success": False, "error": str(e)}), 500
 
 

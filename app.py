@@ -25,18 +25,29 @@ app.config['MAIL_DEFAULT_SENDER'] = ('CoreTest Portal', os.getenv('ADMIN_GMAIL')
 mail = Mail(app)
 
 # ==================== 🗄️ MYSQL CONNECTION CONFIGURATION ====================
+# def get_db_connection():
+#     # 🎯 REAL CLOUD BRIDGE: Live server par Render se environment variables uthayega, aur laptop par local values!
+#     conn = pymysql.connect(
+#         host=os.environ.get('DB_HOST', 'localhost'),
+#         user=os.environ.get('DB_USER', 'root'),
+#         password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
+#         database=os.environ.get('DB_NAME', 'coretest_system'), # Laptop ka local DB name
+#         port=int(os.environ.get('DB_PORT', 3306)),
+#         charset='utf8mb4',
+#         cursorclass=pymysql.cursors.DictCursor
+#     )
+#     return conn
+
 def get_db_connection():
-    # 🎯 REAL CLOUD BRIDGE: Live server par Render se environment variables uthayega, aur laptop par local values!
-    conn = pymysql.connect(
-        host=os.environ.get('DB_HOST', 'localhost'),
-        user=os.environ.get('DB_USER', 'root'),
-        password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
-        database=os.environ.get('DB_NAME', 'coretest_system'), # Laptop ka local DB name
-        port=int(os.environ.get('DB_PORT', 3306)),
-        charset='utf8mb4',
+    connection = pymysql.connect(
+        host=os.getenv('DB_HOST', 'localhost'),
+        user=os.getenv('DB_USER', 'root'),
+        password=os.getenv('DB_PASSWORD', ''),
+        database=os.getenv('DB_NAME', 'coretest_system'),  # <-- Yahan env variable use hoga
+        port=int(os.getenv('DB_PORT', 3306)),
         cursorclass=pymysql.cursors.DictCursor
     )
-    return conn
+    return connection
 
 # ==================== MYSQL DATABASE SCHEMA DESIGN ====================
 def init_db():

@@ -45,7 +45,7 @@ def get_db_connection():
         password=os.getenv('DB_PASSWORD', ''),
         database=os.getenv('DB_NAME', 'coretest_system'),  # <-- Yahan env variable use hoga
         port=int(os.getenv('DB_PORT', 3306)),
-        charset='utf8mb4'
+        charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
     return connection

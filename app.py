@@ -521,47 +521,34 @@ def api_exams():
     elif request.method == 'POST':
         data = request.json
         branch_target = data.get('course_branch', 'ALL')
+        semester_target = data.get('semester')
+        
+        # Fallback safeguard for live cloud databases where maxAttempts might be named differently or missing
+        max_attempts = int(data.get('maxAttempts', 2))
         
         try:
-            # Clean variables mapping - Strictly matching frontend JSON keys
-            sub_val = str(data.get('subject', '')).strip()
-            top_val = str(data.get('topic', '')).strip()
-            ico_val = str(data.get('icon', '📝')).strip()
-            dur_val = int(data.get('duration', 0))
-            # 🎯 SPELING FIXED: Exact 'totalQuestions' casing from frontend payload
-            tot_val = int(data.get('totalQuestions', 0)) 
-            max_attempts_val = int(2)
-            sem_val = str(data.get('semester', '')).strip()
-            
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ''', (sub_val, top_val, ico_val, dur_val, tot_val, max_attempts_val, sem_val, branch_target))
+            ''', (
+                data['subject'], 
+                data['topic'], 
+                data['icon'], 
+                int(data['duration']), 
+                int(data['totalQuestions']), 
+                max_attempts, 
+                semester_target,
+                branch_target
+            ))
             conn.commit()
-            conn.close()
             return jsonify({"success": True})
-            
-        except Exception as cloud_err:
-            try:
-                cursor.execute('''
-                    INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                ''', (
-                    data['subject'], 
-                    data['topic'], 
-                    data['icon'], 
-                    int(data['duration']), 
-                    int(data['totalQuestions']), 
-                    2, 
-                    data.get('semester'),
-                    branch_target
-                ))
-                conn.commit()
-                conn.close()
-                return jsonify({"success": True})
-            except Exception as final_crash:
-                conn.close()
-                return jsonify({"success": False, "error": str(final_crash)}), 500
+        except Exception as e:
+            conn.rollback()
+            # Ye live console / logs mein exact database error print karega taaki pata chale kaun sa column missing hai
+            print("EXAM INSERT ERROR:", str(e))
+            return jsonify({"success": False, "error": str(e)}), 500
+        finally:
+            conn.close()
 
 
 @app.route('/api/security/check-attempts', methods=['GET', 'POST'])

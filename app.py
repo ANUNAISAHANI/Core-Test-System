@@ -520,12 +520,13 @@ def api_exams():
         
     elif request.method == 'POST':
         data = request.json
+        print("RECEIVED EXAM DATA FROM FRONTEND:", data)  # <-- Ye line add karo
+        
         branch_target = data.get('course_branch', 'ALL')
         semester_target = data.get('semester')
         max_attempts = int(data.get('maxAttempts', 2))
         
         try:
-            # First try inserting with maxAttempts
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -539,31 +540,17 @@ def api_exams():
                 semester_target,
                 branch_target
             ))
+            conn.commit()
+            conn.close()
+            return jsonify({"success": True})
+            
         except Exception as e:
-            # Fallback if maxAttempts column doesn't exist in live cloud DB yet
-            if "Unknown column 'maxAttempts'" in str(e):
-                cursor.execute('''
-                    INSERT INTO exams (subject, topic, icon, duration, totalQuestions, semester, course_branch)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ''', (
-                    data['subject'], 
-                    data['topic'], 
-                    data['icon'], 
-                    int(data['duration']), 
-                    int(data['totalQuestions']), 
-                    semester_target,
-                    branch_target
-                ))
-            else:
-                conn.rollback()
-                conn.close()
-                import traceback
-                print("--- EXAM POST ERROR ---", traceback.format_exc())
-                return jsonify({"success": False, "error": str(e)}), 500
-                
-        conn.commit()
-        conn.close()
-        return jsonify({"success": True})
+            conn.rollback()
+            conn.close()
+            import traceback
+            err_msg = traceback.format_exc()
+            print("CRASH DETAILS IN EXAM POST:", err_msg)  # <-- Ye line Render logs mein error print karegi
+            return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route('/api/security/check-attempts', methods=['GET', 'POST'])

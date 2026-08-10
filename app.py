@@ -522,11 +522,10 @@ def api_exams():
         data = request.json
         branch_target = data.get('course_branch', 'ALL')
         semester_target = data.get('semester')
-        
-        # Fallback safeguard for live cloud databases where maxAttempts might be named differently or missing
         max_attempts = int(data.get('maxAttempts', 2))
         
         try:
+            # First try inserting with maxAttempts
             cursor.execute('''
                 INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -540,15 +539,31 @@ def api_exams():
                 semester_target,
                 branch_target
             ))
-            conn.commit()
-            return jsonify({"success": True})
         except Exception as e:
-            conn.rollback()
-            # Ye live console / logs mein exact database error print karega taaki pata chale kaun sa column missing hai
-            print("EXAM INSERT ERROR:", str(e))
-            return jsonify({"success": False, "error": str(e)}), 500
-        finally:
-            conn.close()
+            # Fallback if maxAttempts column doesn't exist in live cloud DB yet
+            if "Unknown column 'maxAttempts'" in str(e):
+                cursor.execute('''
+                    INSERT INTO exams (subject, topic, icon, duration, totalQuestions, semester, course_branch)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ''', (
+                    data['subject'], 
+                    data['topic'], 
+                    data['icon'], 
+                    int(data['duration']), 
+                    int(data['totalQuestions']), 
+                    semester_target,
+                    branch_target
+                ))
+            else:
+                conn.rollback()
+                conn.close()
+                import traceback
+                print("--- EXAM POST ERROR ---", traceback.format_exc())
+                return jsonify({"success": False, "error": str(e)}), 500
+                
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
 
 
 @app.route('/api/security/check-attempts', methods=['GET', 'POST'])

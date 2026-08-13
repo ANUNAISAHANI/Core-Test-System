@@ -515,11 +515,11 @@ def api_exams():
                     semester_pattern = f"%{user_semester}%"
                     cursor.execute('''
                         SELECT * FROM exams 
-                        WHERE (course_branch = %s OR course_branch = "ALL") 
-                        AND (semester LIKE %s OR semester = "" OR semester IS NULL)
+                        WHERE (course_branch = %s OR course_branch = 'ALL') 
+                        AND (semester LIKE %s OR semester = '' OR semester IS NULL)
                     ''', (user_branch, semester_pattern))
                 else:
-                    cursor.execute('SELECT * FROM exams WHERE course_branch = %s OR course_branch = "ALL"', (user_branch,))
+                    cursor.execute("SELECT * FROM exams WHERE course_branch = %s OR course_branch = 'ALL'", (user_branch,))
             else:
                 cursor.execute('SELECT * FROM exams')
                 

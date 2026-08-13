@@ -6,7 +6,7 @@ load_dotenv()  # Yeh line aapki .env file ko system mein load kar degi
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_mail import Mail, Message  
 import pymysql # 🎯 SQLite completely replaced with production MySQL driver
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import json
 import random
 

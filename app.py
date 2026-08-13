@@ -26,12 +26,15 @@ mail = Mail(app)
 
 # ==================== 🗄️ MYSQL CONNECTION CONFIGURATION ====================
 def get_db_connection():
-    # 🎯 REAL CLOUD BRIDGE: Live server par Render se environment variables uthayega, aur laptop par local values!
+    # Agar local chala rahe ho, toh seedha 'coretest_system' use hoga. 
+    # Render (live) par hoga toh environment variable wala 'DB_NAME' utha lega.
+    db_name = 'coretest_system' if os.environ.get('DB_HOST', 'localhost') == 'localhost' else os.environ.get('DB_NAME', 'defaultdb')
+    
     conn = pymysql.connect(
         host=os.environ.get('DB_HOST', 'localhost'),
         user=os.environ.get('DB_USER', 'root'),
-        password=os.environ.get('DB_PASSWORD', ''),  # Laptop par bina password ka local setup chalega
-        database=os.environ.get('DB_NAME', 'defaultdb' if os.environ.get('DB_HOST') != 'localhost' else 'coretest_system'),
+        password=os.environ.get('DB_PASSWORD', ''), 
+        database=db_name,
         port=int(os.environ.get('DB_PORT', 3306)),
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
@@ -502,13 +505,13 @@ def api_exams():
     if request.method == 'GET':
         user_role = request.args.get('role')
         user_branch = request.args.get('course_branch')
-        user_semester = request.args.get('semester') # Yeh wahi string hai jo admin.js se "Semester-X | Section-Y" ban kar aa rahi hai
+        user_semester = request.args.get('semester')
+        
+        print("--- DEBUG CHECK ---", f"Role: {user_role}, Branch: {user_branch}, Semester: {user_semester}", flush=True)
         
         try:
-            # Agar student login hai, toh uski branch aur semester/section ke hisaab se strict filter lagao
             if user_role == 'student' and user_branch:
                 if user_semester:
-                    # Strict match: Branch match honi chahiye (ya ALL) aur semester/section pattern match hona chahiye
                     semester_pattern = f"%{user_semester}%"
                     cursor.execute('''
                         SELECT * FROM exams 
@@ -518,7 +521,6 @@ def api_exams():
                 else:
                     cursor.execute('SELECT * FROM exams WHERE course_branch = %s OR course_branch = "ALL"', (user_branch,))
             else:
-                # Admin ke liye saare exams dikhenge
                 cursor.execute('SELECT * FROM exams')
                 
             exams = cursor.fetchall()

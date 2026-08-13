@@ -772,7 +772,18 @@ def api_results():
         data = request.json
         # 🎯 FIX #3: Frontend se aane wali 'reason' key ko clean capture karna
         exam_remarks = data.get('reason', 'Normal Termination Submission')
-        current_time_str = datetime.now().strftime('%d/%m/%Y, %I:%M:%S %p')
+        
+        # 👇 YAHAN BADLAV KARNA HAI: Local vs Live (Render UTC to IST +5:30) safe time check
+        is_local = os.environ.get('DB_HOST', 'localhost') == 'localhost'
+        utc_now = datetime.now(timezone.utc)
+        if not is_local:
+            # Render (Live) ke liye IST offset add kar diya
+            correct_now = utc_now + timedelta(hours=5, minutes=30)
+        else:
+            # Local ke liye normal system time
+            correct_now = datetime.now()
+            
+        current_time_str = correct_now.strftime('%d/%m/%Y, %I:%M:%S %p')
         final_remarks = f"{exam_remarks} | Log Timestamp: {current_time_str}"
 
         cursor.execute("SELECT semester FROM users WHERE id = %s", (data.get('userId'),))

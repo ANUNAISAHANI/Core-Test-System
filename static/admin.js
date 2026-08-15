@@ -893,9 +893,7 @@ function applyResultFilters() {
         filtered = filtered.filter(r => (r.examSubject || r.subject) === sub);
     }
 
-    filtered.sort((a, b) => (a.userName || a.studentName || '').localeCompare(b.userName || a.studentName || ''));
-
-    // Attempt tracker calculation
+    // Attempt tracker calculation pehle karenge
     const studentAttemptTracker = {};
     filtered.forEach(r => {
         const trackerKey = `${r.userId || r.studentId}_${r.examSubject || r.subject}`;
@@ -906,7 +904,20 @@ function applyResultFilters() {
         r.calculatedAttempt = r.attemptNumber || studentAttemptTracker[trackerKey];
     });
 
-    container.innerHTML = filtered.slice().reverse().map(r => {
+    // 🎯 EXACT FIX: Pure A-Z Alphabetical Sorting + Attempt Wise (No Reverse)
+    filtered.sort((a, b) => {
+        let nameA = (a.userName || a.studentName || a.fullName || '').toLowerCase().trim();
+        let nameB = (b.userName || b.studentName || b.fullName || '').toLowerCase().trim();
+        
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        
+        let attA = parseInt(a.attempt_number || a.calculatedAttempt || 1);
+        let attB = parseInt(b.attempt_number || b.calculatedAttempt || 1);
+        return attA - attB;
+    });
+
+    container.innerHTML = filtered.map(r => {
         const examSubName = r.examSubject || r.subject || 'General Paper';
         const studentNameVal = r.userName || r.studentName || 'Unknown Student';
         const scorePercentage = parseFloat(r.percentage || 0).toFixed(2);

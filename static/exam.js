@@ -207,9 +207,8 @@ if (!currentUser || !currentExam) {
     document.getElementById('nextQuestionBtn').onclick = () => {
         if (currentQuestionIndex < liveQuestionsList.length - 1) {
             window.jumpToExplicitQuestion(currentQuestionIndex + 1);
-        } else {
-            alert("✨ You have reached the final query card item loop. Review your right side matrix grid box codes before deployment!");
         }
+        // 🎯 FIX: Aakhri question (Review End) par click karne se koi alert nahi aayega aur na hi cheating trigger hogi
     };
 
     // ==================== CORE EVALUATION LOGIC PIPELINE ====================

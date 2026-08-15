@@ -154,7 +154,19 @@ function renderFilteredLedger() {
         return { ...r, subjectAttemptNum: subjectCounters[sub] };
     });
 
-    const finalRecordsToRender = processedRecords.reverse();
+    // 🎯 EXACT FIX: Alphabetical (A to Z) Sorting + Attempt Wise
+    const finalRecordsToRender = processedRecords.sort((a, b) => {
+        let nameA = (a.userName || a.student_name || '').toLowerCase().trim();
+        let nameB = (b.userName || b.student_name || '').toLowerCase().trim();
+        
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        
+        // Agar same student ke 2 attempts hain toh #1 pehle aur #2 baad me aayega
+        let attA = parseInt(a.attempt_number || a.attemptNumber || 1);
+        let attB = parseInt(b.attempt_number || b.attemptNumber || 1);
+        return attA - attB;
+    });
 
     tbody.innerHTML = finalRecordsToRender.map(r => {
         const dynamicAttempt = r.attemptNumber || r.attempt || r.subjectAttemptNum;

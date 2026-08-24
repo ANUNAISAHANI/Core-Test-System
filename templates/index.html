@@ -21,8 +21,8 @@
         <h1 id="kineticTextHeader"></h1>
     </div>
 
-    <!-- 🎯 10-SECOND INTRO VIDEO LINK ELEMENT IN DEAD CENTER -->
-    <video id="introLogoVideo" class="hidden" preload="auto" playsinline>
+    <!-- 🎯 10-SECOND INTRO VIDEO LINK ELEMENT IN DEAD CENTER (MOBILE AUTOPLAY FIXED) -->
+    <video id="introLogoVideo" class="hidden" preload="auto" playsinline webkit-playsinline muted autoplay>
         <source src="{{ url_for('static', filename='logo-intro.mp4') }}" type="video/mp4">
     </video>
 

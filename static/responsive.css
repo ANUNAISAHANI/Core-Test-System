@@ -247,3 +247,11 @@
         width: 100% !important;
     }
 }
+
+@media screen and (max-width: 768px) {
+    #introLogoVideo {
+        width: 100vw !important;
+        height: 100vh !important;
+        object-fit: contain !important;
+    }
+}

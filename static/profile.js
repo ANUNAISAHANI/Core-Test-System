@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('profileSemester') && currentUser.semester) {
         document.getElementById('profileSemester').value = currentUser.semester || 'Semester-1';
     }
+    if (document.getElementById('profileSection') && currentUser.section) {
+        document.getElementById('profileSection').value = currentUser.section || 'Section-A';
+    }
     
     // Smart view layout formatting for different roles
     let roleText = 'Student';
@@ -108,7 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         fullName: currentUser.fullName,
                         phone: currentUser.phone,
                         avatar: avatarUrl,
-                        semester: currentUser.semester || 'Semester-1'
+                        semester: currentUser.semester || 'Semester-1',
+                        section: currentUser.section || 'Section-A'
                     };
                     fetch('/api/users/update', {
                         method: 'POST',
@@ -144,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 🎯 FIXED: Extracted chosen dynamic text stream value from select field
             const chosenSemester = document.getElementById('profileSemester') ? document.getElementById('profileSemester').value : (currentUser.semester || 'Semester-1');
+            const chosenSection = document.getElementById('profileSection') ? document.getElementById('profileSection').value : (currentUser.section || 'Section-A');
             
             if (newPassword && newPassword !== confirmPassword) {
                 alert('🚨 Passwords do not match!');
@@ -155,7 +160,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fullName: newName,
                 phone: newPhone,
                 avatar: currentUser.avatar || null,
-                semester: chosenSemester // 🎯 FIXED: Linked safely to payload object
+                semester: chosenSemester,
+                section: chosenSection
             };
             if (newPassword) updatePayload.password = newPassword;
             

@@ -46,12 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     renderUserResultsSection(globalResultsArray);
 
-       // 🎯 FIXED: Dynamic filtration parameters for both branch AND semester injected safely
+       // 🎯 FIXED: Dynamic filtration parameters for branch, semester AND section injected safely
         const roleParam = currentUser.role || 'student';
         const branchParam = currentUser.course_branch || '';
-        const semParam = currentUser.semester || ''; // 🎯 NEW: Get student's current semester
+        const semParam = currentUser.semester || ''; 
+        const secParam = currentUser.section || ''; // 🎯 NEW: Student ka current section
         
-        return fetch(`/api/exams?role=${roleParam}&course_branch=${encodeURIComponent(branchParam)}&semester=${encodeURIComponent(semParam)}`);
+        return fetch(`/api/exams?role=${roleParam}&course_branch=${encodeURIComponent(branchParam)}&semester=${encodeURIComponent(semParam)}&section=${encodeURIComponent(secParam)}`);
     })
     .then(res => res.json())
     .then(backendExams => {

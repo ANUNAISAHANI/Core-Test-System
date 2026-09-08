@@ -78,6 +78,11 @@ def init_db():
             semester VARCHAR(50) # 🎯 NEW: Exam kis semester ke liye deploy ho rha hai
         )
     ''')
+    try:
+        cursor.execute("ALTER TABLE exams ADD COLUMN section VARCHAR(50) DEFAULT 'ALL'")
+        conn.commit()
+    except Exception:
+        pass
     
     # 3. Synchronized Questions Table
     cursor.execute('''
@@ -506,20 +511,32 @@ def api_exams():
         user_role = request.args.get('role')
         user_branch = request.args.get('course_branch')
         user_semester = request.args.get('semester')
+        user_section = request.args.get('section')
         
-        print("--- DEBUG CHECK ---", f"Role: {user_role}, Branch: {user_branch}, Semester: {user_semester}", flush=True)
+        print("--- DEBUG CHECK ---", f"Role: {user_role}, Branch: {user_branch}, Semester: {user_semester}, Section: {user_section}", flush=True)
         
         try:
             if user_role == 'student' and user_branch:
+                query = "SELECT * FROM exams WHERE (course_branch = %s OR course_branch = 'ALL')"
+                params = [user_branch]
+
                 if user_semester:
-                    semester_pattern = f"%{user_semester}%"
-                    cursor.execute('''
-                        SELECT * FROM exams 
-                        WHERE (course_branch = %s OR course_branch = 'ALL') 
-                        AND (semester LIKE %s OR semester = '' OR semester IS NULL)
-                    ''', (user_branch, semester_pattern))
-                else:
-                    cursor.execute("SELECT * FROM exams WHERE course_branch = %s OR course_branch = 'ALL'", (user_branch,))
+                    query += " AND (semester LIKE %s OR semester = '' OR semester IS NULL)"
+                    params.append(f"%{user_semester}%")
+
+                # 🎯 SECTION FILTER: 
+                # Student ko wo exam dikhe jo uske section ka ho, YA 'ALL' ho, YA purane string format me match karta ho
+                # 🎯 STRICT SECTION FILTER
+                if user_section:
+                    sec_clean = user_section.replace('Section-', '')
+                    query += """ AND (
+                        section = %s 
+                        OR (section = 'ALL' AND (semester NOT LIKE '%%Section-%%' OR semester LIKE %s))
+                    )"""
+                    params.append(user_section)
+                    params.append(f"%Section-{sec_clean}%")
+
+                cursor.execute(query, tuple(params))
             else:
                 cursor.execute('SELECT * FROM exams')
                 
@@ -544,10 +561,13 @@ def api_exams():
             total_q_val = 10
             max_att_val = 2
 
+        # 🎯 Clean extraction of section
+        exam_section = str(data.get('section', 'ALL'))
+
         try:
             cursor.execute('''
-                INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO exams (subject, topic, icon, duration, totalQuestions, maxAttempts, semester, course_branch, section)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 str(data.get('subject', 'Test')), 
                 str(data.get('topic', 'General')), 
@@ -556,7 +576,8 @@ def api_exams():
                 total_q_val, 
                 max_att_val, 
                 str(data.get('semester', 'Semester-1')),
-                str(data.get('course_branch', 'ALL'))
+                str(data.get('course_branch', 'ALL')),
+                exam_section
             ))
             conn.commit()
             conn.close()
@@ -932,20 +953,21 @@ def update_profile():
         
         t_id = data.get('teacherId') or data.get('teacher_id')
         sem = data.get('semester') or 'Semester-1'
+        sec = data.get('section') or 'Section-A'
         avatar_data = data.get('avatar')
         
         if data.get('password'):
             cursor.execute('''
                 UPDATE users 
-                SET fullName = %s, phone = %s, password = %s, avatar = %s, semester = %s, teacher_id = %s 
+                SET fullName = %s, phone = %s, password = %s, avatar = %s, semester = %s, section = %s, teacher_id = %s 
                 WHERE id = %s
-            ''', (data['fullName'], data['phone'], data['password'], avatar_data, sem, t_id, data['id']))
+            ''', (data['fullName'], data['phone'], data['password'], avatar_data, sem, sec, t_id, data['id']))
         else:
             cursor.execute('''
                 UPDATE users 
-                SET fullName = %s, phone = %s, avatar = %s, semester = %s, teacher_id = %s 
+                SET fullName = %s, phone = %s, avatar = %s, semester = %s, section = %s, teacher_id = %s 
                 WHERE id = %s
-            ''', (data['fullName'], data['phone'], avatar_data, sem, t_id, data['id']))
+            ''', (data['fullName'], data['phone'], avatar_data, sem, sec, t_id, data['id']))
             
         conn.commit()
         

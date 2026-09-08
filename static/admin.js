@@ -238,12 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
        examForm.onsubmit = (e) => {
         e.preventDefault();
         
-        // 🎯 NAYE JOGAAD KE LIYE: Dono selected input values ko read karna
         const selectedSemesterRaw = document.getElementById('examSemester').value;
         const selectedSectionRaw = document.getElementById('examSection') ? document.getElementById('examSection').value : 'ALL';
         
-        // Backend ko bina chhede Semester database column me Section ka string merge (jodh) kar bhej rahe hain
-        const finalSemesterPayload = `${selectedSemesterRaw} | Section-${selectedSectionRaw}`;
+        // Exact section format normalize kar rahe hain (agar 'A' hai toh 'Section-A', agar 'ALL' hai toh 'ALL')
+        let formattedSection = 'ALL';
+        if (selectedSectionRaw !== 'ALL' && selectedSectionRaw !== 'NO SECTION') {
+            formattedSection = selectedSectionRaw.startsWith('Section-') ? selectedSectionRaw : `Section-${selectedSectionRaw}`;
+        }
 
         const exPayload = {
             subject: document.getElementById('examSubject').value.trim(),
@@ -251,9 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: document.getElementById('examIcon').value.trim(),
             duration: parseInt(document.getElementById('examDuration').value) * 60,
             totalQuestions: parseInt(document.getElementById('examTotalQ').value),
-            
-            // 🎯 FIXED POSITION: Jahan aapka cursor tha, theek wahi par safe combination apply kiya
-            semester: finalSemesterPayload,
+            semester: selectedSemesterRaw,
+            section: formattedSection, // 🎯 Clean section payload backend ke liye
             course_branch: document.getElementById('examCourseBranch').value
         };
 
@@ -268,9 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loadAllExams();
             examForm.reset();
             
-            // 🎯 FIXED RESET: Form submit hone ke baad saare dropdown original indexes par reset ho jayenge
             document.getElementById('examCourseBranch').value = "ALL";
-            document.getElementById('examSemester').value = "";
+            document.getElementById('examSemester').value = "ALL";
             if (document.getElementById('examSection')) {
                 document.getElementById('examSection').value = "ALL";
             }
